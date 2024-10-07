@@ -17,11 +17,14 @@ namespace LocalDBWebAPI.Data
         {
             // Generate user profiles for testing
             byte[] randomImage1 = GenerateRandomBitmap();
-            UserDataIntermed jin = new UserDataIntermed("123", "Jin", "20 John Street", "cyclonedestroy@gmail.com", randomImage1, "0491019164");
+            UserDataIntermed jin = new UserDataIntermed("123", "Jin", "20 John Street", "cyclonedestroy@gmail.com", randomImage1, "0491019164", 0);
             DBManager.InsertUserProfile(jin);
             byte[] randomImage2 = GenerateRandomBitmap();
-            UserDataIntermed alex = new UserDataIntermed("456", "Alex", "30 John Street", "alexchan0724@gmail.com", randomImage2, "0424550558");
+            UserDataIntermed alex = new UserDataIntermed("456", "Alex", "30 John Street", "alexchan0724@gmail.com", randomImage2, "0424550558", 0);
             DBManager.InsertUserProfile(alex);
+            byte[] randomImage3 = GenerateRandomBitmap();
+            UserDataIntermed admin = new UserDataIntermed("789", "Admin", "40 John Street", "admin@gmail.com", randomImage3, "0426201320", 1);
+            DBManager.InsertUserProfile(admin);
 
             // Add Jin and Alex to dictionary and lists
             userDictionary.Add(jin.username, jin.email);
@@ -30,9 +33,12 @@ namespace LocalDBWebAPI.Data
             userDictionary.Add(alex.username, alex.email);
             usernameList.Add(alex.username);
             emailList.Add(alex.email);
+            userDictionary.Add(admin.username, admin.email);
+            usernameList.Add(admin.username);
+            emailList.Add(admin.username);
 
-            // Fill database with 98 more user profiles
-            for (int i = 0; i < 98; i++)
+            // Fill database with 97 more user profiles
+            for (int i = 0; i < 97; i++)
             {
                 byte[] randomImage = GenerateRandomBitmap();
                 string randomPassword = GetPassword();
@@ -41,7 +47,7 @@ namespace LocalDBWebAPI.Data
                 userDictionary.Add(randomUsername, randomEmail);
                 string randomPhoneNum = "04" + rand.Next(10000000, 99999999); // Random phone number from Australia
                 string randomAddress = rand.Next(1, 1000) + " John Street"; // Random address on John Street
-                UserDataIntermed user = new UserDataIntermed(randomPassword, randomUsername, randomAddress, randomEmail, randomImage, randomPhoneNum);
+                UserDataIntermed user = new UserDataIntermed(randomPassword, randomUsername, randomAddress, randomEmail, randomImage, randomPhoneNum, 0);
                 DBManager.InsertUserProfile(user);
             }
         }
@@ -201,11 +207,11 @@ namespace LocalDBWebAPI.Data
         public static void InsertTransactions()
         {
             // Initialise transactions for testing
-            TransactionDataIntermed jinSpend = new TransactionDataIntermed(100001, "Bought a new phone", -1000);
-            TransactionDataIntermed jinSpend2 = new TransactionDataIntermed(100000, "Bought new car", -10000);
-            TransactionDataIntermed jinDeposit = new TransactionDataIntermed(100000, "Salary for the month", 6000);
-            TransactionDataIntermed alexSpend = new TransactionDataIntermed(100002, "Bought a new laptop", -2000);
-            TransactionDataIntermed alexDeposit = new TransactionDataIntermed(100002, "Received money from parents", 5000);
+            TransactionDataIntermed jinSpend = new TransactionDataIntermed(100001, "Bought a new phone", -1000, new DateTime(2004, 9,20));
+            TransactionDataIntermed jinSpend2 = new TransactionDataIntermed(100000, "Bought new car", -10000, new DateTime(2012, 10, 14));
+            TransactionDataIntermed jinDeposit = new TransactionDataIntermed(100000, "Salary for the month", 6000, new DateTime(2006, 5, 16));
+            TransactionDataIntermed alexSpend = new TransactionDataIntermed(100002, "Bought a new laptop", -2000, new DateTime(1989, 12, 13));
+            TransactionDataIntermed alexDeposit = new TransactionDataIntermed(100002, "Received money from parents", 5000, new DateTime(2001, 9, 11));
 
             // Insert transactions into database
             DBManager.WithdrawTransaction(jinSpend);
@@ -221,11 +227,12 @@ namespace LocalDBWebAPI.Data
                 int transactionType = rand.Next(1, 9); 
                 string randomDescription = GetTransactionDescription(transactionType);
                 int randomAmount = rand.Next(1, 10000);
+                DateTime randomDate = RandomDay();
                 if (transactionType < 5) // Options 1-4 are withdraws, Options 5-8 are deposits
                 {
                     randomAmount *= -1;
                 }
-                TransactionDataIntermed transaction = new TransactionDataIntermed(randomAccNo, randomDescription, randomAmount);
+                TransactionDataIntermed transaction = new TransactionDataIntermed(randomAccNo, randomDescription, randomAmount, randomDate);
                 if (randomAmount < 0)
                 {
                     DBManager.WithdrawTransaction(transaction);
@@ -235,6 +242,14 @@ namespace LocalDBWebAPI.Data
                     DBManager.DepositTransaction(transaction);
                 }
             }
+        }
+
+        // Generate random DateTime value between 1/1/1995 and today
+        private static DateTime RandomDay()
+        {
+            DateTime start = new DateTime(1995, 1, 1);
+            int range = (DateTime.Today - start).Days;
+            return start.AddDays(rand.Next(range));
         }
 
         private static int GetExistingAccNo()

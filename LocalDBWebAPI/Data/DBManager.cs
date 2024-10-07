@@ -1,7 +1,7 @@
 ﻿using API_Classes;
-using LocalDBWebAPI.Models;
 using System.Data.SQLite;
 using System.Diagnostics;
+using System.Drawing.Text;
 
 namespace LocalDBWebAPI.Data
 {
@@ -27,7 +27,8 @@ namespace LocalDBWebAPI.Data
                             email TEXT NOT NULL UNIQUE,
                             address TEXT,
                             phone TEXT,
-                            profilePicture BLOB
+                            profilePicture BLOB,
+                            isAdmin INTEGER NOT NULL
                         )";
                         command.ExecuteNonQuery();
 
@@ -52,8 +53,19 @@ namespace LocalDBWebAPI.Data
                             transactionID INTEGER PRIMARY KEY AUTOINCREMENT,
                             acctNo INTEGER,
                             transactionDescription TEXT NOT NULL,
+                            transactionDate DATETIME NOT NULL,
                             amount INTEGER NOT NULL,
                             FOREIGN KEY(acctNo) REFERENCES BankAccounts(acctNo) ON DELETE CASCADE
+                        )";
+                        command.ExecuteNonQuery();
+                        // SQL command to create a table named "Logs"
+                        command.CommandText = @"
+                        DROP TABLE IF EXISTS Logs;
+                        CREATE TABLE Logs(
+                            logID INTEGER PRIMARY KEY AUTOINCREMENT,
+                            logDate DATETIME NOT NULL,
+                            logUsername TEXT NOT NULL,
+                            logDescription TEXT NOT NULL
                         )";
                         command.ExecuteNonQuery();
                         connection.Close();
@@ -78,8 +90,8 @@ namespace LocalDBWebAPI.Data
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
                         command.CommandText = @"
-                        INSERT INTO UserProfile (password, username, address, email, phone, profilePicture)
-                        VALUES (@Password, @Username, @Address, @Email, @Phone, @ProfilePicture)";
+                        INSERT INTO UserProfile (password, username, address, email, phone, profilePicture, isAdmin)
+                        VALUES (@Password, @Username, @Address, @Email, @Phone, @ProfilePicture, @IsAdmin)";
 
                         command.Parameters.AddWithValue("@Password", userProfile.password);
                         command.Parameters.AddWithValue("@Username", userProfile.username);
@@ -87,6 +99,7 @@ namespace LocalDBWebAPI.Data
                         command.Parameters.AddWithValue("@Email", userProfile.email);
                         command.Parameters.AddWithValue("@Phone", userProfile.phoneNum);
                         command.Parameters.Add("@ProfilePicture", System.Data.DbType.Binary).Value = userProfile.profilePicture; // Insert image as binary
+                        command.Parameters.AddWithValue("@IsAdmin", userProfile.isAdmin);
 
                         int rowsInserted = command.ExecuteNonQuery();
                         if (rowsInserted > 0)
@@ -145,7 +158,6 @@ namespace LocalDBWebAPI.Data
             Debug.WriteLine("Username in UpdateUserProfile: " + userProfile.username);
             Debug.WriteLine("Email in UpdateUserProfile: " + userProfile.email);
             Debug.WriteLine("Password in UpdateUserProfile: " + userProfile.password);
-
             try
             {
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
@@ -156,7 +168,7 @@ namespace LocalDBWebAPI.Data
                         // Update UserProfile table using old username and email to find the correct record
                         command.CommandText = @"
                             UPDATE UserProfile
-                            SET password = @Password, username = @Username, address = @Address, email = @Email, profilePicture = @ProfilePicture, phone = @Phone
+                            SET password = @Password, username = @Username, address = @Address, email = @Email, profilePicture = @ProfilePicture, phone = @Phone, isAdmin = @IsAdmin
                             WHERE username = @OldUsername OR email = @OldEmail";
                         command.Parameters.AddWithValue("@Password", userProfile.password);
                         command.Parameters.AddWithValue("@Username", userProfile.username);
@@ -164,6 +176,7 @@ namespace LocalDBWebAPI.Data
                         command.Parameters.AddWithValue("@Email", userProfile.email);
                         command.Parameters.AddWithValue("@ProfilePicture", userProfile.profilePicture);
                         command.Parameters.AddWithValue("@Phone", userProfile.phoneNum);
+                        command.Parameters.AddWithValue("@IsAdmin", userProfile.isAdmin);
                         command.Parameters.AddWithValue("@OldUsername", oldUsername);
                         command.Parameters.AddWithValue("@OldEmail", oldEmail);
                         command.ExecuteNonQuery();
@@ -219,6 +232,7 @@ namespace LocalDBWebAPI.Data
                                 userProfile.email = reader["Email"]?.ToString() ?? string.Empty;
                                 userProfile.profilePicture = (byte[])reader["profilePicture"]; // Read byte array
                                 userProfile.phoneNum = reader["Phone"]?.ToString() ?? string.Empty;
+                                userProfile.isAdmin = Convert.ToInt32(reader["isAdmin"]);
                             }
                         }
                     }
@@ -354,6 +368,45 @@ namespace LocalDBWebAPI.Data
             return false;
         }
 
+        // Method to retrieve all bank accounts for a specific user
+        public static List<BankDataIntermed> GetUserBankAccounts(string username)
+        {
+            List<BankDataIntermed> bankAccounts = new List<BankDataIntermed>();
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SQLiteCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = "SELECT * FROM BankAccounts WHERE username = @Username";
+                        command.Parameters.AddWithValue("@Username", username);
+
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                BankDataIntermed bankAccount = new BankDataIntermed();
+                                bankAccount.accountNumber = Convert.ToInt32(reader["acctNo"]);
+                                bankAccount.pin = Convert.ToInt32(reader["pin"]);
+                                bankAccount.balance = Convert.ToInt32(reader["balance"]);
+                                bankAccount.username = reader["username"]?.ToString() ?? string.Empty;
+                                bankAccount.email = reader["email"]?.ToString() ?? string.Empty;
+                                bankAccount.description = reader["description"]?.ToString() ?? string.Empty;
+
+                                bankAccounts.Add(bankAccount);
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            return bankAccounts;
+        }
 
         public static BankDataIntermed GetBankAccount(int acctNo, string username)
         {
@@ -394,6 +447,63 @@ namespace LocalDBWebAPI.Data
             return bankAccount;
         }
 
+        // Method to initiate money transfer between two bank accounts, Assume accounts have been validated prior to calling this method
+        public static bool TransferMoney(TransactionDataIntermed sendAccount, TransactionDataIntermed receiveAccount)
+        {
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SQLiteCommand command = connection.CreateCommand())
+                    {
+                        // Withdraw from the sending account
+                        command.CommandText = @"
+                            INSERT INTO Transactions (acctNo, transactionDescription, amount, transactionDate)
+                            VALUES (@AcctNo, @TransactionDescription, @Amount, @TransactionDate)";
+                        command.Parameters.AddWithValue("@AcctNo", sendAccount.acctNo);
+                        command.Parameters.AddWithValue("@TransactionDescription", sendAccount.transactionDescription);
+                        command.Parameters.AddWithValue("@Amount", sendAccount.amount); // Amount will already be negative
+                        command.Parameters.AddWithValue("@TransactionDate", sendAccount.transactionDate);
+                        command.ExecuteNonQuery();
+
+                        // Update balance in BankAccounts table
+                        command.CommandText = @"
+                            UPDATE BankAccounts SET balance = balance + @Amount WHERE acctNo = @AcctNo";
+                        command.Parameters.Clear(); // Clear previous parameters
+                        command.Parameters.AddWithValue("@Amount", sendAccount.amount);
+                        command.Parameters.AddWithValue("@AcctNo", sendAccount.acctNo);
+                        command.ExecuteNonQuery();
+                        
+                        // Deposit into the receiving account note that all parameters will be the same except for the amount and acctNo
+                        command.CommandText = @"
+                            INSERT INTO Transactions (acctNo, transactionDescription, amount, transactionDate)
+                            VALUES (@AcctNo, @TransactionDescription, @Amount, @TransactionDate)";
+                        command.Parameters.Clear();
+                        command.Parameters.AddWithValue("@AcctNo", receiveAccount.acctNo);
+                        command.Parameters.AddWithValue("@TransactionDescription", receiveAccount.transactionDescription);
+                        command.Parameters.AddWithValue("@Amount", receiveAccount.amount);
+                        command.Parameters.AddWithValue("@TransactionDate", receiveAccount.transactionDate);
+                        command.ExecuteNonQuery();
+
+                        command.CommandText = @"
+                            UPDATE BankAccounts SET balance = balance + @Amount WHERE acctNo = @AcctNo";
+                        command.Parameters.Clear(); // Clear previous parameters
+                        command.Parameters.AddWithValue("@Amount", receiveAccount.amount);
+                        command.Parameters.AddWithValue("@AcctNo", receiveAccount.acctNo);
+                        command.ExecuteNonQuery();
+
+                    }
+                    connection.Close();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            return false;
+        }
 
         public static bool DepositTransaction(TransactionDataIntermed transaction)
         {
@@ -406,11 +516,12 @@ namespace LocalDBWebAPI.Data
                     {
                         // Insert transaction record
                         command.CommandText = @"
-                            INSERT INTO Transactions (acctNo, transactionDescription, amount)
-                            VALUES (@AcctNo, @TransactionDescription, @Amount)";
+                            INSERT INTO Transactions (acctNo, transactionDescription, amount, transactionDate)
+                            VALUES (@AcctNo, @TransactionDescription, @Amount, @TransactionDate)";
                         command.Parameters.AddWithValue("@AcctNo", transaction.acctNo);
                         command.Parameters.AddWithValue("@TransactionDescription", transaction.transactionDescription);
                         command.Parameters.AddWithValue("@Amount", transaction.amount);
+                        command.Parameters.AddWithValue("@TransactionDate", transaction.transactionDate);
                         command.ExecuteNonQuery();
 
                         // Update balance in BankAccounts table
@@ -443,11 +554,12 @@ namespace LocalDBWebAPI.Data
                     {
                         // Insert transaction record
                         command.CommandText = @"
-                            INSERT INTO Transactions (acctNo, transactionDescription, amount)
-                            VALUES (@AcctNo, @TransactionDescription, @Amount)";
+                            INSERT INTO Transactions (acctNo, transactionDescription, amount, transactionDate)
+                            VALUES (@AcctNo, @TransactionDescription, @Amount, @TransactionDate)";
                         command.Parameters.AddWithValue("@AcctNo", transaction.acctNo);
                         command.Parameters.AddWithValue("@TransactionDescription", transaction.transactionDescription);
                         command.Parameters.AddWithValue("@Amount", transaction.amount); // transaction.Amount will already be negative
+                        command.Parameters.AddWithValue("@TransactionDate", transaction.transactionDate);
                         command.ExecuteNonQuery();
 
                         // Update balance in BankAccounts table
@@ -467,6 +579,83 @@ namespace LocalDBWebAPI.Data
                 Console.WriteLine("Error: " + ex.Message);
             }
             return false;
+        }
+
+        // Method to retrieve all transactions for a specific bank account
+        public static List<TransactionDataIntermed> GetTransactionByBankAccount(int acctNo)
+        {
+            List<TransactionDataIntermed> transactions = new List<TransactionDataIntermed>();
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SQLiteCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = "SELECT * FROM Transactions WHERE acctNo = @AcctNo";
+                        command.Parameters.AddWithValue("@AcctNo", acctNo);
+
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                TransactionDataIntermed transaction = new TransactionDataIntermed();
+                                transaction.transactionID = Convert.ToInt32(reader["transactionID"]);
+                                transaction.acctNo = Convert.ToInt32(reader["acctNo"]);
+                                transaction.transactionDescription = reader["transactionDescription"]?.ToString() ?? string.Empty;
+                                transaction.amount = Convert.ToInt32(reader["amount"]);
+                                transaction.transactionDate = Convert.ToDateTime(reader["transactionDate"]);
+                                transactions.Add(transaction);
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            return transactions;
+        }
+
+        // Method to retrieve oldest to newest transactions for a specific bank account
+        public static List<TransactionDataIntermed> GetTransactionOrderedByBankAccount(int acctNo)
+        {
+            List<TransactionDataIntermed> transactions = new List<TransactionDataIntermed>();
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SQLiteCommand command = connection.CreateCommand())
+                    {
+                        // ORDER BY transactionDate ASC to get oldest to newest transactions
+                        command.CommandText = "SELECT * FROM Transactions WHERE acctNo = @AcctNo ORDER BY transactionDate ASC";
+                        command.Parameters.AddWithValue("@AcctNo", acctNo);
+
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                TransactionDataIntermed transaction = new TransactionDataIntermed();
+                                transaction.transactionID = Convert.ToInt32(reader["transactionID"]);
+                                transaction.acctNo = Convert.ToInt32(reader["acctNo"]);
+                                transaction.transactionDescription = reader["transactionDescription"]?.ToString() ?? string.Empty;
+                                transaction.amount = Convert.ToInt32(reader["amount"]);
+                                transaction.transactionDate = Convert.ToDateTime(reader["transactionDate"]);
+                                transactions.Add(transaction);
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            return transactions;
         }
 
         // Method to retrieve all transactions for a specific user
@@ -498,7 +687,7 @@ namespace LocalDBWebAPI.Data
                                 transaction.acctNo = Convert.ToInt32(reader["acctNo"]);
                                 transaction.transactionDescription = reader["transactionDescription"]?.ToString() ?? string.Empty;
                                 transaction.amount = Convert.ToInt32(reader["amount"]);
-
+                                transaction.transactionDate = Convert.ToDateTime(reader["transactionDate"]);
                                 transactions.Add(transaction);
                             }
                         }
@@ -524,7 +713,7 @@ namespace LocalDBWebAPI.Data
                     connection.Open();
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
-                        command.CommandText = "SELECT * FROM Transactions";
+                        command.CommandText = @"SELECT * FROM Transactions";
 
                         using (SQLiteDataReader reader = command.ExecuteReader())
                         {
@@ -535,7 +724,7 @@ namespace LocalDBWebAPI.Data
                                 transaction.acctNo = Convert.ToInt32(reader["acctNo"]);
                                 transaction.transactionDescription = reader["transactionDescription"]?.ToString() ?? string.Empty;
                                 transaction.amount = Convert.ToInt32(reader["amount"]);
-
+                                transaction.transactionDate = Convert.ToDateTime(reader["transactionDate"]);
                                 transactions.Add(transaction);
                             }
                         }
@@ -550,6 +739,193 @@ namespace LocalDBWebAPI.Data
             return transactions;
         }
 
+        // Checks whether a user is admin or not using the username
+        public static int IsAdmin(string username)
+        {
+            int isAdmin = 0; // 0 is false, 1 is true
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SQLiteCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = @"SELECT isAdmin FROM UserProfile WHERE username = @Username";
+                        command.Parameters.AddWithValue("@Username", username);
+
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                isAdmin = Convert.ToInt32(reader["isAdmin"]); // Convert isAdmin of UserProfile to boolean
+                            }
+                            else // If no user is found, return false
+                            {
+                                isAdmin = -1; // Helps to display error message
+                                Console.WriteLine("No user found with username: " + username);
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            return isAdmin;
+        }
+
+        // Method to get a user profile (Same as above except does not require password)
+        private static UserDataIntermed AdminGetUserProfile(string username)
+        {
+            UserDataIntermed userProfile = null;
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+                using (SQLiteCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = @"SELECT * FROM UserProfile WHERE username = @Username";
+                    command.Parameters.AddWithValue("@Username", username);
+
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            userProfile = new UserDataIntermed();
+                            // Provide an empty string if the column is null
+                            userProfile.password = reader["Password"]?.ToString() ?? string.Empty;
+                            userProfile.username = reader["Username"]?.ToString() ?? string.Empty;
+                            userProfile.address = reader["Address"]?.ToString() ?? string.Empty;
+                            userProfile.email = reader["Email"]?.ToString() ?? string.Empty;
+                            userProfile.profilePicture = (byte[])reader["profilePicture"]; // Read byte array
+                            userProfile.phoneNum = reader["Phone"]?.ToString() ?? string.Empty;
+                            userProfile.isAdmin = Convert.ToInt32(reader["isAdmin"]); // Convert isAdmin of UserProfile to boolean                        }
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            return userProfile;
+        }
+
+        // Method to search for users by username returns a list of users that match the search string
+        private static List<UserDataIntermed> SearchUsersByName(string searchString)
+        {
+            List<UserDataIntermed> users = new List<UserDataIntermed>();
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+                using (SQLiteCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = @"SELECT * FROM UserProfile WHERE username LIKE @SearchString";
+                    command.Parameters.AddWithValue("@SearchString", searchString + "%"); // Uses wildcard to search for usernames starting with the search string
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            UserDataIntermed user = new UserDataIntermed();
+                            user.password = reader["password"]?.ToString() ?? string.Empty;
+                            user.username = reader["username"]?.ToString() ?? string.Empty;
+                            user.address = reader["address"]?.ToString() ?? string.Empty;
+                            user.email = reader["email"]?.ToString() ?? string.Empty;
+                            user.profilePicture = (byte[])reader["profilePicture"]; // Read byte array
+                            user.phoneNum = reader["phone"]?.ToString() ?? string.Empty;
+                            user.isAdmin = Convert.ToInt32(reader["isAdmin"]);
+                            users.Add(user);
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            return users;
+        }
+
+        // Method to search for transactions using filters
+        public static List<TransactionDataIntermed> getTransactionsUsingFilter(string username, DateTime startingDate, DateTime endingDate, int minAmount, bool ascending)
+        {
+            List<TransactionDataIntermed> transactions = new List<TransactionDataIntermed>();
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SQLiteCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = @"
+                            SELECT T.* FROM Transactions T 
+                            JOIN BankAccounts B ON T.acctNo = B.acctNo
+                            JOIN UserProfile U ON B.username = U.username AND B.email = U.email
+                            WHERE U.username = @Username 
+                            AND (transactionDate BETWEEN @StartingDate AND @EndingDate) 
+                            AND amount > @MinAmount" ;
+                        command.Parameters.AddWithValue("@Username", username + "%"); // Uses wildcard to search for usernames starting with the search string
+                        command.Parameters.AddWithValue("@StartingDate", startingDate);
+                        command.Parameters.AddWithValue("@EndingDate", endingDate);
+                        command.Parameters.AddWithValue("@MinAmount", minAmount);
+                        if (ascending) // Order by transaction date ascending or descending
+                        {
+                            command.CommandText += " ORDER BY transactionDate ASC";
+                        }
+                        else // If ascending is false, order by transaction date descending
+                        {
+                            command.CommandText += " ORDER BY transactionDate DESC";
+                        }
+
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                TransactionDataIntermed transaction = new TransactionDataIntermed();
+                                transaction.transactionID = Convert.ToInt32(reader["transactionID"]);
+                                transaction.acctNo = Convert.ToInt32(reader["acctNo"]);
+                                transaction.transactionDescription = reader["transactionDescription"]?.ToString() ?? string.Empty;
+                                transaction.amount = Convert.ToInt32(reader["amount"]);
+                                transaction.transactionDate = Convert.ToDateTime(reader["transactionDate"]);
+                                transactions.Add(transaction);
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            return transactions;
+        }
+
+        // Method to add a log entry
+        public static bool AddLogEntry(string username, string description)
+        {
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SQLiteCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = @"
+                            INSERT INTO Logs (logDate, logUsername, logDescription)
+                            VALUES (@LogDate, @LogUsername, @LogDescription)";
+                        command.Parameters.AddWithValue("@LogDate", DateTime.Now);
+                        command.Parameters.AddWithValue("@LogUsername", username);
+                        command.Parameters.AddWithValue("@LogDescription", description);
+                        command.ExecuteNonQuery();
+                    }
+                    connection.Close();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            return false;
+        }
+
+        // Method to initialise the database with tables and initial data
         public static void DBInitialise()
         {
             if (CreateTables())

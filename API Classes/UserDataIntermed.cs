@@ -16,10 +16,11 @@ namespace API_Classes
             email = "";
             phoneNum = "";
             profilePicture = null;
+            isAdmin = 0;
         }
 
 
-        public UserDataIntermed(string password, string username, string address, string email, byte[] profilePicture, string phoneNum)
+        public UserDataIntermed(string password, string username, string address, string email, byte[] profilePicture, string phoneNum, int isAdmin)
         {
             this.password = password;
             this.username = username;
@@ -27,6 +28,7 @@ namespace API_Classes
             this.email = email;
             this.phoneNum = phoneNum;
             this.profilePicture = profilePicture;
+            this.isAdmin = isAdmin;
         }
 
 
@@ -36,5 +38,6 @@ namespace API_Classes
         public string email { get; set; }
         public string phoneNum { get; set; }
         public byte[] profilePicture { get; set; }
+        public int isAdmin { get; set; }
     }
 }
