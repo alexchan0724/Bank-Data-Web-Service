@@ -201,11 +201,11 @@ namespace LocalDBWebAPI.Data
         public static void InsertTransactions()
         {
             // Initialise transactions for testing
-            TransactionDataIntermed jinSpend = new TransactionDataIntermed(100001, "Bought a new phone", -1000);
-            TransactionDataIntermed jinSpend2 = new TransactionDataIntermed(100000, "Bought new car", -10000);
-            TransactionDataIntermed jinDeposit = new TransactionDataIntermed(100000, "Salary for the month", 6000);
-            TransactionDataIntermed alexSpend = new TransactionDataIntermed(100002, "Bought a new laptop", -2000);
-            TransactionDataIntermed alexDeposit = new TransactionDataIntermed(100002, "Received money from parents", 5000);
+            TransactionDataIntermed jinSpend = new TransactionDataIntermed(100001, "Bought a new phone", -1000, new DateTime(2004, 9,20));
+            TransactionDataIntermed jinSpend2 = new TransactionDataIntermed(100000, "Bought new car", -10000, new DateTime(2012, 10, 14));
+            TransactionDataIntermed jinDeposit = new TransactionDataIntermed(100000, "Salary for the month", 6000, new DateTime(2006, 5, 16));
+            TransactionDataIntermed alexSpend = new TransactionDataIntermed(100002, "Bought a new laptop", -2000, new DateTime(1989, 12, 13));
+            TransactionDataIntermed alexDeposit = new TransactionDataIntermed(100002, "Received money from parents", 5000, new DateTime(2001, 9, 11));
 
             // Insert transactions into database
             DBManager.WithdrawTransaction(jinSpend);
@@ -221,11 +221,12 @@ namespace LocalDBWebAPI.Data
                 int transactionType = rand.Next(1, 9); 
                 string randomDescription = GetTransactionDescription(transactionType);
                 int randomAmount = rand.Next(1, 10000);
+                DateTime randomDate = RandomDay();
                 if (transactionType < 5) // Options 1-4 are withdraws, Options 5-8 are deposits
                 {
                     randomAmount *= -1;
                 }
-                TransactionDataIntermed transaction = new TransactionDataIntermed(randomAccNo, randomDescription, randomAmount);
+                TransactionDataIntermed transaction = new TransactionDataIntermed(randomAccNo, randomDescription, randomAmount, randomDate);
                 if (randomAmount < 0)
                 {
                     DBManager.WithdrawTransaction(transaction);
@@ -235,6 +236,14 @@ namespace LocalDBWebAPI.Data
                     DBManager.DepositTransaction(transaction);
                 }
             }
+        }
+
+        // Generate random DateTime value between 1/1/1995 and today
+        private static DateTime RandomDay()
+        {
+            DateTime start = new DateTime(1995, 1, 1);
+            int range = (DateTime.Today - start).Days;
+            return start.AddDays(rand.Next(range));
         }
 
         private static int GetExistingAccNo()

@@ -1,7 +1,9 @@
 ﻿using API_Classes;
 using LocalDBWebAPI.Models;
+using System.Data.Common;
 using System.Data.SQLite;
 using System.Diagnostics;
+using System.Transactions;
 
 namespace LocalDBWebAPI.Data
 {
@@ -52,6 +54,7 @@ namespace LocalDBWebAPI.Data
                             transactionID INTEGER PRIMARY KEY AUTOINCREMENT,
                             acctNo INTEGER,
                             transactionDescription TEXT NOT NULL,
+                            transactionDate DATETIME NOT NULL,
                             amount INTEGER NOT NULL,
                             FOREIGN KEY(acctNo) REFERENCES BankAccounts(acctNo) ON DELETE CASCADE
                         )";
@@ -354,6 +357,45 @@ namespace LocalDBWebAPI.Data
             return false;
         }
 
+        // Method to retrieve all bank accounts for a specific user
+        public static List<BankDataIntermed> GetUserBankAccounts(string username)
+        {
+            List<BankDataIntermed> bankAccounts = new List<BankDataIntermed>();
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SQLiteCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = "SELECT * FROM BankAccounts WHERE username = @Username";
+                        command.Parameters.AddWithValue("@Username", username);
+
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                BankDataIntermed bankAccount = new BankDataIntermed();
+                                bankAccount.accountNumber = Convert.ToInt32(reader["acctNo"]);
+                                bankAccount.pin = Convert.ToInt32(reader["pin"]);
+                                bankAccount.balance = Convert.ToInt32(reader["balance"]);
+                                bankAccount.username = reader["username"]?.ToString() ?? string.Empty;
+                                bankAccount.email = reader["email"]?.ToString() ?? string.Empty;
+                                bankAccount.description = reader["description"]?.ToString() ?? string.Empty;
+
+                                bankAccounts.Add(bankAccount);
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            return bankAccounts;
+        }
 
         public static BankDataIntermed GetBankAccount(int acctNo, string username)
         {
@@ -394,6 +436,63 @@ namespace LocalDBWebAPI.Data
             return bankAccount;
         }
 
+        // Method to initiate money transfer between two bank accounts
+        public static bool TransferMoney(TransactionDataIntermed sendAccount, TransactionDataIntermed receiveAccount)
+        {
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SQLiteCommand command = connection.CreateCommand())
+                    {
+                        // Withdraw from the sending account
+                        command.CommandText = @"
+                            INSERT INTO Transactions (acctNo, transactionDescription, amount, transactionDate)
+                            VALUES (@AcctNo, @TransactionDescription, @Amount, @TransactionDate)";
+                        command.Parameters.AddWithValue("@AcctNo", sendAccount.acctNo);
+                        command.Parameters.AddWithValue("@TransactionDescription", sendAccount.transactionDescription);
+                        command.Parameters.AddWithValue("@Amount", sendAccount.amount); // Amount will already be negative
+                        command.Parameters.AddWithValue("@TransactionDate", sendAccount.transactionDate);
+                        command.ExecuteNonQuery();
+
+                        // Update balance in BankAccounts table
+                        command.CommandText = @"
+                            UPDATE BankAccounts SET balance = balance + @Amount WHERE acctNo = @AcctNo";
+                        command.Parameters.Clear(); // Clear previous parameters
+                        command.Parameters.AddWithValue("@Amount", sendAccount.amount);
+                        command.Parameters.AddWithValue("@AcctNo", sendAccount.acctNo);
+                        command.ExecuteNonQuery();
+                        
+                        // Deposit into the receiving account note that all parameters will be the same except for the amount and acctNo
+                        command.CommandText = @"
+                            INSERT INTO Transactions (acctNo, transactionDescription, amount, transactionDate)
+                            VALUES (@AcctNo, @TransactionDescription, @Amount, @TransactionDate)";
+                        command.Parameters.Clear();
+                        command.Parameters.AddWithValue("@AcctNo", receiveAccount.acctNo);
+                        command.Parameters.AddWithValue("@TransactionDescription", receiveAccount.transactionDescription);
+                        command.Parameters.AddWithValue("@Amount", receiveAccount.amount);
+                        command.Parameters.AddWithValue("@TransactionDate", receiveAccount.transactionDate);
+                        command.ExecuteNonQuery();
+
+                        command.CommandText = @"
+                            UPDATE BankAccounts SET balance = balance + @Amount WHERE acctNo = @AcctNo";
+                        command.Parameters.Clear(); // Clear previous parameters
+                        command.Parameters.AddWithValue("@Amount", receiveAccount.amount);
+                        command.Parameters.AddWithValue("@AcctNo", receiveAccount.acctNo);
+                        command.ExecuteNonQuery();
+
+                    }
+                    connection.Close();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            return false;
+        }
 
         public static bool DepositTransaction(TransactionDataIntermed transaction)
         {
@@ -406,11 +505,12 @@ namespace LocalDBWebAPI.Data
                     {
                         // Insert transaction record
                         command.CommandText = @"
-                            INSERT INTO Transactions (acctNo, transactionDescription, amount)
-                            VALUES (@AcctNo, @TransactionDescription, @Amount)";
+                            INSERT INTO Transactions (acctNo, transactionDescription, amount, transactionDate)
+                            VALUES (@AcctNo, @TransactionDescription, @Amount, @TransactionDate)";
                         command.Parameters.AddWithValue("@AcctNo", transaction.acctNo);
                         command.Parameters.AddWithValue("@TransactionDescription", transaction.transactionDescription);
                         command.Parameters.AddWithValue("@Amount", transaction.amount);
+                        command.Parameters.AddWithValue("@TransactionDate", transaction.transactionDate);
                         command.ExecuteNonQuery();
 
                         // Update balance in BankAccounts table
@@ -443,11 +543,12 @@ namespace LocalDBWebAPI.Data
                     {
                         // Insert transaction record
                         command.CommandText = @"
-                            INSERT INTO Transactions (acctNo, transactionDescription, amount)
-                            VALUES (@AcctNo, @TransactionDescription, @Amount)";
+                            INSERT INTO Transactions (acctNo, transactionDescription, amount, transactionDate)
+                            VALUES (@AcctNo, @TransactionDescription, @Amount, @TransactionDate)";
                         command.Parameters.AddWithValue("@AcctNo", transaction.acctNo);
                         command.Parameters.AddWithValue("@TransactionDescription", transaction.transactionDescription);
                         command.Parameters.AddWithValue("@Amount", transaction.amount); // transaction.Amount will already be negative
+                        command.Parameters.AddWithValue("@TransactionDate", transaction.transactionDate);
                         command.ExecuteNonQuery();
 
                         // Update balance in BankAccounts table
@@ -467,6 +568,83 @@ namespace LocalDBWebAPI.Data
                 Console.WriteLine("Error: " + ex.Message);
             }
             return false;
+        }
+
+        // Method to retrieve all transactions for a specific bank account
+        public static List<TransactionDataIntermed> GetTransactionByBankAccount(int acctNo)
+        {
+            List<TransactionDataIntermed> transactions = new List<TransactionDataIntermed>();
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SQLiteCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = "SELECT * FROM Transactions WHERE acctNo = @AcctNo";
+                        command.Parameters.AddWithValue("@AcctNo", acctNo);
+
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                TransactionDataIntermed transaction = new TransactionDataIntermed();
+                                transaction.transactionID = Convert.ToInt32(reader["transactionID"]);
+                                transaction.acctNo = Convert.ToInt32(reader["acctNo"]);
+                                transaction.transactionDescription = reader["transactionDescription"]?.ToString() ?? string.Empty;
+                                transaction.amount = Convert.ToInt32(reader["amount"]);
+                                transaction.transactionDate = Convert.ToDateTime(reader["transactionDate"]);
+                                transactions.Add(transaction);
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            return transactions;
+        }
+
+        // Method to retrieve oldest to newest transactions for a specific bank account
+        public static List<TransactionDataIntermed> GetTransactionOrderedByBankAccount(int acctNo)
+        {
+            List<TransactionDataIntermed> transactions = new List<TransactionDataIntermed>();
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SQLiteCommand command = connection.CreateCommand())
+                    {
+                        // ORDER BY transactionDate ASC to get oldest to newest transactions
+                        command.CommandText = "SELECT * FROM Transactions WHERE acctNo = @AcctNo ORDER BY transactionDate ASC";
+                        command.Parameters.AddWithValue("@AcctNo", acctNo);
+
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                TransactionDataIntermed transaction = new TransactionDataIntermed();
+                                transaction.transactionID = Convert.ToInt32(reader["transactionID"]);
+                                transaction.acctNo = Convert.ToInt32(reader["acctNo"]);
+                                transaction.transactionDescription = reader["transactionDescription"]?.ToString() ?? string.Empty;
+                                transaction.amount = Convert.ToInt32(reader["amount"]);
+                                transaction.transactionDate = Convert.ToDateTime(reader["transactionDate"]);
+                                transactions.Add(transaction);
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            return transactions;
         }
 
         // Method to retrieve all transactions for a specific user
@@ -498,7 +676,7 @@ namespace LocalDBWebAPI.Data
                                 transaction.acctNo = Convert.ToInt32(reader["acctNo"]);
                                 transaction.transactionDescription = reader["transactionDescription"]?.ToString() ?? string.Empty;
                                 transaction.amount = Convert.ToInt32(reader["amount"]);
-
+                                transaction.transactionDate = Convert.ToDateTime(reader["transactionDate"]);
                                 transactions.Add(transaction);
                             }
                         }
@@ -535,7 +713,7 @@ namespace LocalDBWebAPI.Data
                                 transaction.acctNo = Convert.ToInt32(reader["acctNo"]);
                                 transaction.transactionDescription = reader["transactionDescription"]?.ToString() ?? string.Empty;
                                 transaction.amount = Convert.ToInt32(reader["amount"]);
-
+                                transaction.transactionDate = Convert.ToDateTime(reader["transactionDate"]);
                                 transactions.Add(transaction);
                             }
                         }
