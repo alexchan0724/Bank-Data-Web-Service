@@ -17,11 +17,14 @@ namespace LocalDBWebAPI.Data
         {
             // Generate user profiles for testing
             byte[] randomImage1 = GenerateRandomBitmap();
-            UserDataIntermed jin = new UserDataIntermed("123", "Jin", "20 John Street", "cyclonedestroy@gmail.com", randomImage1, "0491019164");
+            UserDataIntermed jin = new UserDataIntermed("123", "Jin", "20 John Street", "cyclonedestroy@gmail.com", randomImage1, "0491019164", 0);
             DBManager.InsertUserProfile(jin);
             byte[] randomImage2 = GenerateRandomBitmap();
-            UserDataIntermed alex = new UserDataIntermed("456", "Alex", "30 John Street", "alexchan0724@gmail.com", randomImage2, "0424550558");
+            UserDataIntermed alex = new UserDataIntermed("456", "Alex", "30 John Street", "alexchan0724@gmail.com", randomImage2, "0424550558", 0);
             DBManager.InsertUserProfile(alex);
+            byte[] randomImage3 = GenerateRandomBitmap();
+            UserDataIntermed admin = new UserDataIntermed("789", "Admin", "40 John Street", "admin@gmail.com", randomImage3, "0426201320", 1);
+            DBManager.InsertUserProfile(admin);
 
             // Add Jin and Alex to dictionary and lists
             userDictionary.Add(jin.username, jin.email);
@@ -30,9 +33,12 @@ namespace LocalDBWebAPI.Data
             userDictionary.Add(alex.username, alex.email);
             usernameList.Add(alex.username);
             emailList.Add(alex.email);
+            userDictionary.Add(admin.username, admin.email);
+            usernameList.Add(admin.username);
+            emailList.Add(admin.username);
 
-            // Fill database with 98 more user profiles
-            for (int i = 0; i < 98; i++)
+            // Fill database with 97 more user profiles
+            for (int i = 0; i < 97; i++)
             {
                 byte[] randomImage = GenerateRandomBitmap();
                 string randomPassword = GetPassword();
@@ -41,7 +47,7 @@ namespace LocalDBWebAPI.Data
                 userDictionary.Add(randomUsername, randomEmail);
                 string randomPhoneNum = "04" + rand.Next(10000000, 99999999); // Random phone number from Australia
                 string randomAddress = rand.Next(1, 1000) + " John Street"; // Random address on John Street
-                UserDataIntermed user = new UserDataIntermed(randomPassword, randomUsername, randomAddress, randomEmail, randomImage, randomPhoneNum);
+                UserDataIntermed user = new UserDataIntermed(randomPassword, randomUsername, randomAddress, randomEmail, randomImage, randomPhoneNum, 0);
                 DBManager.InsertUserProfile(user);
             }
         }
