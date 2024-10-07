@@ -1,0 +1,50 @@
+﻿<Window x:Class="Bank_Web_Client.UserProfileWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Bank_Web_Client"
+        mc:Ignorable="d"
+        Title="UserProfileWindow" Height="450" Width="800">
+    <Grid>
+        <Image x:Name="RandomImage" HorizontalAlignment="Left" Height="120" Margin="50,50,0,0" VerticalAlignment="Top" Width="120"/>
+
+        <Button Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5" Click="DeleteButton_Click" Background="White" BorderBrush="White">
+            <Image Source="image_delete.png" Width="30" Height="30"/>
+        </Button>
+        <Button Width="40" Height="40" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5" Click="ReturnButton_Click">
+            <Image Source="image_exit.png" Width="30" Height="30"/>
+        </Button>
+        <Button Width="40" Height="40" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,5,45,0" Click="ModifyButton_Click">
+            <Image Source="image_settings.png" Width="30" Height="30"/>
+        </Button>
+        
+        <TextBlock x:Name="UsernameTextBlock" Text="Welcome: " Margin="0,40,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="24" />
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="300">
+            <TextBlock x:Name="EmailTextBlock" Text="Email:" Margin="10" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30"/>
+            <TextBlock x:Name="AddressTextBlock" Text="Address:" Margin="10" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30"/>
+            <TextBlock x:Name="PhoneNumberTextBlock" Text="Phone number:" Margin="10" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30"/>
+            <TextBlock x:Name="PasswordTextBlock" Text="Password:" Margin="10" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button
+                    Width="120"
+                    Height="40"
+                    Margin="5"
+                    Click="CreateButton_Click"
+                    Content="Create Account" />
+                <Button
+                    Width="120"
+                    Height="40"
+                    Margin="5"
+                    Click="RetrieveAccountButton_Click"
+                    Content="Retrieve Account" />
+            </StackPanel>
+        </StackPanel>
+        <Button 
+            Content="Audit" 
+            Margin="700,360,20,20"
+            Height="30"
+            Width="60"
+            Click="AuditButton_Click" />
+    </Grid>
+</Window>
