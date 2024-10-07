@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "ModifyAccountWindow";
+    string message = ViewBag.message;
+    string error = ViewBag.Error;
+}
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    #CreateUserForm {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50vh; /* Adjust height to vertically center */
+    }
+
+    .horizontal-layout {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 100px; /* Add some space between form fields and image selection */
+    }
+
+    .form-section, .image-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 200px;
+    }
+
+    input {
+        margin-bottom: 10px;
+        width: 300px;
+        padding: 5px;
+    }
+
+</style>
+<div class="text-center">
+    <h1 class="display-4">Create User</h1>
+</div>
+
+<form action="/Home/ModifyAccountWindow" method="post">
+    <div class="form-section">
+        <input type="text" id="AccNum" name="accNum" placeholder="Account Number" />
+        <input type="text" id="PIN" name="pin" placeholder="PIN" />
+        <input type="text" id="Description" name="description" placeholder="Description" />
+    </div>
+
+    <div class="horizontal-layout">
+        <p>Balance: 0</p>
+        <input type="submit" value="Add Account" />
+
+    </div>
+
+</form>
+    

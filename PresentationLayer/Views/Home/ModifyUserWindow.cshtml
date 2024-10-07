@@ -40,8 +40,8 @@
 
     .image-preview {
         display: none;
-        margin-top: 10px;
-        max-width: 150px; /* Adjust the max width of the preview */
+        margin-top: 0px;
+        max-width: 300px; /* Adjust the max width of the preview */
     }
 
     button {
@@ -64,12 +64,6 @@
     <div class="horizontal-layout">
         <!-- Image section -->
         <div class="image-section">
-            <!-- Button to trigger file selection -->
-            <button type="button" onclick="document.getElementById('file-input').click()">Select Image</button>
-
-            <!-- Hidden file input that allows file selection -->
-            <input type="file" id="file-input" style="display: none;" accept="image/*" onchange="previewImage(event)">
-
             <!-- Image tag to display the preview -->
             <img id="image-preview" class="image-preview" alt="Image Preview">
         </div>

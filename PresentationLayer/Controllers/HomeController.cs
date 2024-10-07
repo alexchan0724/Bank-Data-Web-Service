@@ -28,10 +28,10 @@ namespace PresentationLayer.Controllers
             return View();
         }
 
-        public IActionResult UserProfileWindow()
+        public IActionResult UserProfileWindow(UserDataIntermed user)
         {
             Debug.WriteLine("FFFFFFFFFFFFFFFFFFFFFFFFFFFF");
-            return View("UserProfileWindow", "Home"); // Specify just the view name
+            return View("UserProfileWindow", user);
         }
 
 
@@ -57,7 +57,7 @@ namespace PresentationLayer.Controllers
                 {
                     Debug.WriteLine("Response was successful");
                     var userProfile = JsonConvert.DeserializeObject<UserDataIntermed>(response.Content);
-                    return UserProfileWindow();
+                    return UserProfileWindow(userProfile);
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
                 {
@@ -83,6 +83,12 @@ namespace PresentationLayer.Controllers
         {
             return View("ModifyUserWindow", "Home"); // Specify just the view name
 
+        }
+        [HttpPost]
+        public IActionResult ModifyAccountWindow(UserDataIntermed user)
+        {
+            Debug.WriteLine("@@@@@@@@@@@@@@@@@@@@@@");
+            return View("ModifyAccountWindow", user);
         }
     }
 }

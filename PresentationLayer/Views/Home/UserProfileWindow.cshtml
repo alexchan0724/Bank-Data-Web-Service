@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "ModifyUserWindow";
+    ViewData["Title"] = "UserProfileWindow";
     string message = ViewBag.message;
     string error = ViewBag.Error;
 }
@@ -19,13 +19,14 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 20px; /* Add some space between form fields and image selection */
+        gap: 100px; /* Add some space between form fields and image selection */
     }
 
     .form-section, .image-section {
         display: flex;
         flex-direction: column;
         align-items: center;
+        padding: 200px;
     }
 
     input {
@@ -33,52 +34,38 @@
         width: 300px;
         padding: 5px;
     }
-
-        input[type="submit"] {
-            width: 150px;
-        }
-
-    .image-preview {
-        display: none;
-        margin-top: 10px;
-        max-width: 150px; /* Adjust the max width of the preview */
-    }
-
-    button {
-        margin-bottom: 10px; /* Adds space between button and other elements */
-    }
-
 </style>
 
 <div class="text-center">
     <h1 class="display-4">Create User</h1>
 </div>
 
-<div id="CreateUserForm">
-    @if (!string.IsNullOrEmpty(error))
+<div class="horizontal-layout">
+    @model API_Classes.UserDataIntermed // Adjust the namespace as necessary
+
+
+    @if (@Model.profilePicture != null && @Model.profilePicture.Length > 0)
     {
-        <p>@error</p>
+        var base64Image = Convert.ToBase64String(Model.profilePicture);
+        var imgSrc = $"data:image/png;base64,{base64Image}";
+
+        <img src="@imgSrc" alt="Profile Picture" style="max-width: 300px; width: auto; height: auto;" />
     }
-
-    <!-- Horizontal layout for the image section and form section -->
-    <div class="horizontal-layout">
-        <!-- Image section -->
-        <div class="image-section">
-            <!-- Button to trigger file selection -->
-            <button type="button" onclick="document.getElementById('file-input').click()">Select Image</button>
-
-            <!-- Hidden file input that allows file selection -->
-            <input type="file" id="file-input" style="display: none;" accept="image/*" onchange="previewImage(event)">
-
-            <!-- Image tag to display the preview -->
-            <img id="image-preview" class="image-preview" alt="Image Preview">
-        </div>
-
-        <!-- Form section -->
-        <div class="form-section">
-                <!-- Add the file input for uploading the image -->
-                <img 
-        </div>
+    <div class="form-selection">
+        <p style="font-size: 50px;">Username: @Model.username</p>
+        <p style="font-size: 50px;">Email: @Model.email</p>
+        <p style="font-size: 50px;">Address: @Model.address</p>
+        <p style="font-size: 50px;">Phone Number: @Model.phoneNum</p>
     </div>
+</div>
 
+<div class="horizontal-layout">
+    <form action="/Home/ModifyAccountWindow/" method="post"> 
+        <input type="hidden" name="username" value="@Model.username" />
+        <input type="hidden" name="email" value="@Model.email" />
+        <input type="hidden" name="email" value="@Model" />
+
+
+        <input type="submit" value="Create Account"/> 
+    </form>
 </div>
