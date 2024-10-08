@@ -37,11 +37,26 @@ namespace LocalBusinessWebAPI.Controllers
             }
         }
 
-        [HttpGet("{username}")]
+        [HttpGet("ByUsername/{username}")]
         public IActionResult GetTransactionByName(string username)
         {
             var request = new RestRequest($"transaction/Transactions/{username}", Method.Get); // Get user specific transactions
             request.AddUrlSegment("username", username);
+            var response = restClient.Execute(request);
+            if (response.IsSuccessful)
+            {
+                var transactions = JsonConvert.DeserializeObject<List<TransactionDataIntermed>>(response.Content);
+                return Ok(transactions);
+            }
+            return NotFound(response.Content);
+        }
+
+        [HttpGet("ByAccountNumber/{accountNumber}")]
+        public IActionResult GetTransactionByAccount(int accountNumber, [FromQuery] bool ordered)
+        {
+            var request = new RestRequest($"transaction/Transactions/Account/{accountNumber}", Method.Get); // Get user specific transactions
+            request.AddUrlSegment("accountNumber", accountNumber);
+            request.AddQueryParameter("ordered", ordered.ToString());
             var response = restClient.Execute(request);
             if (response.IsSuccessful)
             {
@@ -74,6 +89,23 @@ namespace LocalBusinessWebAPI.Controllers
             var request = new RestRequest($"transaction/Transactions/Withdraw", Method.Post); // Get user specific transactions
             request.RequestFormat = RestSharp.DataFormat.Json;
             request.AddJsonBody(transaction);
+            var response = restClient.Execute(request);
+            if (response.IsSuccessful)
+            {
+                return Ok(response.Content);
+            }
+            else
+            {
+                return BadRequest(response.Content);
+            }
+        }
+
+        [HttpPost("Transfer")]
+        public IActionResult Transfer([FromBody] TransferDataIntermed transfer)
+        {
+            var request = new RestRequest($"transaction/Transactions/Transfer", Method.Post); // Get user specific transactions
+            request.RequestFormat = RestSharp.DataFormat.Json;
+            request.AddJsonBody(transfer);
             var response = restClient.Execute(request);
             if (response.IsSuccessful)
             {

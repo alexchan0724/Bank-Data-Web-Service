@@ -485,7 +485,7 @@ namespace LocalDBWebAPI.Data
                         command.Parameters.AddWithValue("@AcctNo", sendAccount.acctNo);
                         command.ExecuteNonQuery();
                         
-                        // Deposit into the receiving account note that all parameters will be the same except for the amount and acctNo
+                        // Deposit into the receiving account note that transactionDate remains the same
                         command.CommandText = @"
                             INSERT INTO Transactions (acctNo, transactionDescription, amount, transactionDate)
                             VALUES (@AcctNo, @TransactionDescription, @Amount, @TransactionDate)";
@@ -502,7 +502,6 @@ namespace LocalDBWebAPI.Data
                         command.Parameters.AddWithValue("@Amount", receiveAccount.amount);
                         command.Parameters.AddWithValue("@AcctNo", receiveAccount.acctNo);
                         command.ExecuteNonQuery();
-
                     }
                     connection.Close();
                 }

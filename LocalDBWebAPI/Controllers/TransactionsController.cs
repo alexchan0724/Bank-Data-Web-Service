@@ -35,6 +35,20 @@ namespace LocalDBWebAPI.Controllers
             return Ok(transactions);
         }
 
+        [HttpGet("{accountNumber}")]
+        public IActionResult GetTransactionByAccount(int accountNumber)
+        {
+            List<TransactionDataIntermed> transactions = DBManager.GetTransactionByBankAccount(accountNumber);
+            if (transactions == null || !transactions.Any())
+            {
+                return NotFound("No transactions found for the account.");
+            }
+            //var transactionsToReturn = ConvertTransactionList(transactions);
+            return Ok(transactions);
+        }
+
+        
+
         [HttpPost("Deposit")]
         public IActionResult Deposit([FromBody] TransactionDataIntermed transaction)
         {
@@ -65,5 +79,21 @@ namespace LocalDBWebAPI.Controllers
             return BadRequest("Withdrawal failed.");
         }
 
+        [HttpPost("Transfer")]
+        public IActionResult Transfer([FromBody] TransferDataIntermed transfer)
+        {
+            TransactionDataIntermed senderTransaction = transfer.senderTransaction;
+            TransactionDataIntermed receiverTransaction = transfer.receiverTransaction;
+            if (senderTransaction == null || receiverTransaction == null)
+            {
+                return BadRequest("Transaction is null.");
+            }
+
+            if (DBManager.TransferMoney(senderTransaction, receiverTransaction))
+            {
+                return Ok("Transfer successful.");
+            }
+            return BadRequest("Transfer failed.");
+        }
     }
 }

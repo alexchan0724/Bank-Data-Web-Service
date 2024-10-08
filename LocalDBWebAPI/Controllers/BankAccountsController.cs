@@ -30,6 +30,18 @@ namespace LocalDBWebAPI.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult Get([FromQuery] string username)
+        {
+            var accounts = DBManager.GetUserBankAccounts(username);
+
+            if (accounts == null || accounts.Count == 0)
+            {
+                return NotFound("No bank accounts found for the user.");
+            }
+            return Ok(accounts);
+        }
+
         [HttpPost]
         public IActionResult Post([FromBody] BankDataIntermed account)
         {
