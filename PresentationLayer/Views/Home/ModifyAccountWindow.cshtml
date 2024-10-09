@@ -41,8 +41,12 @@
     <h1 class="display-4">Create User</h1>
 </div>
 
-<form action="/Home/ModifyAccountWindow" method="post">
+<form action="/Home/ModifyAccountWindow/addAccount" method="post" enctype="multipart/form-data">
     <div class="form-section">
+        @model API_Classes.UserDataIntermed // Adjust the namespace as necessary
+        <input type="hidden" name="username" value="@Model.username"/>
+        <input type="hidden" name="password" value="@Model.password" />
+
         <input type="text" id="AccNum" name="accNum" placeholder="Account Number" />
         <input type="text" id="PIN" name="pin" placeholder="PIN" />
         <input type="text" id="Description" name="description" placeholder="Description" />

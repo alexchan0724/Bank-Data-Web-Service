@@ -4,6 +4,9 @@ using RestSharp;
 using System.Diagnostics;
 using Newtonsoft.Json;
 using API_Classes;
+using System.Xml.Linq;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using static System.Net.WebRequestMethods;
 
 namespace PresentationLayer.Controllers
 {
@@ -30,9 +33,16 @@ namespace PresentationLayer.Controllers
 
         public IActionResult UserProfileWindow(UserDataIntermed user)
         {
-            Debug.WriteLine("FFFFFFFFFFFFFFFFFFFFFFFFFFFF");
             return View("UserProfileWindow", user);
         }
+
+        [HttpGet]
+        public IActionResult ModifyUserWindow()
+        {
+            return View("ModifyUserWindow", "Home"); // Specify just the view name
+
+        }
+
 
 
 
@@ -76,19 +86,6 @@ namespace PresentationLayer.Controllers
             {
                 return BadRequest("USERNAME OR PASSWORD CANNOT BE EMPTY");
             }
-        }
-
-        [HttpGet]
-        public IActionResult ModifyUserWindow()
-        {
-            return View("ModifyUserWindow", "Home"); // Specify just the view name
-
-        }
-        [HttpPost]
-        public IActionResult ModifyAccountWindow(UserDataIntermed user)
-        {
-            Debug.WriteLine("@@@@@@@@@@@@@@@@@@@@@@");
-            return View("ModifyAccountWindow", user);
         }
     }
 }

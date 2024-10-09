@@ -94,7 +94,8 @@ namespace Bank_Web_Client
             if (int.TryParse(AmountTextBox.Text, out int valueToDeposit))
             {
                 Debug.WriteLine("Parsing transaction was successful.");
-                TransactionDataIntermed newTransaction = new TransactionDataIntermed(bankAccount.accountNumber, transactionDescription, valueToDeposit);
+                DateTime date = DateTime.Now;
+                TransactionDataIntermed newTransaction = new TransactionDataIntermed(bankAccount.accountNumber, transactionDescription, valueToDeposit, date);
                 if (valueToDeposit > 0)
                 {
                     request = new RestRequest($"api/B_Transactions/Deposit", Method.Post);
