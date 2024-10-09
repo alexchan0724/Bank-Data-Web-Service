@@ -29,6 +29,7 @@ namespace LocalDBWebAPI.Data
                             phone TEXT,
                             profilePicture BLOB,
                             isAdmin INTEGER NOT NULL
+                            UNIQUE(username, email)
                         )";
                         command.ExecuteNonQuery();
 
