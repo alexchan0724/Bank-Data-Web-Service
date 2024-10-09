@@ -41,6 +41,9 @@ namespace PresentationLayer.Controllers
             userProfile.address = Address;
             userProfile.password = UserPassword;
             userProfile.phoneNum = PhoneNo;
+            userProfile.isAdmin = 0;
+
+            Debug.WriteLine("@$$$$@@ " + userProfile.username + userProfile.email + userProfile.address + userProfile.password + userProfile.phoneNum + userProfile.isAdmin);
 
 
             RestRequest request = new RestRequest("api/B_userprofiles", Method.Post);

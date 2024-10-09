@@ -13,8 +13,9 @@ namespace LocalBusinessWebAPI.Controllers
         RestClient restClient = new RestClient("http://localhost:5012");
 
         [HttpPost("{checkString}")] // checkString passed as parameter can be either email or username
-        public IActionResult GetUser(string checkString, [FromQuery] UserDataIntermed user)
+        public IActionResult GetUser(string checkString, [FromBody] UserDataIntermed user)
         {
+
             var request = new RestRequest("user/UserProfiles/{checkString}", Method.Post); // GET: user/UserProfiles/{checkString}?password={password}
             request.AddUrlSegment("checkString", checkString);
             request.AddJsonBody(user);
@@ -40,6 +41,8 @@ namespace LocalBusinessWebAPI.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] UserDataIntermed userProfile)
         {
+            Debug.WriteLine("DDDDDDDDDDDD " + userProfile.username + userProfile.phoneNum + userProfile.address + userProfile.email + userProfile.password + " @@@ " + userProfile.isAdmin);
+
             var request = new RestRequest("user/userprofiles", Method.Post); // GET: user/UserProfiles/{checkString}?password={password}
             request.AddJsonBody(userProfile);
             var response = restClient.Execute(request);

@@ -55,6 +55,7 @@ namespace PresentationLayer.Controllers
                 request.AddUrlSegment("accountNumber", Accnum);
                 request.AddQueryParameter("username", userProfile.username);
                 RestResponse response1 = restClient.Execute(request);
+
                 ViewBag.user = JsonConvert.DeserializeObject<UserDataIntermed>(response1.Content);
                 ViewBag.Accnum = Accnum;
 

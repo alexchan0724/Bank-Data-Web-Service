@@ -53,14 +53,27 @@ namespace PresentationLayer.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        [Route("/Home/Index")]
         [HttpPost]
-        public IActionResult Index(string SUName, [FromBody] UserDataIntermed user)
+        public IActionResult Index(string username, string password)
         {
-            if(!SUName.Equals("") && !user.password.Equals(""))
+            Debug.WriteLine("FFFFFFFFFFFFFF " + username +  password);
+
+            if(!username.Equals("") && !password.Equals(""))
             {
                 RestRequest request = new RestRequest("api/B_UserProfiles/{checkString}", Method.Post);
-                request.AddUrlSegment("checkString", SUName);
-                request.AddJsonBody("password", user.password);
+                request.AddUrlSegment("checkString", username);
+
+                UserDataIntermed a = new UserDataIntermed();
+                a.profilePicture = null;
+                a.username = username;
+                a.password = password;
+                a.email = null;
+                a.address = null;
+                a.isAdmin = 0;
+
+
+                request.AddJsonBody(a);
 
                 var response = restClient.Execute(request);
                 if (response.IsSuccessful)
