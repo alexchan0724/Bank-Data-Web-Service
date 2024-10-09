@@ -29,6 +29,20 @@ namespace LocalBusinessWebAPI.Controllers
 
         }
 
+        [HttpGet]
+        public IActionResult Get([FromQuery] string username)
+        {
+            RestRequest request = new RestRequest("account/BankAccounts", Method.Get);
+            request.AddQueryParameter("username", username);
+            RestResponse response = restClient.Execute(request);
+
+            if (response.IsSuccessful)
+            {
+                var result = JsonConvert.DeserializeObject<List<UserDataIntermed>>(response.Content);
+                return Ok(result);
+            }
+            return NotFound(response.Content);
+        }
 
         [HttpPost]
         public IActionResult Post([FromBody] BankDataIntermed account)
