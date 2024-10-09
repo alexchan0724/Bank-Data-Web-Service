@@ -54,13 +54,13 @@ namespace PresentationLayer.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(string SUName, string SPassword)
+        public IActionResult Index(string SUName, [FromBody] UserDataIntermed user)
         {
-            if(!SUName.Equals("") && !SPassword.Equals(""))
+            if(!SUName.Equals("") && !user.password.Equals(""))
             {
-                RestRequest request = new RestRequest("api/B_UserProfiles/{checkString}", Method.Get);
+                RestRequest request = new RestRequest("api/B_UserProfiles/{checkString}", Method.Post);
                 request.AddUrlSegment("checkString", SUName);
-                request.AddParameter("password", SPassword);
+                request.AddJsonBody("password", user.password);
 
                 var response = restClient.Execute(request);
                 if (response.IsSuccessful)
