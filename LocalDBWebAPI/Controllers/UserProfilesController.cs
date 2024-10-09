@@ -10,21 +10,21 @@ namespace LocalDBWebAPI.Controllers
     [ApiController]
     public class UserProfilesController : ControllerBase
     {
-        [HttpGet("{checkString}")] // checkString passed as parameter can be either email or username
-        public IActionResult Get(string checkString, [FromQuery] string password) 
+        [HttpPost("{checkString}")] // checkString passed as parameter can be either email or username
+        public IActionResult Get(string checkString, [FromBody] UserDataIntermed pUser) 
         {
-            if (string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(pUser.password))
             {
                 return BadRequest("Password is required.");
             }
 
-            var userProfile = DBManager.GetUserProfile(checkString, password);
+            var userProfile = DBManager.GetUserProfile(checkString, pUser.password);
 
             if (userProfile == null)
             {
                 return NotFound("Parameter does not match any emails or usernames in the database.");
             }
-            else if (userProfile.password != password)
+            else if (userProfile.password != pUser.password)
             {
                 return NotFound("Password does not match.");
             }

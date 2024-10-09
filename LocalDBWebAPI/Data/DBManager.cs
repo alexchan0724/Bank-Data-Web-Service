@@ -88,6 +88,7 @@ namespace LocalDBWebAPI.Data
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
+                    EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
                         command.CommandText = @"
@@ -130,6 +131,7 @@ namespace LocalDBWebAPI.Data
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
+                    EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
                         // Parameterized SQL command to delete a row from the UserProfile table
@@ -164,6 +166,7 @@ namespace LocalDBWebAPI.Data
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
+                    EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
                         // Update UserProfile table using old username and email to find the correct record
@@ -213,6 +216,7 @@ namespace LocalDBWebAPI.Data
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
+                    EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
                         command.CommandText = @"SELECT * FROM UserProfile 
@@ -254,6 +258,7 @@ namespace LocalDBWebAPI.Data
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
+                    EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
                         command.CommandText = @"
@@ -291,6 +296,7 @@ namespace LocalDBWebAPI.Data
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
+                    EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
                         command.CommandText = $"DELETE FROM BankAccounts WHERE acctNo = @AcctNo";
@@ -320,6 +326,7 @@ namespace LocalDBWebAPI.Data
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
+                    EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
                         // Check if the new account number already exists
@@ -378,6 +385,7 @@ namespace LocalDBWebAPI.Data
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
+                    EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
                         command.CommandText = "SELECT * FROM BankAccounts WHERE username = @Username";
@@ -417,6 +425,7 @@ namespace LocalDBWebAPI.Data
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
+                    EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
                         command.CommandText = "SELECT * FROM BankAccounts WHERE acctNo = @AcctNo AND username = @Username";
@@ -455,6 +464,7 @@ namespace LocalDBWebAPI.Data
             {
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
+                    EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     connection.Open();
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
@@ -476,7 +486,7 @@ namespace LocalDBWebAPI.Data
                         command.Parameters.AddWithValue("@AcctNo", sendAccount.acctNo);
                         command.ExecuteNonQuery();
                         
-                        // Deposit into the receiving account note that all parameters will be the same except for the amount and acctNo
+                        // Deposit into the receiving account note that transactionDate remains the same
                         command.CommandText = @"
                             INSERT INTO Transactions (acctNo, transactionDescription, amount, transactionDate)
                             VALUES (@AcctNo, @TransactionDescription, @Amount, @TransactionDate)";
@@ -493,7 +503,6 @@ namespace LocalDBWebAPI.Data
                         command.Parameters.AddWithValue("@Amount", receiveAccount.amount);
                         command.Parameters.AddWithValue("@AcctNo", receiveAccount.acctNo);
                         command.ExecuteNonQuery();
-
                     }
                     connection.Close();
                 }
@@ -513,6 +522,7 @@ namespace LocalDBWebAPI.Data
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
+                    EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
                         // Insert transaction record
@@ -551,6 +561,7 @@ namespace LocalDBWebAPI.Data
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
+                    EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
                         // Insert transaction record
@@ -591,6 +602,7 @@ namespace LocalDBWebAPI.Data
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
+                    EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
                         command.CommandText = "SELECT * FROM Transactions WHERE acctNo = @AcctNo";
@@ -629,6 +641,7 @@ namespace LocalDBWebAPI.Data
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
+                    EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
                         // ORDER BY transactionDate ASC to get oldest to newest transactions
@@ -669,6 +682,7 @@ namespace LocalDBWebAPI.Data
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
+                    EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
                         // Join the Transactions, BankAccounts, and UserProfile tables to get all transactions for a specific user
@@ -712,6 +726,7 @@ namespace LocalDBWebAPI.Data
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
+                    EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
                         command.CommandText = @"SELECT * FROM Transactions";
@@ -749,6 +764,7 @@ namespace LocalDBWebAPI.Data
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
+                    EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
                         command.CommandText = @"SELECT isAdmin FROM UserProfile WHERE username = @Username";
@@ -784,6 +800,7 @@ namespace LocalDBWebAPI.Data
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
+                EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                 using (SQLiteCommand command = connection.CreateCommand())
                 {
                     command.CommandText = @"SELECT * FROM UserProfile WHERE username = @Username";
@@ -817,6 +834,7 @@ namespace LocalDBWebAPI.Data
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
+                EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                 using (SQLiteCommand command = connection.CreateCommand())
                 {
                     command.CommandText = @"SELECT * FROM UserProfile WHERE username LIKE @SearchString";
@@ -851,6 +869,7 @@ namespace LocalDBWebAPI.Data
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
+                    EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
                         command.CommandText = @"
@@ -905,6 +924,7 @@ namespace LocalDBWebAPI.Data
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
+                    EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
                         command.CommandText = @"
@@ -924,6 +944,53 @@ namespace LocalDBWebAPI.Data
                 Console.WriteLine("Error: " + ex.Message);
             }
             return false;
+        }
+        
+        // Method to retrieve all logs
+        public static List<LogDataIntermed> GetAllLogs()
+        {
+            List<LogDataIntermed> logs = new List<LogDataIntermed>();
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    EnableForeignKeyConstraints(connection); // Enable foreign key constraints
+                    using (SQLiteCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = "SELECT * FROM Logs";
+
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                LogDataIntermed log = new LogDataIntermed();
+                                log.logID = Convert.ToInt32(reader["logID"]);
+                                log.logDate = Convert.ToDateTime(reader["logDate"]);
+                                log.logUsername = reader["logUsername"]?.ToString() ?? string.Empty;
+                                log.logDescription = reader["logDescription"]?.ToString() ?? string.Empty;
+                                logs.Add(log);
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            return logs;
+        }
+
+        // Method to enable foreign key constraints
+        private static void EnableForeignKeyConstraints(SQLiteConnection connection)
+        {
+            using (SQLiteCommand command = connection.CreateCommand())
+            {
+                command.CommandText = "PRAGMA foreign_keys = ON;";
+                command.ExecuteNonQuery();
+            }
         }
 
         // Method to initialise the database with tables and initial data

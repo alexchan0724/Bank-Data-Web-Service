@@ -42,7 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BankDataIntermed.cs" />
+    <Compile Include="LogDataIntermed.cs" />
     <Compile Include="TransactionDataIntermed.cs" />
+    <Compile Include="TransferDataIntermed.cs" />
     <Compile Include="UserDataIntermed.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

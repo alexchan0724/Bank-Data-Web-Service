@@ -56,16 +56,23 @@
         <p style="font-size: 50px;">Email: @Model.email</p>
         <p style="font-size: 50px;">Address: @Model.address</p>
         <p style="font-size: 50px;">Phone Number: @Model.phoneNum</p>
+        <p style="font-size: 50px;">Password: @Model.password</p>
+
+        <form action="/Home/UserProfileWindow/createAccount" method="post">
+            <input type="hidden" name="Username" value="@Model.username" />
+            <input type="hidden" name="Password" value="@Model.password" />
+            <input type="submit" value="Create Account" />
+        </form>
+        <form action="/Home/UserProfileWindow/getAccount" method="post">
+            <input type="hidden" name="Username" value="@Model.username" />
+            <input type="hidden" name="Password" value="@Model.password" />
+            <input type="text" id="AccNum" name="accNum" placeholder="Enter Account Number" />
+            <input type="submit" value="Retrieve Account" />
+        </form>
     </div>
 </div>
 
-<div class="horizontal-layout">
-    <form action="/Home/ModifyAccountWindow/" method="post"> 
-        <input type="hidden" name="username" value="@Model.username" />
-        <input type="hidden" name="email" value="@Model.email" />
-        <input type="hidden" name="email" value="@Model" />
 
 
-        <input type="submit" value="Create Account"/> 
-    </form>
-</div>
+
+

@@ -1,0 +1,62 @@
+﻿@{
+    ViewData["Title"] = "BankAccountWindow";
+    string message = ViewBag.message;
+    string error = ViewBag.Error;
+}
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    #CreateUserForm {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50vh; /* Adjust height to vertically center */
+    }
+
+    .horizontal-layout {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 100px; /* Add some space between form fields and image selection */
+    }
+
+    .form-section, .image-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 200px;
+    }
+
+    input {
+        margin-bottom: 10px;
+        width: 300px;
+        padding: 5px;
+    }
+</style>
+
+
+
+<h2>Bank Account Number</h2>
+<h2>Bank Account Information</h2>
+<p>Account Number: @ViewBag.Accnum</p>
+<p>User Name: @ViewBag.user.username</p>
+
+<div class="form-selection">
+    <form action="/Home/UserProfileWindow/createAccount" method="post">
+        <h1>Account Number: @ViewBag.Accnum</h1>
+        <input type="text" name="Pin" value="@Model.Pin" />
+        <input type="text" name="Pin" value="@Model.Balance" />
+
+        <input type="text" name="Pin" value="@Model.username" />
+
+
+        <input type="submit" value="Create Account" />
+    </form>
+</div>
+
+
+
+
+
