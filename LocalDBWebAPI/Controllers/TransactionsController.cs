@@ -23,10 +23,16 @@ namespace LocalDBWebAPI.Controllers
             return Ok(transactions);
         }
 
-        [HttpGet("{username}")]
+        [HttpGet("ByUsername/{username}")]
         public IActionResult GetTransactionByName(string username)
         {
             List<TransactionDataIntermed> transactions = DBManager.GetTransactionsByUser(username);
+
+            foreach(TransactionDataIntermed transaction in transactions)
+            {
+                Debug.WriteLine("SSSSSSSSSSSSSSSSSSSSSSSSSSSSS " + transaction.transactionDescription);
+            }
+
             if (transactions == null || !transactions.Any())
             {
                 return NotFound("No transactions found for the user.");
@@ -35,7 +41,7 @@ namespace LocalDBWebAPI.Controllers
             return Ok(transactions);
         }
 
-        [HttpGet("{accountNumber}")]
+        [HttpGet("ByAccountNumber/{accountNumber}")]
         public IActionResult GetTransactionByAccount(int accountNumber)
         {
             List<TransactionDataIntermed> transactions = DBManager.GetTransactionByBankAccount(accountNumber);

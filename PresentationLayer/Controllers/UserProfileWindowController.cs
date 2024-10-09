@@ -19,9 +19,20 @@ namespace PresentationLayer.Controllers
         public IActionResult createAccount(string username, string password)
         {
             Debug.WriteLine("@@@@@@@@@@@@@@@@@@@@@@" + username, password);
-            RestRequest request = new RestRequest("api/B_UserProfiles/{checkString}", Method.Get);
+
+
+            RestRequest request = new RestRequest("api/B_UserProfiles/{checkString}", Method.Post);
             request.AddUrlSegment("checkString", username);
-            request.AddParameter("password", password);
+            UserDataIntermed a = new UserDataIntermed();
+            a.profilePicture = null;
+            a.username = username;
+            a.password = password;
+            a.email = null;
+            a.address = null;
+            a.isAdmin = 0;
+
+
+            request.AddJsonBody(a);
 
             var response = restClient.Execute(request);
             if (response.IsSuccessful)
@@ -41,23 +52,45 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         public IActionResult getAccount(string username, string password, string Accnum)
         {
-            RestRequest request = new RestRequest("api/B_UserProfiles/{checkString}", Method.Get);
-            request.AddUrlSegment("checkString", username);
-            request.AddParameter("password", password);
+            RestRequest getUserRequest = new RestRequest("api/B_UserProfiles/{checkString}", Method.Post);
+            getUserRequest.AddUrlSegment("checkString", username);
+            UserDataIntermed a = new UserDataIntermed();
+            a.profilePicture = null;
+            a.username = username;
+            a.password = password;
+            a.email = null;
+            a.address = null;
+            a.isAdmin = 0;
 
-            var response = restClient.Execute(request);
+
+            getUserRequest.AddJsonBody(a);
+
+            var response = restClient.Execute(getUserRequest);
             if (response.IsSuccessful)
             {
                 Debug.WriteLine("Response was successful");
                 var userProfile = JsonConvert.DeserializeObject<UserDataIntermed>(response.Content);
 
-                RestRequest request1 = new RestRequest($"api/B_BankAccounts/{Accnum}", Method.Get);
-                request.AddUrlSegment("accountNumber", Accnum);
-                request.AddQueryParameter("username", userProfile.username);
-                RestResponse response1 = restClient.Execute(request);
+                Debug.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
-                ViewBag.user = JsonConvert.DeserializeObject<UserDataIntermed>(response1.Content);
-                ViewBag.Accnum = Accnum;
+
+                RestRequest getAccountRequest = new RestRequest($"api/B_BankAccounts/{Accnum}", Method.Get);
+                getAccountRequest.AddQueryParameter("username", userProfile.username);
+                RestResponse accountResponse = restClient.Execute(getAccountRequest);
+
+                if (accountResponse.IsSuccessful)
+                {
+                    Debug.WriteLine("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+                }
+                UserDataIntermed user = userProfile;
+                BankDataIntermed account = JsonConvert.DeserializeObject<BankDataIntermed>(accountResponse.Content);
+
+                ViewBag.user = user;
+                ViewBag.account = account;
+
+                Debug.WriteLine("SSSSSSSSSSSS " + account.accountNumber + "kms" + account.email + "kms" + account.description);
+
+
 
                 return View("~/Views/Home/BankAccountWindow.cshtml");
             }

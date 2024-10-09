@@ -65,6 +65,9 @@ namespace Bank_Web_Client
 
         private void LoadUserAudits(string username)
         {
+
+            Debug.WriteLine("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+
             Debug.WriteLine("Username in LoadUserAudits: " + username);
             var request = new RestRequest($"api/B_Transactions/{username}", Method.Get); // Get user specific transactions
             request.AddUrlSegment("username", username);

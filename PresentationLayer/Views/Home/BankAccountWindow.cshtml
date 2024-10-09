@@ -40,19 +40,22 @@
 
 <h2>Bank Account Number</h2>
 <h2>Bank Account Information</h2>
-<p>Account Number: @ViewBag.Accnum</p>
+<p>Account Number: @ViewBag.account.accountNumber</p>
+<p>PIN: @ViewBag.account.pin</p>
+<p>current balance: @ViewBag.account.balance</p>
+<p>Email: @ViewBag.account.email</p>
 <p>User Name: @ViewBag.user.username</p>
 
 <div class="form-selection">
-    <form action="/Home/UserProfileWindow/createAccount" method="post">
-        <h1>Account Number: @ViewBag.Accnum</h1>
-        <input type="text" name="Pin" value="@Model.Pin" />
-        <input type="text" name="Pin" value="@Model.Balance" />
+    <form action="/Home/BankAccountWindow/Deposit" method="post">
+        <input type="hidden" name="username" value="@ViewBag.user.username" />
+        <input type="hidden" name="password" value="@ViewBag.user.password" />
 
-        <input type="text" name="Pin" value="@Model.username" />
-
-
-        <input type="submit" value="Create Account" />
+        <input type="hidden" name="oldbalance" value="@ViewBag.account.balance" />
+        <input type="hidden" name="accNo" value="@ViewBag.account.accountNumber" />
+        <input type="text" id="description" name="description" placeholder="description" />
+        <input type="text" id="newBalance" name="newBalance" placeholder="Change Balance" />
+        <input type="submit" value="Change Account" />
     </form>
 </div>
 

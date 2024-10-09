@@ -40,6 +40,15 @@
     <h1 class="display-4">Create User</h1>
 </div>
 
+
+
+<form action="/Home/ModifyUserWindow/" method="Get" enctype="multipart/form-data">
+    <input type="hidden" name="Username" value="@Model.username" />
+    <input type="hidden" name="Password" value="@Model.password" />
+    <input type="submit" value="Submit">
+</form>
+
+
 <div class="horizontal-layout">
     @model API_Classes.UserDataIntermed // Adjust the namespace as necessary
 
@@ -51,6 +60,7 @@
 
         <img src="@imgSrc" alt="Profile Picture" style="max-width: 300px; width: auto; height: auto;" />
     }
+
     <div class="form-selection">
         <p style="font-size: 50px;">Username: @Model.username</p>
         <p style="font-size: 50px;">Email: @Model.email</p>
@@ -63,11 +73,28 @@
             <input type="hidden" name="Password" value="@Model.password" />
             <input type="submit" value="Create Account" />
         </form>
+
+
         <form action="/Home/UserProfileWindow/getAccount" method="post">
             <input type="hidden" name="Username" value="@Model.username" />
             <input type="hidden" name="Password" value="@Model.password" />
             <input type="text" id="AccNum" name="accNum" placeholder="Enter Account Number" />
             <input type="submit" value="Retrieve Account" />
+        </form>
+
+        <form action="/Home/AuditWindow" method="Get">
+            <input type="hidden" name="Username" value="@Model.username" />
+            <input type="hidden" name="Password" value="@Model.password" />
+            <input type="hidden" name="accNo" value="none" />
+            <input type="hidden" name="mode" value="0" />
+            <input type="submit" value="Audit Log" />
+        </form>
+        <form action="/Home/AuditWindow" method="Get">
+            <input type="hidden" name="Username" value="@Model.username" />
+            <input type="hidden" name="Password" value="@Model.password" />
+            <input type="text" id="AccNo" name="accNo" placeholder="Enter Account Number" />
+            <input type="hidden" name="mode" value="1" />
+            <input type="submit" value="Audit Log" />
         </form>
     </div>
 </div>

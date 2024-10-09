@@ -519,6 +519,7 @@ namespace LocalDBWebAPI.Data
         {
             try
             {
+                Debug.WriteLine("DEPOSIT BEEN DONE");
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
