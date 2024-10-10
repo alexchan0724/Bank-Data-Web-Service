@@ -62,16 +62,21 @@ namespace PresentationLayer.Controllers
         }
 
 
-
-
         [Route("/Home/ModifyUserWindow/put")]
         [HttpPost]
         public IActionResult Put(string oldUserName, string oldEmail, string Username, string Email, string Address, string PhoneNo, string UserPassword, IFormFile UserImage)
         {
             Debug.WriteLine("YEETTTTTTTTTTTTTTTT");
+            Debug.WriteLine("Old username" + oldUserName + "Old Email" + oldEmail);
 
             Debug.WriteLine("@@@ " + Username + Email + Address);
             UserDataIntermed userProfile = new UserDataIntermed();
+            userProfile.username = Username;
+            userProfile.email = Email;
+            userProfile.address = Address;
+            userProfile.password = UserPassword;
+            userProfile.phoneNum = PhoneNo;
+            userProfile.isAdmin = 0;
             if (UserImage.Length > 0)
             {
                 using (var ms = new MemoryStream())
@@ -85,15 +90,8 @@ namespace PresentationLayer.Controllers
 
                 }
             }
-            userProfile.username = Username;
-            userProfile.email = Email;
-            userProfile.address = Address;
-            userProfile.password = UserPassword;
-            userProfile.phoneNum = PhoneNo;
-            userProfile.isAdmin = 0;
 
             Debug.WriteLine("@$$$$@@ " + userProfile.username + userProfile.email + userProfile.address + userProfile.password + userProfile.phoneNum + userProfile.isAdmin);
-
 
             RestRequest request = new RestRequest("api/B_UserProfiles", Method.Put);
             request.AddQueryParameter("oldUsername", oldUserName); // Correct case "oldUsername"
@@ -120,7 +118,7 @@ namespace PresentationLayer.Controllers
             a.isAdmin = 0;
 
             userRequest.AddJsonBody(a);
-            var lebron = restClient.Execute(userRequest);
+            RestResponse lebron = restClient.Execute(userRequest);
             var user = JsonConvert.DeserializeObject<UserDataIntermed>(lebron.Content);
 
             Debug.WriteLine("SSSSSSSSSSSSS");

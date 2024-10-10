@@ -61,9 +61,8 @@ namespace LocalBusinessWebAPI.Controllers
             }
         }
 
-        [Route("api/B_UserProfiles")]
         [HttpPut]
-        public IActionResult modifyaccount([FromBody] UserDataIntermed userProfile, [FromQuery] string oldUsername, [FromQuery] string oldEmail)
+        public IActionResult ModifyAccount([FromBody] UserDataIntermed userProfile, [FromQuery] string oldUsername, [FromQuery] string oldEmail)
         {
             Debug.WriteLine("FFFFFFFFFFFFFFFFFFFFFF " + userProfile.username + userProfile.email + oldUsername + oldEmail);
 
@@ -87,6 +86,7 @@ namespace LocalBusinessWebAPI.Controllers
                 return NotFound(response.Content);
             }
         }
+
         [HttpDelete]
         [Route("{checkString}")] // checkString passed as parameter can be either email or username
         public IActionResult Delete(string checkString)
