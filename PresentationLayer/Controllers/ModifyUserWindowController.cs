@@ -108,11 +108,11 @@ namespace PresentationLayer.Controllers
             }
 
             RestRequest userRequest = new RestRequest("api/B_UserProfiles/{checkString}", Method.Post);
-            userRequest.AddUrlSegment("checkString", Username);
+            userRequest.AddUrlSegment("checkString", userProfile.username);
             UserDataIntermed a = new UserDataIntermed();
             a.profilePicture = null;
-            a.username = Username;
-            a.password = UserPassword;
+            a.username = userProfile.username;
+            a.password = userProfile.password;
             a.email = null;
             a.address = null;
             a.isAdmin = 0;
