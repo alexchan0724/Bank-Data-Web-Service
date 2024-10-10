@@ -40,11 +40,15 @@ namespace LocalBusinessWebAPI.Controllers
         [HttpGet("ByUsername/{username}")]
         public IActionResult GetTransactionByName(string username)
         {
-            var request = new RestRequest($"transaction/Transactions/{username}", Method.Get); // Get user specific transactions
+            Debug.WriteLine("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + username);
+            var request = new RestRequest($"transaction/Transactions/ByUsername/{username}", Method.Get);
+
             request.AddUrlSegment("username", username);
             var response = restClient.Execute(request);
             if (response.IsSuccessful)
             {
+                Debug.WriteLine("YYYYYYYYYYYYYYYYYY");
+
                 var transactions = JsonConvert.DeserializeObject<List<TransactionDataIntermed>>(response.Content);
                 return Ok(transactions);
             }
@@ -54,7 +58,7 @@ namespace LocalBusinessWebAPI.Controllers
         [HttpGet("ByAccountNumber/{accountNumber}")]
         public IActionResult GetTransactionByAccount(int accountNumber, [FromQuery] bool ordered)
         {
-            var request = new RestRequest($"transaction/Transactions/Account/{accountNumber}", Method.Get); // Get user specific transactions
+            var request = new RestRequest($"transaction/Transactions/ByAccountNumber/{accountNumber}", Method.Get); // Get user specific transactions
             request.AddUrlSegment("accountNumber", accountNumber);
             request.AddQueryParameter("ordered", ordered.ToString());
             var response = restClient.Execute(request);

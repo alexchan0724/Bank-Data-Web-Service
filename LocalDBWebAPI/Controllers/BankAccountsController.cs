@@ -22,10 +22,12 @@ namespace LocalDBWebAPI.Controllers
             else
             {
                 BankDataIntermed returnBankAccount = new BankDataIntermed();
+                returnBankAccount.username = account.username;
                 returnBankAccount.accountNumber = account.accountNumber;
                 returnBankAccount.balance = account.balance;
                 returnBankAccount.pin = account.pin;
                 returnBankAccount.description = account.description;
+                returnBankAccount.email = account.email;
                 return Ok(returnBankAccount);
             }
         }
