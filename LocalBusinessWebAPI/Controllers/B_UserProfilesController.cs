@@ -61,9 +61,12 @@ namespace LocalBusinessWebAPI.Controllers
             }
         }
 
+        [Route("api/B_UserProfiles")]
         [HttpPut]
-        public IActionResult Put([FromBody] UserDataIntermed userProfile, [FromQuery] string oldUsername, [FromQuery] string oldEmail)
+        public IActionResult modifyaccount([FromBody] UserDataIntermed userProfile, [FromQuery] string oldUsername, [FromQuery] string oldEmail)
         {
+            Debug.WriteLine("FFFFFFFFFFFFFFFFFFFFFF " + userProfile.username + userProfile.email + oldUsername + oldEmail);
+
             var request = new RestRequest("user/userprofiles", Method.Put); // GET: user/UserProfiles/{checkString}?password={password}
             request.AddJsonBody(userProfile);
             request.AddQueryParameter("oldUsername", userProfile.username);

@@ -46,7 +46,7 @@ namespace PresentationLayer.Controllers
             Debug.WriteLine("@$$$$@@ " + userProfile.username + userProfile.email + userProfile.address + userProfile.password + userProfile.phoneNum + userProfile.isAdmin);
 
 
-            RestRequest request = new RestRequest("api/B_userprofiles", Method.Post);
+            RestRequest request = new RestRequest("api/B_UserProfiles", Method.Post);
             request.AddJsonBody(userProfile);
             RestResponse response = restClient.Execute(request);
             if (response.IsSuccessful)
@@ -60,9 +60,15 @@ namespace PresentationLayer.Controllers
             return RedirectToAction("Index", "Home"); // Redirecting to the Home action
 
         }
+
+
+
+
+        [Route("/Home/ModifyUserWindow/put")]
         [HttpPost]
         public IActionResult Put(string oldUserName, string oldEmail, string Username, string Email, string Address, string PhoneNo, string UserPassword, IFormFile UserImage)
         {
+            Debug.WriteLine("YEETTTTTTTTTTTTTTTT");
 
             Debug.WriteLine("@@@ " + Username + Email + Address);
             UserDataIntermed userProfile = new UserDataIntermed();
@@ -89,20 +95,37 @@ namespace PresentationLayer.Controllers
             Debug.WriteLine("@$$$$@@ " + userProfile.username + userProfile.email + userProfile.address + userProfile.password + userProfile.phoneNum + userProfile.isAdmin);
 
 
-            RestRequest request = new RestRequest("api/B_userprofiles", Method.Put);
-            request.AddQueryParameter("oldUsername", oldUserName); // Add the old username and email to the request (To find the user to update)
-            request.AddQueryParameter("oldEmail", oldEmail);
-            request.AddJsonBody(userProfile);
+            RestRequest request = new RestRequest("api/B_UserProfiles", Method.Put);
+            request.AddQueryParameter("oldUsername", oldUserName); // Correct case "oldUsername"
+            request.AddQueryParameter("oldEmail", oldEmail); // Correct case "oldEmail"
+            request.AddJsonBody(userProfile); // Correct, adds the userProfile in the body
             RestResponse response = restClient.Execute(request);
             if (response.IsSuccessful)
             {
-                Debug.WriteLine("ACCOUNT SUCCESSFULLY MADE");
+                Debug.WriteLine("ACCOUNT SUCCESSFULLY CHANGED");
             }
             else
             {
                 Debug.WriteLine("SSS " + response.Content.ToString() + response.StatusCode);
             }
-            return RedirectToAction("Index", "Home"); // Redirecting to the Home action
+
+            RestRequest userRequest = new RestRequest("api/B_UserProfiles/{checkString}", Method.Post);
+            userRequest.AddUrlSegment("checkString", Username);
+            UserDataIntermed a = new UserDataIntermed();
+            a.profilePicture = null;
+            a.username = Username;
+            a.password = UserPassword;
+            a.email = null;
+            a.address = null;
+            a.isAdmin = 0;
+
+            userRequest.AddJsonBody(a);
+            var lebron = restClient.Execute(userRequest);
+            var user = JsonConvert.DeserializeObject<UserDataIntermed>(lebron.Content);
+
+            Debug.WriteLine("SSSSSSSSSSSSS");
+
+            return View("~/Views/Home/UserProfileWindow.cshtml", user);
 
         }
     }

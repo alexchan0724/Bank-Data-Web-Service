@@ -1,0 +1,109 @@
+﻿@{
+    ViewData["Title"] = "ModifyUserWindowtoNewDetails";
+    string message = ViewBag.message;
+    string error = ViewBag.Error;
+}
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    #CreateUserForm {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50vh; /* Adjust height to vertically center */
+    }
+
+    .horizontal-layout {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px; /* Add some space between form fields and image selection */
+    }
+
+    .form-section, .image-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    input {
+        margin-bottom: 10px;
+        width: 300px;
+        padding: 5px;
+    }
+
+        input[type="submit"] {
+            width: 150px;
+        }
+
+    .image-preview {
+        display: none;
+        margin-top: 0px;
+        max-width: 300px; /* Adjust the max width of the preview */
+    }
+
+    button {
+        margin-bottom: 10px; /* Adds space between button and other elements */
+    }
+
+</style>
+
+<div class="text-center">
+    <h1 class="display-4">MODIFY User</h1>
+</div>
+
+<div id="CreateUserForm">
+    @if (!string.IsNullOrEmpty(error))
+    {
+        <p>@error</p>
+    }
+
+    <!-- Horizontal layout for the image section and form section -->
+    <div class="horizontal-layout">
+        <!-- Image section -->
+        <div class="image-section">
+            <!-- Image tag to display the preview -->
+            <img id="image-preview" class="image-preview" alt="Image Preview">
+        </div>
+
+        <!-- Form section -->
+        <div class="form-section">
+            <form action="/Home/ModifyUserWindow/put" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="oldUsername" value="@Model.username" />
+                <input type="hidden" name="oldPassword" value="@Model.password" />
+                <input type="text" id="Username" name="username" placeholder="UserName" />
+                <input type="text" id="Email" name="email" placeholder="Email" />
+                <input type="text" id="Address" name="address" placeholder="Address" />
+                <input type="text" id="PhoneNo" name="phoneNo" placeholder="Phone Number" />
+                <input type="password" id="Password" name="userPassword" placeholder="Password" />
+
+                <!-- Add the file input for uploading the image -->
+                <input type="file" id="file-input" name="userImage" accept="image/*" onchange="previewImage(event);" />
+
+                <input type="submit" value="Modify">
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function previewImage(event) {
+            const fileInput = event.target;
+            const file = fileInput.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                // Once the file is read, display the image
+                reader.onload = function (e) {
+                    const imagePreview = document.getElementById('image-preview');
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block'; // Show the image preview
+                }
+
+                reader.readAsDataURL(file); // Convert the file to a Data URL
+            }
+        }
+    </script>
+</div>
