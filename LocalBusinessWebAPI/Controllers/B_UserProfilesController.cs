@@ -19,6 +19,7 @@ namespace LocalBusinessWebAPI.Controllers
             var request = new RestRequest("user/UserProfiles/{checkString}", Method.Post); // GET: user/UserProfiles/{checkString}?password={password}
             request.AddUrlSegment("checkString", checkString);
             request.AddJsonBody(user);
+            Debug.WriteLine("IN B_USERPROFILESCONTROLLER " + checkString);
 
             var response = restClient.Execute(request);
 
@@ -64,12 +65,12 @@ namespace LocalBusinessWebAPI.Controllers
         [HttpPut]
         public IActionResult ModifyAccount([FromBody] UserDataIntermed userProfile, [FromQuery] string oldUsername, [FromQuery] string oldEmail)
         {
-            Debug.WriteLine("FFFFFFFFFFFFFFFFFFFFFF " + userProfile.username + userProfile.email + oldUsername + oldEmail);
+            Debug.WriteLine("FFFFFFFFFFFFFFFFFFFFFF " + userProfile.username + " " + userProfile.email + " " +  oldUsername + " " + oldEmail);
 
             var request = new RestRequest("user/userprofiles", Method.Put); // GET: user/UserProfiles/{checkString}?password={password}
             request.AddJsonBody(userProfile);
-            request.AddQueryParameter("oldUsername", userProfile.username);
-            request.AddQueryParameter("oldEmail", userProfile.email);
+            request.AddQueryParameter("oldUsername", oldUsername);
+            request.AddQueryParameter("oldEmail", oldEmail);
 
             var response = restClient.Execute(request);
 
@@ -79,6 +80,7 @@ namespace LocalBusinessWebAPI.Controllers
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
+                Debug.WriteLine("BadRequest in B_UserProfiles " + response.Content);
                 return BadRequest(response.Content);
             }
             else

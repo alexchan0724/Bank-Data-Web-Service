@@ -43,7 +43,7 @@ namespace LocalDBWebAPI.Data
                             description TEXT,
                             username TEXT NOT NULL,
                             email TEXT NOT NULL,
-                            FOREIGN KEY(username, email) REFERENCES UserProfile(username, email) ON DELETE CASCADE
+                            FOREIGN KEY(username, email) REFERENCES UserProfile(username, email) ON DELETE CASCADE ON UPDATE CASCADE
                         )";
                         command.ExecuteNonQuery();
 
@@ -56,7 +56,7 @@ namespace LocalDBWebAPI.Data
                             transactionDescription TEXT NOT NULL,
                             transactionDate DATETIME NOT NULL,
                             amount INTEGER NOT NULL,
-                            FOREIGN KEY(acctNo) REFERENCES BankAccounts(acctNo) ON DELETE CASCADE
+                            FOREIGN KEY(acctNo) REFERENCES BankAccounts(acctNo) ON DELETE CASCADE ON UPDATE CASCADE
                         )";
                         command.ExecuteNonQuery();
                         // SQL command to create a table named "Logs"
@@ -161,6 +161,8 @@ namespace LocalDBWebAPI.Data
             Debug.WriteLine("Username in UpdateUserProfile: " + userProfile.username);
             Debug.WriteLine("Email in UpdateUserProfile: " + userProfile.email);
             Debug.WriteLine("Password in UpdateUserProfile: " + userProfile.password);
+            Debug.WriteLine("Old Username in UpdateUserProfile: " + oldUsername);
+            Debug.WriteLine("Old Email in UpdateUserProfile: " + oldEmail);
             try
             {
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
@@ -183,19 +185,13 @@ namespace LocalDBWebAPI.Data
                         command.Parameters.AddWithValue("@IsAdmin", userProfile.isAdmin);
                         command.Parameters.AddWithValue("@OldUsername", oldUsername);
                         command.Parameters.AddWithValue("@OldEmail", oldEmail);
-                        command.ExecuteNonQuery();
+                        int rowChanged = command.ExecuteNonQuery();
 
-                        // Update BankAccounts table using old username and email
-                        command.CommandText = @"
-                            UPDATE BankAccounts
-                            SET username = @Username, email = @Email
-                            WHERE username = @OldUsername AND email = @OldEmail";
-                        command.Parameters.Clear(); // Clear previous parameters
-                        command.Parameters.AddWithValue("@Username", userProfile.username);
-                        command.Parameters.AddWithValue("@Email", userProfile.email);
-                        command.Parameters.AddWithValue("@OldUsername", oldUsername);
-                        command.Parameters.AddWithValue("@OldEmail", oldEmail); 
-                        command.ExecuteNonQuery();
+                        if (rowChanged == 0)
+                        {
+                            Debug.WriteLine("Method failed to update any rows.");
+                            return false; // No rows updated, username or email might already exist
+                        }
                     }
                     connection.Close();
                 }

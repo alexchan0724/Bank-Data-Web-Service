@@ -106,7 +106,7 @@ namespace PresentationLayer.Controllers
             {
                 Debug.WriteLine("SSS " + response.Content.ToString() + response.StatusCode);
             }
-
+            Debug.WriteLine("userProfile.username" + userProfile.username);
             RestRequest userRequest = new RestRequest("api/B_UserProfiles/{checkString}", Method.Post);
             userRequest.AddUrlSegment("checkString", userProfile.username);
             UserDataIntermed a = new UserDataIntermed();
@@ -115,6 +115,7 @@ namespace PresentationLayer.Controllers
             a.password = userProfile.password;
             a.email = null;
             a.address = null;
+            a.phoneNum = null;
             a.isAdmin = 0;
 
             userRequest.AddJsonBody(a);

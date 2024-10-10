@@ -85,7 +85,7 @@ namespace LocalDBWebAPI.Controllers
             {
                 return BadRequest("User profile is required.");
             }
-
+            Debug.WriteLine("UserProfilesController.Put: " + userProfile.username + " " + userProfile.email + " " + oldUsername + " " + oldEmail);
             if (DBManager.UpdateUserProfile(userProfile, oldUsername, oldEmail))
             {
                 return Ok("User profile updated.");
