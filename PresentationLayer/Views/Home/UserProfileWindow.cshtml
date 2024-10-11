@@ -61,6 +61,14 @@
         <img src="@imgSrc" alt="Profile Picture" style="max-width: 300px; width: auto; height: auto;" />
     }
 
+    @if(Model.isAdmin == 0)
+    {
+        <p>HELLO USER</p>
+    }
+    else
+    {
+        <p>HELLO ADMIN</p>
+    }
     <div class="form-selection">
         <p style="font-size: 50px;">Username: @Model.username</p>
         <p style="font-size: 50px;">Email: @Model.email</p>

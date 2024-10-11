@@ -172,6 +172,9 @@ namespace PresentationLayer.Controllers
                 {
                     Debug.WriteLine("Response was successful");
                     var userProfile = JsonConvert.DeserializeObject<UserDataIntermed>(response.Content);
+
+                    Debug.WriteLine( "###################### " + userProfile.username + userProfile.password + userProfile.isAdmin);
+
                     return UserProfileWindow(userProfile);
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
