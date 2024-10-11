@@ -37,6 +37,7 @@ namespace PresentationLayer.Controllers
             return View("ModifyUserWindow", "Home"); // Specify just the view name
 
         }
+
         [HttpGet]       //modifying user
         public IActionResult ModifyUserWindowtoNewDetails(string username, string password)
         {

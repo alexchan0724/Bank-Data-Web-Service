@@ -15,4 +15,8 @@
     <ProjectReference Include="..\API Classes\API Classes.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\UserProfile\" />
+  </ItemGroup>
+
 </Project>

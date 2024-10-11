@@ -14,6 +14,7 @@ namespace PresentationLayer.Controllers
         {
             return View();
         }
+
         [Route("/Home/UserProfileWindow/createAccount")]
         [HttpPost]
         public IActionResult createAccount(string username, string password)
