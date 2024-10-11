@@ -68,68 +68,68 @@ namespace PresentationLayer.Controllers
         }
 
 
+
         [HttpGet]
-        public IActionResult AuditWindow(string username, string password, string mode, string accNo)
+        public IActionResult AuditWindow(string username, string password, string mode, string accNo, string Admin)
         {
             Debug.WriteLine("DDDDDDDDDDDDDDDDDDDDDDDDDD " + accNo);
 
-
-            RestRequest getUserRequest = new RestRequest("api/B_UserProfiles/{checkString}", Method.Post);
-            getUserRequest.AddUrlSegment("checkString", username);
-            UserDataIntermed a = new UserDataIntermed();
-            a.profilePicture = null;
-            a.username = username;
-            a.password = password;
-            a.email = null;
-            a.address = null;
-            a.isAdmin = 0;
-
-
-            getUserRequest.AddJsonBody(a);
-
-            var userRequest = restClient.Execute(getUserRequest);
-            if (userRequest.IsSuccessful)
+            if (Convert.ToInt32(Admin) == 0)
             {
-                var userProfile = JsonConvert.DeserializeObject<UserDataIntermed>(userRequest.Content);
-                ViewBag.user = userProfile;
+                RestRequest getUserRequest = new RestRequest("api/B_UserProfiles/{checkString}", Method.Post);
+                getUserRequest.AddUrlSegment("checkString", username);
+                UserDataIntermed a = new UserDataIntermed();
+                a.profilePicture = null;
+                a.username = username;
+                a.password = password;
+                a.email = null;
+                a.address = null;
+                a.isAdmin = 0;
 
-                if (Convert.ToInt32(mode) == 0)
+
+                getUserRequest.AddJsonBody(a);
+
+                var userRequest = restClient.Execute(getUserRequest);
+                if (userRequest.IsSuccessful)
                 {
-                    var transactionRequest = new RestRequest($"api/B_Transactions/ByUsername/{username}", Method.Get); // Get user-specific transactions
-                    transactionRequest.AddUrlSegment("username", userProfile.username);
-                    var transactionResponse = restClient.Execute(transactionRequest);
+                    var userProfile = JsonConvert.DeserializeObject<UserDataIntermed>(userRequest.Content);
+                    ViewBag.user = userProfile;
+
+                    if (Convert.ToInt32(mode) == 0)
+                    {
+                        var transactionRequest = new RestRequest($"api/B_Transactions/ByUsername/{username}", Method.Get); // Get user-specific transactions
+                        transactionRequest.AddUrlSegment("username", userProfile.username);
+                        var transactionResponse = restClient.Execute(transactionRequest);
 
 
-                    var transactionData = JsonConvert.DeserializeObject<List<TransactionDataIntermed>>(transactionResponse.Content);
+                        var transactionData = JsonConvert.DeserializeObject<List<TransactionDataIntermed>>(transactionResponse.Content);
 
-                    Debug.WriteLine("VVVVVVVV " + transactionData.Count);
+                        Debug.WriteLine("VVVVVVVV " + transactionData.Count);
 
 
-                    ViewBag.AuditLogs = transactionData;
+                        ViewBag.AuditLogs = transactionData;
 
-                    return View("AuditWindow");
+                        return View("AuditWindow");
+                    }
+                    else
+                    {
+                        Debug.WriteLine("DDDDDDDDDDDDDDDDDDDDDDDDDD " + accNo);
+
+                        var transactionRequest = new RestRequest($"api/B_Transactions/ByAccountNumber/{accNo}", Method.Get); // Get user-specific transactions
+                        transactionRequest.AddUrlSegment("accNo", Convert.ToInt32(accNo));
+                        var transactionResponse = restClient.Execute(transactionRequest);
+
+
+                        var transactionData = JsonConvert.DeserializeObject<List<TransactionDataIntermed>>(transactionResponse.Content);
+
+                        Debug.WriteLine("VVVVVVVV " + transactionData.Count);
+
+
+                        ViewBag.AuditLogs = transactionData;
+
+                        return View("AuditWindow");
+                    }
                 }
-                else
-                {
-                    Debug.WriteLine("DDDDDDDDDDDDDDDDDDDDDDDDDD " + accNo);
-
-                    var transactionRequest = new RestRequest($"api/B_Transactions/ByAccountNumber/{accNo}", Method.Get); // Get user-specific transactions
-                    transactionRequest.AddUrlSegment("accNo", Convert.ToInt32(accNo));
-                    var transactionResponse = restClient.Execute(transactionRequest);
-
-
-                    var transactionData = JsonConvert.DeserializeObject<List<TransactionDataIntermed>>(transactionResponse.Content);
-
-                    Debug.WriteLine("VVVVVVVV " + transactionData.Count);
-
-
-                    ViewBag.AuditLogs = transactionData;
-
-                    return View("AuditWindow");
-                }
-
-
-
             }
             return null;
 

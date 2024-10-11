@@ -61,49 +61,70 @@
         <img src="@imgSrc" alt="Profile Picture" style="max-width: 300px; width: auto; height: auto;" />
     }
 
-    @if(Model.isAdmin == 0)
-    {
-        <p>HELLO USER</p>
-    }
-    else
-    {
-        <p>HELLO ADMIN</p>
-    }
     <div class="form-selection">
         <p style="font-size: 50px;">Username: @Model.username</p>
         <p style="font-size: 50px;">Email: @Model.email</p>
         <p style="font-size: 50px;">Address: @Model.address</p>
         <p style="font-size: 50px;">Phone Number: @Model.phoneNum</p>
         <p style="font-size: 50px;">Password: @Model.password</p>
+    @if(Model.isAdmin == 0)
+    {
+        <p>HELLO USER</p>
+            <form action="/Home/UserProfileWindow/createAccount" method="post">
+                <input type="hidden" name="Username" value="@Model.username" />
+                <input type="hidden" name="Password" value="@Model.password" />
+                <input type="submit" value="Create Account" />
+            </form>
 
-        <form action="/Home/UserProfileWindow/createAccount" method="post">
-            <input type="hidden" name="Username" value="@Model.username" />
-            <input type="hidden" name="Password" value="@Model.password" />
-            <input type="submit" value="Create Account" />
-        </form>
 
+            <form action="/Home/UserProfileWindow/getAccount" method="post">
+                <input type="hidden" name="Username" value="@Model.username" />
+                <input type="hidden" name="Password" value="@Model.password" />
+                <input type="text" id="AccNum" name="accNum" placeholder="Enter Account Number" />
+                <input type="submit" value="Retrieve Account" />
+            </form>
 
-        <form action="/Home/UserProfileWindow/getAccount" method="post">
-            <input type="hidden" name="Username" value="@Model.username" />
-            <input type="hidden" name="Password" value="@Model.password" />
-            <input type="text" id="AccNum" name="accNum" placeholder="Enter Account Number" />
-            <input type="submit" value="Retrieve Account" />
-        </form>
+            <form action="/Home/AuditWindow" method="Get">
+                <input type="hidden" name="Username" value="@Model.username" />
+                <input type="hidden" name="Password" value="@Model.password" />
+                <input type="hidden" name="accNo" value="none" />
+                <input type="hidden" name="mode" value="0" />
+                <input type="hidden" name="Admin" value="0" />
+                <input type="submit" value="Audit Log" />
+            </form>
+            <form action="/Home/AuditWindow" method="Get">
+                <input type="hidden" name="Username" value="@Model.username" />
+                <input type="hidden" name="Password" value="@Model.password" />
+                <input type="text" id="AccNo" name="accNo" placeholder="Enter Account Number" />
+                <input type="hidden" name="mode" value="1" />
+                <input type="hidden" name="Admin" value="0" />
+                <input type="submit" value="Audit Log" />
+            </form>
+    }
+    else
+    {
+        <p>HELLO ADMIN</p>
+            <form action="/Home/Admin/getallAudit" method="Get">
+                <input type="hidden" name="Username" value="@Model.username" />
+                <input type="hidden" name="Password" value="@Model.password" />
+                <input type="hidden" name="mode" value="0" />
+                <input type="hidden" name="Admin" value="1" />
+                <input type="submit" value="View All Audit Log" />
+            </form>
 
-        <form action="/Home/AuditWindow" method="Get">
-            <input type="hidden" name="Username" value="@Model.username" />
-            <input type="hidden" name="Password" value="@Model.password" />
-            <input type="hidden" name="accNo" value="none" />
-            <input type="hidden" name="mode" value="0" />
-            <input type="submit" value="Audit Log" />
-        </form>
-        <form action="/Home/AuditWindow" method="Get">
-            <input type="hidden" name="Username" value="@Model.username" />
-            <input type="hidden" name="Password" value="@Model.password" />
-            <input type="text" id="AccNo" name="accNo" placeholder="Enter Account Number" />
-            <input type="hidden" name="mode" value="1" />
-            <input type="submit" value="Audit Log" />
-        </form>
+            <form action="/Home/Admin/getAuditbyName/" method="Get">
+                <input type="text" id="Username" name="username" placeholder="Enter Username" />
+                <input type="submit" value="View Audit Log via Username" />
+            </form>
+
+            <form action="/Home/Admin/getAuditbyAccno/" method="Get">
+                <input type="text" id="Accno" name="Accno" placeholder="Enter Accno" />
+                <input type="submit" value="View Audit Log via Account number" />
+            </form>
+    }
+    
+
+        
     </div>
 </div>
 
