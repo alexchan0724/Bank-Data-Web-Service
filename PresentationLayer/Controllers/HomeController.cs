@@ -23,12 +23,7 @@ namespace PresentationLayer.Controllers
 
         public IActionResult Index()
         {
-            return View();
-        }
-
-        public IActionResult about()
-        {
-            return View();
+            return PartialView();
         }
 
         public IActionResult UserProfileWindow(UserDataIntermed user)

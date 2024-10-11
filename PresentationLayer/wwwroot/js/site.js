@@ -1,4 +1,23 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿function loadView(status) {
+    var apiUrl = "view/login/defaultview"
 
-// Write your JavaScript code.
+    console.log("Loading view: " + status);
+    fetch(apiUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.text();
+        })
+        .then(data => {
+            document.getElementById("main").innerHTML = data;
+            console.log('Data:', data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
+function performAuth() {
+    
+}

@@ -1,34 +1,24 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-    string message = ViewBag.message;
-    string error = ViewBag.Error;
-}
-<h1></h1>
-
-@if(message!=null && message.Equals("Logged in"))
-{
-    <p id="status">User Successfully logged in</p>
-}
-else
-{
-    <div class="text-center">
-        <h1 class="display-4">DC ASSIGNMENT 2 BANK APP</h1>
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>DC Assignment 2 </title>
+</head>
+<body>
+    <div id="header">
     </div>
-    <div id="LoginForm">
-        @if (error != null && error.Length > 0)
-        {
-            <p>@error</p>
-            
-        }
-        <form action="/Home/Index" method="post">
-            <input type="text" id="Username" name="username" placeholder="User Name" />
-            <input type="password" id="Password" name="password" placeholder="Password" />
-            <input type="submit" value="Submit">
-        </form>
-
-        <form action="/Home/ModifyUserWindow/" method="get">
-            <input type="submit" value="Create">
-        </form> 
-
+    <div id="navigation">
     </div>
-}
+    <div id="main">
+    </div>
+    <div id="footer">
+        <p> Developed by Jin Lee and Alex Chan</p>
+    </div>
+    <script src="~/js/site.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script>
+        window.onload = function () {
+            loadView();
+        };
+    </script>
+</body>
+</html>
