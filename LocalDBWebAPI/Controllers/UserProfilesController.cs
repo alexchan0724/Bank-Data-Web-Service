@@ -40,6 +40,7 @@ namespace LocalDBWebAPI.Controllers
                 returnUser.phoneNum = userProfile.phoneNum;
                 returnUser.profilePicture = userProfile.profilePicture;
                 returnUser.password = userProfile.password;
+                returnUser.isAdmin = userProfile.isAdmin;
                 return Ok(returnUser);
             }
         }
