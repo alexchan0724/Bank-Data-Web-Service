@@ -1,4 +1,5 @@
 ﻿using API_Classes;
+using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Drawing.Text;
@@ -161,6 +162,7 @@ namespace LocalDBWebAPI.Data
             Debug.WriteLine("Username in UpdateUserProfile: " + userProfile.username);
             Debug.WriteLine("Email in UpdateUserProfile: " + userProfile.email);
             Debug.WriteLine("Password in UpdateUserProfile: " + userProfile.password);
+            Debug.WriteLine("Phone number in UpdateUserProfile: " + userProfile.phoneNum);
             Debug.WriteLine("Old Username in UpdateUserProfile: " + oldUsername);
             Debug.WriteLine("Old Email in UpdateUserProfile: " + oldEmail);
             try
@@ -180,13 +182,13 @@ namespace LocalDBWebAPI.Data
                         command.Parameters.AddWithValue("@Username", userProfile.username);
                         command.Parameters.AddWithValue("@Address", userProfile.address);
                         command.Parameters.AddWithValue("@Email", userProfile.email);
-                        command.Parameters.AddWithValue("@ProfilePicture", userProfile.profilePicture);
+                        command.Parameters.Add("@ProfilePicture", System.Data.DbType.Binary).Value = userProfile.profilePicture; // Insert image as binary
                         command.Parameters.AddWithValue("@Phone", userProfile.phoneNum);
                         command.Parameters.AddWithValue("@IsAdmin", userProfile.isAdmin);
                         command.Parameters.AddWithValue("@OldUsername", oldUsername);
                         command.Parameters.AddWithValue("@OldEmail", oldEmail);
                         int rowChanged = command.ExecuteNonQuery();
-
+                        Debug.WriteLine("Accounts Modified:" + rowChanged);
                         if (rowChanged == 0)
                         {
                             Debug.WriteLine("Method failed to update any rows.");

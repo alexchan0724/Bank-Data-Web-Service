@@ -51,59 +51,41 @@
 </style>
 
 <div class="text-center">
-    <h1 class="display-4">MODIFY User</h1>
+    <h1 class="display-4">Modify User</h1>
 </div>
-
 <div id="CreateUserForm">
     @if (!string.IsNullOrEmpty(error))
     {
         <p>@error</p>
     }
-
-    <!-- Horizontal layout for the image section and form section -->
     <div class="horizontal-layout">
-        <!-- Image section -->
-        <div class="image-section">
-            <!-- Image tag to display the preview -->
-            <img id="image-preview" class="image-preview" alt="Image Preview">
-        </div>
-
-        <!-- Form section -->
         <div class="form-section">
-            <form action="/Home/ModifyUserWindow/put" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="oldUsername" value="@Model.username" />
-                <input type="hidden" name="oldEmail" value="@Model.email" />
-                <input type="text" id="Username" name="username" placeholder="UserName" />
-                <input type="text" id="Email" name="email" placeholder="Email" />
-                <input type="text" id="Address" name="address" placeholder="Address" />
-                <input type="text" id="PhoneNo" name="phoneNo" placeholder="Phone Number" />
-                <input type="password" id="Password" name="userPassword" placeholder="Password" />
+            <input type="text" id="Username" name="username" placeholder="UserName" />
+            <input type="text" id="Email" name="email" placeholder="Email" />
+            <input type="text" id="Address" name="address" placeholder="Address" />
+            <input type="text" id="PhoneNo" name="phoneNo" placeholder="Phone Number" />
+            <input type="password" id="Password" name="userPassword" placeholder="Password" />
+            <input type="file" id="fileInput" name="userImage" accept="image/*" />
+            <button type="button" id="createUser" onclick="modifyUser()">Modify Account</button>
 
-                <!-- Add the file input for uploading the image -->
-                <input type="file" id="file-input" name="userImage" accept="image/*" onchange="previewImage(event);" />
-
-                <input type="submit" value="Modify">
-            </form>
+            <input type="hidden" id="OldUsername" name="oldUsername" value="@Model.username" />
+            <input type="hidden" id="OldEmail" name="oldEmail" value="@Model.email" />
         </div>
     </div>
-
-    <script>
-        function previewImage(event) {
-            const fileInput = event.target;
-            const file = fileInput.files[0];
-
-            if (file) {
-                const reader = new FileReader();
-
-                // Once the file is read, display the image
-                reader.onload = function (e) {
-                    const imagePreview = document.getElementById('image-preview');
-                    imagePreview.src = e.target.result;
-                    imagePreview.style.display = 'block'; // Show the image preview
-                }
-
-                reader.readAsDataURL(file); // Convert the file to a Data URL
-            }
-        }
-    </script>
 </div>
+
+<script>
+    const fileInput = document.getElementById('fileInput');
+
+    fileInput.addEventListener("change", e => {
+        const file = fileInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>

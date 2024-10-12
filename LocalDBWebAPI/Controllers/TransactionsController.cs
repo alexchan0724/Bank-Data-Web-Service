@@ -51,7 +51,19 @@ namespace LocalDBWebAPI.Controllers
             return Ok(transactions);
         }
 
-        
+        [HttpGet("byAccountNumberOrdered/{accountNumber}")]
+        public IActionResult GetTransactionByAccountOrdered(int accountNumber)
+        {
+            List<TransactionDataIntermed> transactions = DBManager.GetTransactionOrderedByBankAccount(accountNumber);
+            if (transactions == null || !transactions.Any())
+            {
+                return NotFound("No transactions found for the account.");
+            }
+            //var transactionsToReturn = ConvertTransactionList(transactions);
+            return Ok(transactions);
+        }
+
+
 
         [HttpPost("Deposit")]
         public IActionResult Deposit([FromBody] TransactionDataIntermed transaction)

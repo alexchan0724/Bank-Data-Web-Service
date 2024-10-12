@@ -42,11 +42,6 @@
     @if (ViewBag.AuditLogs != null)
     {
         <h2>Transaction History</h2>
-        <input type="hidden" id="username" value="@Model.username" />
-        <input type="hidden" id="password" value="@Model.password" />
-        <input type="hidden" id="AccNo" value="@ViewBag.AccountNumber" /> <!-- Added Account Number -->
-        <button type="button" id="orderTransactions" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, document.getElementById('AccNo').value, 'getAccountTransactionsOrdered')">Order Transaction History</button>
-        <button type="button" id="getTransaction" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, document.getElementById('AccNo').value, 'getAcctTransactions')">Get Transactions</button>
         <ul>
             <br />
             @foreach (var log in ViewBag.AuditLogs)
@@ -55,11 +50,11 @@
                     -----------------------------------------------------------------------------<br />
                     TransactionID: @log.transactionID<br />
                     AcctNo: @log.acctNo<br />
-                    Transaction Description: @log.transactionDescription<br /> 
+                    Transaction Description: @log.transactionDescription<br />
                     Amount: @log.amount<br />
-                    TransactionDate: @log.transactionDate.ToString("g")<br /> 
-                    -----------------------------------------------------------------------------<br/>
-                    
+                    TransactionDate: @log.transactionDate.ToString("g")<br />
+                    -----------------------------------------------------------------------------<br />
+
                 </li>
             }
         </ul>

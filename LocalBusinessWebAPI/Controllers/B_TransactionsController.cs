@@ -69,6 +69,20 @@ namespace LocalBusinessWebAPI.Controllers
             return NotFound(response.Content);
         }
 
+        [HttpGet("byAccountOrdered")]
+        public IActionResult GetTransactionByAccountOrdered([FromQuery]int accountNumber)
+        {
+            var request = new RestRequest($"transaction/Transactions/byAccountNumberOrdered/{accountNumber}", Method.Get); // Get user specific transactions
+            request.AddUrlSegment("accountNumber", accountNumber);
+            var response = restClient.Execute(request);
+            if (response.IsSuccessful)
+            {
+                var transactions = JsonConvert.DeserializeObject<List<TransactionDataIntermed>>(response.Content);
+                return Ok(transactions);
+            }
+            return NotFound(response.Content);
+        }
+
         [HttpPost("Deposit")]
         public IActionResult Deposit([FromBody] TransactionDataIntermed transaction)
         {

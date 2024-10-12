@@ -15,10 +15,9 @@ namespace LocalBusinessWebAPI.Controllers
         [HttpPost("{checkString}")] // checkString passed as parameter can be either email or username
         public IActionResult GetUser(string checkString, [FromBody] UserDataIntermed user)
         {
-            var request = new RestRequest("user/UserProfiles/{checkString}", Method.Post); // GET: user/UserProfiles/{checkString}?password={password}
+            var request = new RestRequest("user/UserProfiles/{checkString}", Method.Post); // GET: user/UserProfiles/{checkString}
             request.AddUrlSegment("checkString", checkString);
             request.AddJsonBody(user);
-            Debug.WriteLine("IN B_USERPROFILESCONTROLLER " + checkString);
 
             var response = restClient.Execute(request);
 
@@ -64,7 +63,8 @@ namespace LocalBusinessWebAPI.Controllers
         [HttpPut]
         public IActionResult ModifyAccount([FromBody] UserDataIntermed userProfile, [FromQuery] string oldUsername, [FromQuery] string oldEmail)
         {
-            Debug.WriteLine("FFFFFFFFFFFFFFFFFFFFFF " + userProfile.username + " " + userProfile.email + " " +  oldUsername + " " + oldEmail);
+            Debug.WriteLine(" Old username in ModifyAccount B_UserProfiles " +  oldUsername + " " + oldEmail);
+            Debug.WriteLine("DDDDDDDDDDDD " + userProfile.username + userProfile.phoneNum + userProfile.address + userProfile.email + userProfile.password + " @@@ " + userProfile.isAdmin);
 
             var request = new RestRequest("user/userprofiles", Method.Put); // GET: user/UserProfiles/{checkString}?password={password}
             request.AddJsonBody(userProfile);

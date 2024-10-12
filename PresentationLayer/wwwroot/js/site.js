@@ -21,9 +21,13 @@ function loadView(status, userData = null, actionMethod = 'GET', accNum = null)
         apiUrl = "user/UserFunctions/createUser";
     } else if (status === "addNewUser") {
         apiUrl = "user/UserFunctions/addNewUser";
+    } else if (status === "sendModifyRequest") {
+        apiUrl = "user/UserFunctions/sendModifyRequest";
+    } else if (status === "getAccountTransactionsOrdered") {
+        apiUrl = "user/UserFunctions/auditAccountOrdered";
     }
 
-    console.log(`Loading view: ${status} with method: ${actionMethod}`);
+    console.log('User data: ', userData);
     console.log(`API URL: ${apiUrl}`)
     console.log('Account Number: ', accNum);
 
@@ -38,7 +42,7 @@ function loadView(status, userData = null, actionMethod = 'GET', accNum = null)
     // If using POST and userData is not null, add the body to the request
     if (actionMethod === 'POST' && userData) {
         let requestBody; // Declare requestBody variable that can be reassigned
-        if (status === "getAccount" || status === "getAcctTransactions") {
+        if (status === "getAccount" || status === "getAcctTransactions" || status === "getAccountTransactionsOrdered") {
             // Construct UserRequest object
             console.log("Account Number: " + accNum);
             requestBody = {
@@ -46,10 +50,10 @@ function loadView(status, userData = null, actionMethod = 'GET', accNum = null)
                 accountNumber: accNum || null
             };
         }
-        else
+        else // sendModifyRequest has been structued as UserRequest in Index.cshtml
         {
             // Pass UserDataIntermed object directly
-            requestBody = userData;
+            requestBody = userData; 
         }
         console.log('Data passed: ', requestBody);
         requestOptions.body = JSON.stringify(requestBody);
@@ -64,7 +68,6 @@ function loadView(status, userData = null, actionMethod = 'GET', accNum = null)
         })
         .then(data => {
             document.getElementById("main").innerHTML = data;
-            console.log('Data:', data);
         })
         .catch(error => {
             console.error(error);

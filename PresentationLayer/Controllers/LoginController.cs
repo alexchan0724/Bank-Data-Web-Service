@@ -55,6 +55,7 @@ namespace PresentationLayer.Controllers
             if (userRequest.IsSuccessful)
             {
                 var userProfile = JsonConvert.DeserializeObject<UserDataIntermed>(userRequest.Content);
+                Debug.WriteLine($"User profile in AuthView: Username={userProfile.username}, Phone={userProfile.phoneNum}, Address={userProfile.address}, Email={userProfile.email}, Password={userProfile.password}, IsAdmin={userProfile.isAdmin}");
                 return PartialView("UserProfileWindow", userProfile);
             }
             return PartialView("LoginErrorView");

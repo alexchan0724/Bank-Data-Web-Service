@@ -10,5 +10,8 @@ namespace API_Classes
     {
         public UserDataIntermed User { get; set; }
         public string AccountNumber { get; set; }
+
+        public string OldEmail { get; set; }
+        public string OldUsername { get; set; }
     }
 }

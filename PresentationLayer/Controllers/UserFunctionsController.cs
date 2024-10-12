@@ -19,7 +19,7 @@ namespace PresentationLayer.Controllers
         [HttpPost("auth")]
         public IActionResult AuthenticateUser([FromBody] UserRequest userRequest)
         {
-            Debug.WriteLine("Entered UserProfileWindowController to return response");
+            Debug.WriteLine("Entered UserFunctionsController to AuthenticateUser");
             var returnObject = new 
             { 
                 login = false, 
@@ -87,7 +87,7 @@ namespace PresentationLayer.Controllers
             if (response.IsSuccessful)
             {
                 ViewBag.AuditLogs = result;
-                return PartialView("AuditWindow");
+                return PartialView("AuditWindowAll", user);
             }
             return null;
         }
@@ -104,8 +104,28 @@ namespace PresentationLayer.Controllers
             if (response.IsSuccessful)
             {
                 var result = JsonConvert.DeserializeObject<List<TransactionDataIntermed>>(response.Content);
+                ViewBag.AccountNumber = userRequest.AccountNumber;
                 ViewBag.AuditLogs = result;
-                return PartialView("AuditWindow");
+                return PartialView("AuditWindow", userRequest.User);
+            }
+            return null;
+        }
+
+        [Route("auditAccountOrdered")]
+        [HttpPost]
+        public IActionResult getAccountTransactionsOrdered([FromBody]UserRequest userRequest)
+        {
+            Debug.WriteLine("Entered getAccountTransactionsOrdered method in UserProfileWindow");
+            Debug.WriteLine("Account number in getAccountTransactionsOrdered: " + userRequest.AccountNumber);
+            RestRequest request = new RestRequest("api/B_Transactions/byAccountOrdered/", Method.Get);
+            request.AddQueryParameter("accountNumber", userRequest.AccountNumber); // AccountNumber is already a string
+            var response = restClient.Execute(request);
+            if (response.IsSuccessful)
+            {
+                var result = JsonConvert.DeserializeObject<List<TransactionDataIntermed>>(response.Content);
+                ViewBag.AuditLogs = result;
+                ViewBag.AccountNumber = userRequest.AccountNumber;
+                return PartialView("AuditWindow", userRequest.User);
             }
             return null;
         }
@@ -133,6 +153,23 @@ namespace PresentationLayer.Controllers
             Debug.WriteLine("Entered AddNewUser in UserFunctionsController");
             RestRequest request = new RestRequest("api/B_UserProfiles", Method.Post);
             request.AddJsonBody(user);
+            var response = restClient.Execute(request);
+            if (response.IsSuccessful)
+            {
+                return PartialView("UserSuccess");
+            }
+            return null;
+        }
+
+        [Route("sendModifyRequest")]
+        [HttpPost]
+        public IActionResult SendModifyRequest([FromBody]UserRequest userRequest)
+        {
+            Debug.WriteLine("Entered SendModifyRequest in UserFunctionsController");
+            RestRequest request = new RestRequest("api/B_UserProfiles", Method.Put);
+            request.AddJsonBody(userRequest.User);
+            request.AddQueryParameter("oldUsername", userRequest.OldUsername);
+            request.AddQueryParameter("oldEmail", userRequest.OldEmail);
             var response = restClient.Execute(request);
             if (response.IsSuccessful)
             {

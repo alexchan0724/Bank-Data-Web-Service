@@ -50,6 +50,51 @@
                 loadView('addNewUser', userData, 'POST')
             }
         }
+
+        function modifyUser() {
+            const username = document.getElementById('Username').value;
+            const email = document.getElementById('Email').value;
+            const address = document.getElementById('Address').value;
+            const phoneNo = document.getElementById('PhoneNo').value;
+            const password = document.getElementById('Password').value;
+            const fileInput = document.getElementById('fileInput');
+            const profilePicture = fileInput.files[0];
+
+            const oldUsername = document.getElementById('OldUsername').value;
+            const oldEmail = document.getElementById('OldEmail').value;
+
+            // Create userDataIntermed object
+
+            const userData = {
+                User: {
+                    username: username,
+                    email: email,
+                    address: address,
+                    phoneNum: phoneNo,
+                    password: password,
+                    profilePicture: null,
+                    isAdmin: 0
+                },
+                OldEmail: oldEmail,
+                OldUsername: oldUsername
+            };
+
+
+            if (profilePicture) {
+                const reader = new FileReader();
+                reader.onloadend = function () // When the file has been read
+                {
+                    const base64String = reader.result.split(',')[1]; // Strip the URL until it is just the base64String
+                    userData.User.profilePicture = base64String; // Assign base64String to profilePicture string
+                    console.log('User modified profile picture');
+                    loadView('sendModifyRequest', userData, 'POST')
+                };
+                reader.readAsDataURL(profilePicture); // read the profilePicture as DataURL
+            } else {
+                console.log('User did not modify profile picture');
+                loadView('sendModifyRequest', userData, 'POST')
+            }
+        }
     </script>
 </body>
 </html>
