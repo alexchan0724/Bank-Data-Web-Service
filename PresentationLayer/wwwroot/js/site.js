@@ -11,6 +11,8 @@ function loadView(status, userData = null, actionMethod = 'GET', accNum = null)
         apiUrl = "user/UserFunctions/createAccount";
     } else if (status === "getAccount") {
         apiUrl = "user/UserFunctions/getAccount";
+    } else if (status === "getAllTransactions") {
+        apiUrl = "user/UserFunctions/auditAll";
     }
 
     console.log(`Loading view: ${status} with method: ${actionMethod}`);

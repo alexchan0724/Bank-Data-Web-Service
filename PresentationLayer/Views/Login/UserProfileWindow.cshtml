@@ -70,43 +70,34 @@
         @if (Model.isAdmin == 0)
         {
             // Add hidden input fields for username and password
-            <input type="hidden" id="username" value="@Model.username" /> 
+            <input type="hidden" id="username" value="@Model.username" />
             <input type="hidden" id="password" value="@Model.password" />
             <button type="button" id="createAccountButton" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, 0, 'createAccount')">Create Account</button>
-            <br> // Add a line break for better readability
-
-
-        /* <form action="/Home/UserProfileWindow/getAccount" method="post">
-            <input type="hidden" name="Username" value="@Model.username" />
-            <input type="hidden" name="Password" value="@Model.password" />
-                        <input type="text" id="AccNum" name="accNum" placeholder="Enter Account Number" />
-                        <input type="submit" value="Retrieve Account" />
-                        </form> */
+            <br> <!-- Add a line break for better readability -->
 
             <input type="text" id="AccNum" name="accNum" placeholder="Enter Account Number" />
             <button type="button" id="getAccountButton" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, document.getElementById('AccNum').value, 'getAccount')">Retrieve Account</button>
+            <br>
+
+            @*
+        <form action="/Home/AuditWindow" method="Get">
+        <input type="hidden" name="Username" value="@Model.username" />
+        <input type="hidden" name="Password" value="@Model.password" />
+        <input type="text" id="AccNo" name="accNo" placeholder="Enter Account Number" />
+        <input type="hidden" name="mode" value="1" />
+        <input type="hidden" name="Admin" value="0" />
+        <input type="submit" value="Audit Log" />
+        </form>
+        *@
+
+            <button type="button" id="getAllTransactions" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, 0, 'getAllTransactions')">Get Transaction History</button>
+            <br>
+
 
         }
-            <form action="/Home/AuditWindow" method="Get">
-                <input type="hidden" name="Username" value="@Model.username" />
-                <input type="hidden" name="Password" value="@Model.password" />
-                <input type="hidden" name="accNo" value="none" />
-                <input type="hidden" name="mode" value="0" />
-                <input type="hidden" name="Admin" value="0" />
-                <input type="submit" value="Audit Log" />
-            </form>
-            <form action="/Home/AuditWindow" method="Get">
-                <input type="hidden" name="Username" value="@Model.username" />
-                <input type="hidden" name="Password" value="@Model.password" />
-                <input type="text" id="AccNo" name="accNo" placeholder="Enter Account Number" />
-                <input type="hidden" name="mode" value="1" />
-                <input type="hidden" name="Admin" value="0" />
-                <input type="submit" value="Audit Log" />
-            </form>
-    }
-    else
-    {
-        <p>HELLO ADMIN</p>
+        else
+        {
+            <p>HELLO ADMIN</p>
             <form action="/Home/Admin/getallAudit" method="Get">
                 <input type="hidden" name="Username" value="@Model.username" />
                 <input type="hidden" name="Password" value="@Model.password" />
@@ -124,7 +115,8 @@
                 <input type="text" id="Accno" name="Accno" placeholder="Enter Accno" />
                 <input type="submit" value="View Audit Log via Account number" />
             </form>
-    }
+        }
+
         
     </div>
 </div>

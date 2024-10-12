@@ -37,8 +37,8 @@ namespace LocalBusinessWebAPI.Controllers
             }
         }
 
-        [HttpGet("ByUsername/{username}")]
-        public IActionResult GetTransactionByName(string username)
+        [HttpGet("byUser")]
+        public IActionResult GetTransactionByName([FromQuery]string username)
         {
             Debug.WriteLine("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + username);
             var request = new RestRequest($"transaction/Transactions/ByUsername/{username}", Method.Get);

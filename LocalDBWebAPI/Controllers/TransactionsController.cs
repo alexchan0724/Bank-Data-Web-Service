@@ -32,12 +32,10 @@ namespace LocalDBWebAPI.Controllers
             {
                 Debug.WriteLine("SSSSSSSSSSSSSSSSSSSSSSSSSSSSS " + transaction.transactionDescription);
             }
-
             if (transactions == null || !transactions.Any())
             {
                 return NotFound("No transactions found for the user.");
             }
-            //var transactionsToReturn = ConvertTransactionList(transactions);
             return Ok(transactions);
         }
 
