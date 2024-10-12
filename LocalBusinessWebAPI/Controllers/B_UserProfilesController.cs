@@ -15,7 +15,6 @@ namespace LocalBusinessWebAPI.Controllers
         [HttpPost("{checkString}")] // checkString passed as parameter can be either email or username
         public IActionResult GetUser(string checkString, [FromBody] UserDataIntermed user)
         {
-
             var request = new RestRequest("user/UserProfiles/{checkString}", Method.Post); // GET: user/UserProfiles/{checkString}?password={password}
             request.AddUrlSegment("checkString", checkString);
             request.AddJsonBody(user);
