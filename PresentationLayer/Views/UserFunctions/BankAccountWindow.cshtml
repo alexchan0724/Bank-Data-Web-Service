@@ -45,12 +45,17 @@
 <p>User Name: @ViewBag.user.username</p>
 
 <div class="form-selection">
-    <input type="hidden" name="username" value="@ViewBag.user.username" />
-    <input type="hidden" name="password" value="@ViewBag.user.password" />
-
+    <input type="hidden" name="username" value="@ViewBag.account.username" />
     <input type="hidden" name="oldbalance" value="@ViewBag.account.balance" />
     <input type="hidden" name="accNo" value="@ViewBag.account.accountNumber" />
-    <input type="text" id="description" name="description" placeholder="description" />
-    <input type="text" id="transferAcctNum" name="transferAcctNum" placeholder="Account Number " />
+    <input type="hidden" name="pin" value="@ViewBag.account.pin" />
+    <input type="hidden" name="email" value="@ViewBag.account.email" />
+    <input type="hidden" name="description" value="@ViewBag.account.description" />
+
+    <!-- <input type="hidden" name="password" value="@ViewBag.user.password" /> -->
+
+    <input type="text" id="amount" name="amount" placeholder="Amount" />
+    <input type="text" id="description" name="description" placeholder="Transfer Description" />
+    <input type="text" id="transferAcctNum" name="transferAcctNum" placeholder="Receiver Account Number" />
     <button type="button" id="transferMoney" onclick="transfer()">Transfer</button>
 </div>

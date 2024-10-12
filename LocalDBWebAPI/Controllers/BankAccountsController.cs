@@ -11,9 +11,9 @@ namespace LocalDBWebAPI.Controllers
     public class BankAccountsController : Controller
     {
         [HttpGet("{accountNumber}")]
-        public IActionResult Get(int accountNumber, [FromQuery]string username)
+        public IActionResult Get(int accountNumber)
         {
-            var account = DBManager.GetBankAccount(accountNumber, username);
+            var account = DBManager.GetBankAccount(accountNumber);
 
             if (account == null)
             {

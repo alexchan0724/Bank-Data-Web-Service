@@ -27,6 +27,8 @@ function loadView(status, userData = null, actionMethod = 'GET', accNum = null)
         apiUrl = "user/UserFunctions/auditAccountOrdered";
     } else if (status === "addNewAccount") {
         apiUrl = "user/UserFunctions/addNewAccount";
+    } else if (status === "transfer") {
+        apiUrl = "user/UserFunctions/Transfer";
     }
 
     console.log('User data: ', userData);

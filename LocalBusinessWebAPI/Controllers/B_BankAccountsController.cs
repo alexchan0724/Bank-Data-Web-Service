@@ -12,12 +12,12 @@ namespace LocalBusinessWebAPI.Controllers
     {
         RestClient restClient = new RestClient("http://localhost:5012");
 
-        [HttpGet("{accountNumber}")]
-        public IActionResult Get(int accountNumber, [FromQuery] string username)
+        [HttpGet("{accountNumber}")] // Get a specific bank account
+        public IActionResult Get(int accountNumber)
         {
+            Debug.WriteLine("Inside Get method B_BankAccountsController with accountNumber: " + accountNumber);
             RestRequest request = new RestRequest($"account/BankAccounts/{accountNumber}", Method.Get);
             request.AddUrlSegment("accountNumber", accountNumber);
-            request.AddQueryParameter("username", username);
             RestResponse response = restClient.Execute(request);
             if (response.IsSuccessful)
             {
@@ -31,11 +31,9 @@ namespace LocalBusinessWebAPI.Controllers
 
         }
 
-        [HttpGet]
+        [HttpGet] // Get all bank accounts for a user
         public IActionResult Get([FromQuery] string username)
         {
-
-
             RestRequest request = new RestRequest("account/BankAccounts", Method.Get);
             request.AddQueryParameter("username", username);
             RestResponse response = restClient.Execute(request);

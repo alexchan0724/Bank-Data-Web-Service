@@ -415,7 +415,7 @@ namespace LocalDBWebAPI.Data
             return bankAccounts;
         }
 
-        public static BankDataIntermed GetBankAccount(int acctNo, string username)
+        public static BankDataIntermed GetBankAccount(int acctNo)
         {
             BankDataIntermed bankAccount = null; // Initialize as null to return if no match is found
             try
@@ -426,9 +426,8 @@ namespace LocalDBWebAPI.Data
                     EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
-                        command.CommandText = "SELECT * FROM BankAccounts WHERE acctNo = @AcctNo AND username = @Username";
+                        command.CommandText = "SELECT * FROM BankAccounts WHERE acctNo = @AcctNo";
                         command.Parameters.AddWithValue("@AcctNo", acctNo);
-                        command.Parameters.AddWithValue("@Username", username);
 
                         using (SQLiteDataReader reader = command.ExecuteReader())
                         {

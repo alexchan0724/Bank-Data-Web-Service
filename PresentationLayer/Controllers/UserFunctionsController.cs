@@ -58,21 +58,20 @@ namespace PresentationLayer.Controllers
             Debug.WriteLine("Account number in UserFunctionsController: " + userRequest.AccountNumber);
             Debug.WriteLine("Username in UserFunctionsController: " + userRequest.User.username);
             RestRequest getAccountRequest = new RestRequest($"api/B_BankAccounts/{userRequest.AccountNumber}", Method.Get);    
-            getAccountRequest.AddQueryParameter("username", userRequest.User.username);
-                RestResponse accountResponse = restClient.Execute(getAccountRequest);
+            RestResponse accountResponse = restClient.Execute(getAccountRequest);
 
-                if (accountResponse.IsSuccessful)
-                {
-                    Debug.WriteLine("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
-                }
-                BankDataIntermed account = JsonConvert.DeserializeObject<BankDataIntermed>(accountResponse.Content);
+            if (accountResponse.IsSuccessful)
+            {
+                Debug.WriteLine("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+            }
+            BankDataIntermed account = JsonConvert.DeserializeObject<BankDataIntermed>(accountResponse.Content);
 
-                ViewBag.user = userRequest.User;
-                ViewBag.account = account;
+            ViewBag.user = userRequest.User;
+            ViewBag.account = account;
 
-                Debug.WriteLine("SSSSSSSSSSSS " + account.accountNumber + "kms" + account.email + "kms" + account.description);
+            Debug.WriteLine("SSSSSSSSSSSS " + account.accountNumber + "kms" + account.email + "kms" + account.description);
 
-                return PartialView("BankAccountWindow");
+            return PartialView("BankAccountWindow");
         }
 
         [Route("addNewAccount")]
@@ -186,6 +185,21 @@ namespace PresentationLayer.Controllers
             request.AddJsonBody(userRequest.User);
             request.AddQueryParameter("oldUsername", userRequest.OldUsername);
             request.AddQueryParameter("oldEmail", userRequest.OldEmail);
+            var response = restClient.Execute(request);
+            if (response.IsSuccessful)
+            {
+                return PartialView("UserSuccess");
+            }
+            return null;
+        }
+
+        [Route("Transfer")]
+        [HttpPost]
+        public IActionResult Transfer([FromBody] TransferDataIntermed transfer)
+        {
+            Debug.WriteLine("Entered Transfer in UserFunctionsController");
+            RestRequest request = new RestRequest("api/B_Transactions/Transfer", Method.Post);
+            request.AddJsonBody(transfer);
             var response = restClient.Execute(request);
             if (response.IsSuccessful)
             {
