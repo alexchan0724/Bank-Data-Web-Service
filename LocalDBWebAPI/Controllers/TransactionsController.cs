@@ -39,7 +39,7 @@ namespace LocalDBWebAPI.Controllers
             return Ok(transactions);
         }
 
-        [HttpGet("ByAccountNumber/{accountNumber}")]
+        [HttpGet("byAccountNumber/{accountNumber}")]
         public IActionResult GetTransactionByAccount(int accountNumber)
         {
             List<TransactionDataIntermed> transactions = DBManager.GetTransactionByBankAccount(accountNumber);

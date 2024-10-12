@@ -13,10 +13,13 @@ function loadView(status, userData = null, actionMethod = 'GET', accNum = null)
         apiUrl = "user/UserFunctions/getAccount";
     } else if (status === "getAllTransactions") {
         apiUrl = "user/UserFunctions/auditAll";
+    } else if (status === "getAcctTransactions") {
+        apiUrl = "user/UserFunctions/auditAccount";
     }
 
     console.log(`Loading view: ${status} with method: ${actionMethod}`);
     console.log(`API URL: ${apiUrl}`)
+    console.log('Account Number: ', accNum);
 
     // Define the request options
     const requestOptions = {
@@ -28,10 +31,10 @@ function loadView(status, userData = null, actionMethod = 'GET', accNum = null)
 
     // If using POST and userData is not null, add the body to the request
     if (actionMethod === 'POST' && userData) {
-        console.log('User data:', userData);
         let requestBody; // Declare requestBody variable that can be reassigned
-        if (status === "getAccount") {
+        if (status === "getAccount" || status === "getAcctTransactions") {
             // Construct UserRequest object
+            console.log("Account Number: " + accNum);
             requestBody = {
                 user: userData,
                 accountNumber: accNum || null
@@ -41,6 +44,7 @@ function loadView(status, userData = null, actionMethod = 'GET', accNum = null)
             // Pass UserDataIntermed object directly
             requestBody = userData;
         }
+        console.log('Data passed: ', requestBody);
         requestOptions.body = JSON.stringify(requestBody);
     }
 

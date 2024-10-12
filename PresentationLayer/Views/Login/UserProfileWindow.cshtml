@@ -93,7 +93,8 @@
             <button type="button" id="getAllTransactions" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, 0, 'getAllTransactions')">Get Transaction History</button>
             <br>
 
-
+            <input type="text" id="AccNo" name="accNo" placeholder="Enter Account Number" />
+            <button type="button" id="getTransaction" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, document.getElementById('AccNo').value, 'getAcctTransactions')">Get Transactions</button>
         }
         else
         {

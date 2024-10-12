@@ -92,6 +92,24 @@ namespace PresentationLayer.Controllers
             return null;
         }
 
+        [Route("auditAccount")]
+        [HttpPost]
+        public IActionResult getAccountTransactions([FromBody]UserRequest userRequest)
+        {
+            Debug.WriteLine("Entered getAccountTransactions method in UserProfileWindow");
+            Debug.WriteLine("Account number in getAccountTransactions: " + userRequest.AccountNumber);
+            RestRequest request = new RestRequest("api/B_Transactions/byAccount/", Method.Get);
+            request.AddQueryParameter("accountNumber", userRequest.AccountNumber); // AccountNumber is already a string
+            var response = restClient.Execute(request);
+            if (response.IsSuccessful)
+            {
+                var result = JsonConvert.DeserializeObject<List<TransactionDataIntermed>>(response.Content);
+                ViewBag.AuditLogs = result;
+                return PartialView("AuditWindow");
+            }
+            return null;
+        }
+
 
         [HttpGet]
         public IActionResult AuditWindow(string username, string password, string mode, string accNo, string Admin)

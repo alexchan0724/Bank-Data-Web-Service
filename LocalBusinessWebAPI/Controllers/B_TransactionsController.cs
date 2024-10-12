@@ -55,12 +55,11 @@ namespace LocalBusinessWebAPI.Controllers
             return NotFound(response.Content);
         }
 
-        [HttpGet("ByAccountNumber/{accountNumber}")]
-        public IActionResult GetTransactionByAccount(int accountNumber, [FromQuery] bool ordered)
+        [HttpGet("byAccount")]
+        public IActionResult GetTransactionByAccount([FromQuery]int accountNumber)
         {
-            var request = new RestRequest($"transaction/Transactions/ByAccountNumber/{accountNumber}", Method.Get); // Get user specific transactions
+            var request = new RestRequest($"transaction/Transactions/byAccountNumber/{accountNumber}", Method.Get); // Get user specific transactions
             request.AddUrlSegment("accountNumber", accountNumber);
-            request.AddQueryParameter("ordered", ordered.ToString());
             var response = restClient.Execute(request);
             if (response.IsSuccessful)
             {
