@@ -40,14 +40,9 @@
     <h1 class="display-4">Create User</h1>
 </div>
 
-
-
-<form action="/Home/ModifyUserWindowtoNewDetails/" method="Get" enctype="multipart/form-data">
-    <input type="hidden" name="Username" value="@Model.username" />
-    <input type="hidden" name="Password" value="@Model.password" />
-    <input type="submit" value="MODIFY">
-</form>
-
+<input type="hidden" id="username" value="@Model.username" />
+<input type="hidden" id="password" value="@Model.password" />
+<button type="button" id="modifyUserButton" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, 0, 'modifyUser')">Modify User Profile</button>
 
 <div class="horizontal-layout">
     @model API_Classes.UserDataIntermed // Adjust the namespace as necessary
@@ -70,25 +65,12 @@
         @if (Model.isAdmin == 0)
         {
             // Add hidden input fields for username and password
-            <input type="hidden" id="username" value="@Model.username" />
-            <input type="hidden" id="password" value="@Model.password" />
             <button type="button" id="createAccountButton" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, 0, 'createAccount')">Create Account</button>
             <br> <!-- Add a line break for better readability -->
 
             <input type="text" id="AccNum" name="accNum" placeholder="Enter Account Number" />
             <button type="button" id="getAccountButton" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, document.getElementById('AccNum').value, 'getAccount')">Retrieve Account</button>
             <br>
-
-            @*
-        <form action="/Home/AuditWindow" method="Get">
-        <input type="hidden" name="Username" value="@Model.username" />
-        <input type="hidden" name="Password" value="@Model.password" />
-        <input type="text" id="AccNo" name="accNo" placeholder="Enter Account Number" />
-        <input type="hidden" name="mode" value="1" />
-        <input type="hidden" name="Admin" value="0" />
-        <input type="submit" value="Audit Log" />
-        </form>
-        *@
 
             <button type="button" id="getAllTransactions" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, 0, 'getAllTransactions')">Get Transaction History</button>
             <br>

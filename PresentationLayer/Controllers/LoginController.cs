@@ -27,12 +27,12 @@ namespace PresentationLayer.Controllers
             request.AddUrlSegment("checkString", user.username);
             request.AddJsonBody(user);
             var response = restClient.Execute(request);
-            var result = JsonConvert.DeserializeObject<UserDataIntermed>(response.Content);
             if (response.IsSuccessful)
             {
+                var result = JsonConvert.DeserializeObject<UserDataIntermed>(response.Content);
                 returnObject = new 
                 { 
-                    login = true ,
+                    login = true,
                     user = result
                 };
             }

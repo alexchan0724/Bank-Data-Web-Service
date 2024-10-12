@@ -15,6 +15,12 @@ function loadView(status, userData = null, actionMethod = 'GET', accNum = null)
         apiUrl = "user/UserFunctions/auditAll";
     } else if (status === "getAcctTransactions") {
         apiUrl = "user/UserFunctions/auditAccount";
+    } else if (status === "modifyUser") {
+        apiUrl = "user/UserFunctions/modifyUser";
+    } else if (status === "createUser") {
+        apiUrl = "user/UserFunctions/createUser";
+    } else if (status === "addNewUser") {
+        apiUrl = "user/UserFunctions/addNewUser";
     }
 
     console.log(`Loading view: ${status} with method: ${actionMethod}`);
@@ -108,6 +114,7 @@ function performAuth() {
             console.error('Fetch error:', error);
         });
 }
+
 
 // pUsername is the username entered by the user, pPassword is the password entered by the user, and pAction is the action to perform
 function performAuthParameters(pUsername, pPassword, pAccNum, pAction) {

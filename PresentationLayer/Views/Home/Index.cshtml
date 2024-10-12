@@ -19,6 +19,33 @@
         window.onload = function () {
             loadView();
         };
+
+        function addNewUser() // Function to add a new user
+        {
+            // Get the data from document elements
+            const username = document.getElementById('Username').value;
+            const email = document.getElementById('Email').value;
+            const address = document.getElementById('Address').value;
+            const phoneNo = document.getElementById('PhoneNo').value;
+            const password = document.getElementById('Password').value;
+            const fileInput = document.getElementById('file-input');
+            const profilePicture = fileInput.files; // Get the first file
+
+            // Create a FormData object to handle file upload
+            const userData = new FormData();
+            userData.append('username', username);
+            userData.append('email', email);
+            userData.append('address', address);
+            userData.append('phoneNum', phoneNo);
+            userData.append('password', password);
+            if (profilePicture) {
+                userData.append('profilePicture', profilePicture);
+            }
+            userData.append('isAdmin', 0); // Assuming default isAdmin value is 0
+
+            // Call loadView with the form data
+            loadView('addNewUser', userData, 'POST');
+        }
     </script>
 </body>
 </html>

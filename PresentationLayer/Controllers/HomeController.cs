@@ -31,42 +31,6 @@ namespace PresentationLayer.Controllers
             return View("UserProfileWindow", user);
         }
 
-        [HttpGet]       //creating user
-        public IActionResult ModifyUserWindow()
-        {
-            return View("ModifyUserWindow", "Home"); // Specify just the view name
-
-        }
-
-        [HttpGet]       //modifying user
-        public IActionResult ModifyUserWindowtoNewDetails(string username, string password)
-        {
-            RestRequest getUserRequest = new RestRequest("api/B_UserProfiles/{checkString}", Method.Post);
-            getUserRequest.AddUrlSegment("checkString", username);
-            UserDataIntermed a = new UserDataIntermed();
-            a.profilePicture = null;
-            a.username = username;
-            a.password = password;
-            a.email = null;
-            a.address = null;
-            a.isAdmin = 0;
-
-
-            getUserRequest.AddJsonBody(a);
-
-            var userRequest = restClient.Execute(getUserRequest);
-            if (userRequest.IsSuccessful)
-            {
-                var userProfile = JsonConvert.DeserializeObject<UserDataIntermed>(userRequest.Content);
-                return View("ModifyUserWindowtoNewDetails", userProfile); // Specify just the view name
-            }
-            return null;
-        }
-
-
-
-
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

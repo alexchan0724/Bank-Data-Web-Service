@@ -110,68 +110,33 @@ namespace PresentationLayer.Controllers
             return null;
         }
 
-
-        [HttpGet]
-        public IActionResult AuditWindow(string username, string password, string mode, string accNo, string Admin)
+        [Route("modifyUser")]
+        [HttpPost]
+        public IActionResult ModifyUser([FromBody]UserDataIntermed user)
         {
-            Debug.WriteLine("DDDDDDDDDDDDDDDDDDDDDDDDDD " + accNo);
+            Debug.WriteLine("Entered ModifyUser in UserFunctionsController");
+            return PartialView("ModifyUserWindow", user);
+        }
 
-            if (Convert.ToInt32(Admin) == 0)
+        [Route("createUser")]
+        [HttpGet]
+        public IActionResult CreateUser()
+        {
+            Debug.WriteLine("Entered ModifyUserWindow in UserFunctionsController");
+            return PartialView("CreateUserWindow", "Home"); // Specify just the view name
+        }
+
+        [Route("addNewUser")]
+        [HttpPost]
+        public IActionResult AddNewUser([FromBody]UserDataIntermed user)
+        {
+            Debug.WriteLine("Entered AddNewUser in UserFunctionsController");
+            RestRequest request = new RestRequest("api/B_UserProfiles", Method.Post);
+            request.AddJsonBody(user);
+            var response = restClient.Execute(request);
+            if (response.IsSuccessful)
             {
-                RestRequest getUserRequest = new RestRequest("api/B_UserProfiles/{checkString}", Method.Post);
-                getUserRequest.AddUrlSegment("checkString", username);
-                UserDataIntermed a = new UserDataIntermed();
-                a.profilePicture = null;
-                a.username = username;
-                a.password = password;
-                a.email = null;
-                a.address = null;
-                a.isAdmin = 0;
-
-
-                getUserRequest.AddJsonBody(a);
-
-                var userRequest = restClient.Execute(getUserRequest);
-                if (userRequest.IsSuccessful)
-                {
-                    var userProfile = JsonConvert.DeserializeObject<UserDataIntermed>(userRequest.Content);
-                    ViewBag.user = userProfile;
-
-                    if (Convert.ToInt32(mode) == 0)
-                    {
-                        var transactionRequest = new RestRequest($"api/B_Transactions/ByUsername/{username}", Method.Get); // Get user-specific transactions
-                        transactionRequest.AddUrlSegment("username", userProfile.username);
-                        var transactionResponse = restClient.Execute(transactionRequest);
-
-
-                        var transactionData = JsonConvert.DeserializeObject<List<TransactionDataIntermed>>(transactionResponse.Content);
-
-                        Debug.WriteLine("VVVVVVVV " + transactionData.Count);
-
-
-                        ViewBag.AuditLogs = transactionData;
-
-                        return View("AuditWindow");
-                    }
-                    else
-                    {
-                        Debug.WriteLine("DDDDDDDDDDDDDDDDDDDDDDDDDD " + accNo);
-
-                        var transactionRequest = new RestRequest($"api/B_Transactions/ByAccountNumber/{accNo}", Method.Get); // Get user-specific transactions
-                        transactionRequest.AddUrlSegment("accNo", Convert.ToInt32(accNo));
-                        var transactionResponse = restClient.Execute(transactionRequest);
-
-
-                        var transactionData = JsonConvert.DeserializeObject<List<TransactionDataIntermed>>(transactionResponse.Content);
-
-                        Debug.WriteLine("VVVVVVVV " + transactionData.Count);
-
-
-                        ViewBag.AuditLogs = transactionData;
-
-                        return View("AuditWindow");
-                    }
-                }
+                return PartialView("UserProfileWindow", user);
             }
             return null;
         }
