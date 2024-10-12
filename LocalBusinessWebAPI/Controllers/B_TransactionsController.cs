@@ -14,8 +14,6 @@ namespace LocalBusinessWebAPI.Controllers
     {
         RestClient restClient = new RestClient("http://localhost:5012");
 
-        //-------------------------------------------------------------------
-
         [HttpGet]
         public IActionResult GetTransactions()
         {

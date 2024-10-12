@@ -56,9 +56,29 @@ namespace PresentationLayer.Controllers
             {
                 var userProfile = JsonConvert.DeserializeObject<UserDataIntermed>(userRequest.Content);
                 Debug.WriteLine($"User profile in AuthView: Username={userProfile.username}, Phone={userProfile.phoneNum}, Address={userProfile.address}, Email={userProfile.email}, Password={userProfile.password}, IsAdmin={userProfile.isAdmin}");
-                return PartialView("UserProfileWindow", userProfile);
+
+                // Retrieve the bank accounts for the authenticated user
+                RestRequest bankRequest = new RestRequest("api/B_BankAccounts", Method.Get);
+                bankRequest.AddQueryParameter("username", userProfile.username);
+                var bankResponse = restClient.Execute(bankRequest);
+
+                if (bankResponse.IsSuccessful)
+                {
+                    var bankAccounts = JsonConvert.DeserializeObject<List<BankDataIntermed>>(bankResponse.Content);
+                    ViewBag.BankAccounts = bankAccounts; 
+                    return PartialView("UserProfileWindow", userProfile);
+                }
+                else
+                {
+                    Debug.WriteLine("Failed to retrieve bank accounts.");
+                    return PartialView("LoginErrorView");
+                }
             }
-            return PartialView("LoginErrorView");
+            else
+            {
+                Debug.WriteLine("Failed to authenticate user.");
+                return PartialView("LoginErrorView");
+            }
         }
 
         [HttpGet("errorview")]

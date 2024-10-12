@@ -95,6 +95,26 @@
                 loadView('sendModifyRequest', userData, 'POST')
             }
         }
+
+        function addNewAccount() {
+            const username = document.querySelector('[name="username"]').value;
+            const email = document.querySelector('[name="email"]').value;
+            const accNum = document.getElementById('AccNum').value;
+            const pin = document.getElementById('PIN').value;
+            const description = document.getElementById('Description').value;
+
+            const accountData = {
+                username: username,
+                email: email,
+                accountNumber: accNum,
+                pin: pin,
+                description: description,
+                balance: 0
+            };
+            console.log('Create new account details:', accountData);
+
+            loadView('addNewAccount', accountData, 'POST');
+        }
     </script>
 </body>
 </html>

@@ -77,6 +77,22 @@
 
             <input type="text" id="AccNo" name="accNo" placeholder="Enter Account Number" />
             <button type="button" id="getTransaction" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, document.getElementById('AccNo').value, 'getAcctTransactions')">Get Transactions</button>
+
+            <ul>
+                <br />
+                @foreach (var account in ViewBag.BankAccounts)
+                {
+                    <li>
+                        -----------------------------------------------------------------------------<br />
+                        AcctNo: @account.accountNumber<br/>
+                        PIN: @account.pin<br/>
+                        Balance: @account.balance<br/>
+                        Description: @account.description<br/>
+                        -----------------------------------------------------------------------------<br />
+
+                    </li>
+                }
+            </ul>
         }
         else
         {

@@ -36,8 +36,6 @@
     }
 </style>
 
-
-
 <h2>Bank Account Number</h2>
 <h2>Bank Account Information</h2>
 <p>Account Number: @ViewBag.account.accountNumber</p>
@@ -47,19 +45,12 @@
 <p>User Name: @ViewBag.user.username</p>
 
 <div class="form-selection">
-    <form action="/Home/BankAccountWindow/Deposit" method="post">
-        <input type="hidden" name="username" value="@ViewBag.user.username" />
-        <input type="hidden" name="password" value="@ViewBag.user.password" />
+    <input type="hidden" name="username" value="@ViewBag.user.username" />
+    <input type="hidden" name="password" value="@ViewBag.user.password" />
 
-        <input type="hidden" name="oldbalance" value="@ViewBag.account.balance" />
-        <input type="hidden" name="accNo" value="@ViewBag.account.accountNumber" />
-        <input type="text" id="description" name="description" placeholder="description" />
-        <input type="text" id="newBalance" name="newBalance" placeholder="Change Balance" />
-        <input type="submit" value="Change Account" />
-    </form>
+    <input type="hidden" name="oldbalance" value="@ViewBag.account.balance" />
+    <input type="hidden" name="accNo" value="@ViewBag.account.accountNumber" />
+    <input type="text" id="description" name="description" placeholder="description" />
+    <input type="text" id="transferAcctNum" name="transferAcctNum" placeholder="Account Number " />
+    <button type="button" id="transferMoney" onclick="transfer()">Transfer</button>
 </div>
-
-
-
-
-

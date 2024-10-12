@@ -25,12 +25,12 @@ function loadView(status, userData = null, actionMethod = 'GET', accNum = null)
         apiUrl = "user/UserFunctions/sendModifyRequest";
     } else if (status === "getAccountTransactionsOrdered") {
         apiUrl = "user/UserFunctions/auditAccountOrdered";
+    } else if (status === "addNewAccount") {
+        apiUrl = "user/UserFunctions/addNewAccount";
     }
 
     console.log('User data: ', userData);
     console.log(`API URL: ${apiUrl}`)
-    console.log('Account Number: ', accNum);
-
     // Define the request options
     const requestOptions = {
         method: actionMethod,

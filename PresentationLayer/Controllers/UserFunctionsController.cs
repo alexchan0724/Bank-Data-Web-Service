@@ -48,7 +48,7 @@ namespace PresentationLayer.Controllers
         public IActionResult createAccount([FromBody]UserDataIntermed user)
         {
             Debug.WriteLine("Entered createAccount method in UserProfileWindow");
-            return PartialView("ModifyAccountWindow", user);
+            return PartialView("CreateAccount", user);
         }
 
         [Route("getAccount")]
@@ -73,6 +73,22 @@ namespace PresentationLayer.Controllers
                 Debug.WriteLine("SSSSSSSSSSSS " + account.accountNumber + "kms" + account.email + "kms" + account.description);
 
                 return PartialView("BankAccountWindow");
+        }
+
+        [Route("addNewAccount")]
+        [HttpPost]
+        public IActionResult AddNewAccount([FromBody] BankDataIntermed account)
+        {
+            Debug.WriteLine("Entered AddNewUser in UserFunctionsController");
+            Debug.WriteLine("Account details:" + account.balance + " " + account.description + " " + account.email + " " + account.pin + " " + account.username + " " + account.accountNumber);
+            RestRequest request = new RestRequest("api/B_BankAccounts", Method.Post);
+            request.AddJsonBody(account);
+            var response = restClient.Execute(request);
+            if (response.IsSuccessful)
+            {
+                return PartialView("UserSuccess");
+            }
+            return null;
         }
 
         [Route("auditAll")]

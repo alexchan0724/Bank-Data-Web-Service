@@ -42,7 +42,7 @@ namespace LocalBusinessWebAPI.Controllers
 
             if (response.IsSuccessful)
             {
-                var result = JsonConvert.DeserializeObject<List<UserDataIntermed>>(response.Content);
+                var result = JsonConvert.DeserializeObject<List<BankDataIntermed>>(response.Content);
                 return Ok(result);
             }
             return NotFound(response.Content);
@@ -51,10 +51,10 @@ namespace LocalBusinessWebAPI.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] BankDataIntermed account)
         {
+            Debug.WriteLine("Inside Post method B_BankAccountsController");
             RestRequest request = new RestRequest("account/BankAccounts", Method.Post);
             request.RequestFormat = RestSharp.DataFormat.Json;
             request.AddJsonBody(account);
-            Debug.WriteLine("CCCCCCCCCCCC " + account.email);
             RestResponse response = restClient.Execute(request);
 
             if (response.IsSuccessful)

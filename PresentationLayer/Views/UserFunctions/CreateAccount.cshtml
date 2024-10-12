@@ -1,4 +1,5 @@
-﻿@{
+﻿@model API_Classes.UserDataIntermed // Adjust the namespace as necessary
+@{
     ViewData["Title"] = "ModifyAccountWindow";
     string message = ViewBag.message;
     string error = ViewBag.Error;
@@ -38,25 +39,22 @@
 
 </style>
 <div class="text-center">
-    <h1 class="display-4">Create User</h1>
+    <h1 class="display-4">Create Account</h1>
 </div>
-
-<form action="/Home/ModifyAccountWindow/addAccount" method="post" enctype="multipart/form-data">
+<div id="CreateAccountForm">
     <div class="form-section">
-        @model API_Classes.UserDataIntermed // Adjust the namespace as necessary
-        <input type="hidden" name="username" value="@Model.username"/>
-        <input type="hidden" name="password" value="@Model.password" />
+        <input type="hidden" name="username" value="@Model.username" />
+        <input type="hidden" name="email" value="@Model.email" />
 
         <input type="text" id="AccNum" name="accNum" placeholder="Account Number" />
         <input type="text" id="PIN" name="pin" placeholder="PIN" />
         <input type="text" id="Description" name="description" placeholder="Description" />
+
     </div>
 
     <div class="horizontal-layout">
         <p>Balance: 0</p>
-        <input type="submit" value="Add Account" />
-
+        <button type="button" id="createAccount" onclick="addNewAccount()">Create Account</button>
     </div>
-
-</form>
+</div>
     
