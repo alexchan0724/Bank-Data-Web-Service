@@ -45,7 +45,8 @@ function loadView(status, userData = null, actionMethod = 'GET', accNum = null)
                 user: userData,
                 accountNumber: accNum || null
             };
-        } else
+        }
+        else
         {
             // Pass UserDataIntermed object directly
             requestBody = userData;

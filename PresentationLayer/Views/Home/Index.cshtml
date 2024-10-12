@@ -6,8 +6,6 @@
 <body>
     <div id="header">
     </div>
-    <div id="navigation">
-    </div>
     <div id="main">
     </div>
     <div id="footer">
@@ -20,31 +18,37 @@
             loadView();
         };
 
-        function addNewUser() // Function to add a new user
-        {
-            // Get the data from document elements
+        function addNewUser() {
             const username = document.getElementById('Username').value;
             const email = document.getElementById('Email').value;
             const address = document.getElementById('Address').value;
             const phoneNo = document.getElementById('PhoneNo').value;
             const password = document.getElementById('Password').value;
-            const fileInput = document.getElementById('file-input');
-            const profilePicture = fileInput.files; // Get the first file
+            const fileInput = document.getElementById('fileInput');
+            const profilePicture = fileInput.files[0];
 
-            // Create a FormData object to handle file upload
-            const userData = new FormData();
-            userData.append('username', username);
-            userData.append('email', email);
-            userData.append('address', address);
-            userData.append('phoneNum', phoneNo);
-            userData.append('password', password);
+            const userData = {
+                username: username,
+                email: email,
+                address: address,
+                phoneNum: phoneNo,
+                password: password,
+                profilePicture: null,
+                isAdmin: 0
+            };
+
             if (profilePicture) {
-                userData.append('profilePicture', profilePicture);
+                const reader = new FileReader();
+                reader.onloadend = function () // When the file has been read
+                {
+                    const base64String = reader.result.split(',')[1]; // Strip the URL until it is just the base64String
+                    userData.profilePicture = base64String; // Assign base64String to profilePicture string
+                    loadView('addNewUser', userData, 'POST')
+                };
+                reader.readAsDataURL(profilePicture); // read the profilePicture as DataURL
+            } else {
+                loadView('addNewUser', userData, 'POST')
             }
-            userData.append('isAdmin', 0); // Assuming default isAdmin value is 0
-
-            // Call loadView with the form data
-            loadView('addNewUser', userData, 'POST');
         }
     </script>
 </body>

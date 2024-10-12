@@ -122,7 +122,7 @@ namespace PresentationLayer.Controllers
         [HttpGet]
         public IActionResult CreateUser()
         {
-            Debug.WriteLine("Entered ModifyUserWindow in UserFunctionsController");
+            Debug.WriteLine("Entered CreateUser in UserFunctionsController");
             return PartialView("CreateUserWindow", "Home"); // Specify just the view name
         }
 
@@ -136,7 +136,7 @@ namespace PresentationLayer.Controllers
             var response = restClient.Execute(request);
             if (response.IsSuccessful)
             {
-                return PartialView("UserProfileWindow", user);
+                return PartialView("UserSuccess");
             }
             return null;
         }
