@@ -60,6 +60,8 @@
         <p style="font-size: 50px;">Address: @Model.address</p>
         <p style="font-size: 50px;">Phone Number: @Model.phoneNum</p>
         <p style="font-size: 50px;">Password: @Model.password</p>
+
+        <h1>@ViewBag.message</h1>
         @if (Model.isAdmin == 0)
         {
             // Add hidden input fields for username and password

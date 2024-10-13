@@ -49,6 +49,7 @@
         <button type="button" id="getTransaction" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, document.getElementById('AccNo').value, 'getAcctTransactions')">Get Transactions</button>
         <ul>
             <br />
+            <button type="button" id="returnButton" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, document.getElementById('AccNo').value, 'userProfileWindow')">Return</button>
             @foreach (var log in ViewBag.AuditLogs)
             {
                 <li>

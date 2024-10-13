@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using RestSharp;
 using System.Diagnostics;
 using System.Security.Principal;
+using System.Security.Cryptography.Xml;
 namespace PresentationLayer.Controllers
 {
     [Route("user/[controller]")]
@@ -257,7 +258,7 @@ namespace PresentationLayer.Controllers
             if (response.IsSuccessful)
             {
                 ViewBag.message = "Money transfer successful";
-                                Debug.WriteLine("AAAAAAAAAAAAAAAAA " + transfer.senderUsername);
+                Debug.WriteLine("AAAAAAAAAAAAAAAAA " + transfer.senderUsername);
                 var userRequest = new RestRequest($"api/B_Admin/B_AdminGetUserProfile/{transfer.senderUsername}", Method.Get);
 
                 var userResponse = restClient.Execute(userRequest);
@@ -273,10 +274,27 @@ namespace PresentationLayer.Controllers
                     ViewBag.BankAccounts = bankAccounts;
                     return PartialView("UserProfileWindowError", result);
                 }
-
-
             }
             return null;
         }
+
+        [Route("returnToUserWindow")]
+        [HttpPost]
+        public IActionResult returnToUserWindow([FromBody] UserDataIntermed user)
+        {
+            Debug.WriteLine("FFFFFFFFFFFFFFFFFFFFFFFFFFF ");
+            var userRequest = new RestRequest($"api/B_Admin/B_AdminGetUserProfile/{user.username}", Method.Get);
+
+            var userResponse = restClient.Execute(userRequest);
+            var result = JsonConvert.DeserializeObject<UserDataIntermed>(userResponse.Content);
+
+            RestRequest bankRequest = new RestRequest("api/B_BankAccounts", Method.Get);
+            bankRequest.AddQueryParameter("username", user.username);
+            var bankResponse = restClient.Execute(bankRequest);
+            var bankAccounts = JsonConvert.DeserializeObject<List<BankDataIntermed>>(bankResponse.Content);
+            ViewBag.BankAccounts = bankAccounts;
+            return PartialView("UserProfileWindowError", result);
+        }
+
     }
 }

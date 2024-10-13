@@ -65,5 +65,11 @@ namespace LocalDBWebAPI.Controllers
             return Ok(transactions);
         }
 
+        [HttpGet("AdminByUsername/{username}")]
+        public IActionResult AdminByUsername(string username)
+        {
+            return Ok(DBManager.AdminGetUserProfile(username));
+        }
+
     }
 }

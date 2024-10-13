@@ -42,7 +42,7 @@ namespace PresentationLayer.Controllers
 
         [Route("displayUsers")] // After admin has selected a name
         [HttpPost]
-        public IActionResult ManageUsersWithAccounts([FromBody] List<UserDataIntermed>users)
+        public IActionResult ManageUsersWithAccounts([FromBody] List<UserDataIntermed> users)
         {
             Debug.WriteLine("Entered AdminFunctionsController to load ManageUsers");
             ViewBag.Users = users; // Initially leave users List empty
@@ -77,7 +77,8 @@ namespace PresentationLayer.Controllers
             Debug.WriteLine("Entered AdminFunctionsController to load Logs");
             var request = new RestRequest("api/B_Admin/auditLogs", Method.Get);
             var response = restClient.Execute(request);
-            if (response.IsSuccessful) {
+            if (response.IsSuccessful)
+            {
                 var logEntries = JsonConvert.DeserializeObject<List<LogDataIntermed>>(response.Content);
                 ViewBag.LogEntries = logEntries;
                 return PartialView("Logs", logEntries);
@@ -136,6 +137,19 @@ namespace PresentationLayer.Controllers
                 return BadRequest("Failed to load audit logs.");
             }
         }
-        
+
+        [Route("AdminGetProfile")]
+        [HttpGet]
+        public IActionResult AdminGetUserProfile(string username)
+        {
+            var request = new RestRequest($"api/B_AdminGetUserProfile/AdminGetUserProfile/{username}", Method.Get);
+            var response = restClient.Execute(request);
+            if (response.IsSuccessful)
+            {
+                var result = JsonConvert.DeserializeObject<UserDataIntermed>(response.Content);
+                return Ok(result);
+            }
+            return BadRequest();
+        }
     }
 }

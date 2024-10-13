@@ -105,6 +105,7 @@ namespace LocalBusinessWebAPI.Controllers
             if (response.IsSuccessful)
             {
                 var result = JsonConvert.DeserializeObject<UserDataIntermed>(response.Content);
+                Debug.WriteLine("DDDDDDDDDDDDDDDDD");
                 return Ok(result);
             }
             return BadRequest();

@@ -41,6 +41,8 @@ function loadView(status, userData = null, actionMethod = 'GET', accNum = null)
         apiUrl = "admin/AdminFunctions/allTransactions";
     } else if (status === "filterTransactions") {
         apiUrl = "admin/AdminFunctions/filterTransactions";
+    } else if (status === "userProfileWindow") {
+        apiUrl = "user/UserFunctions/returnToUserWindow"
     }
 
     console.log('User data: ', userData);
