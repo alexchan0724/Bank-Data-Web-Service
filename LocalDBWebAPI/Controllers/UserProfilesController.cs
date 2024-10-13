@@ -16,6 +16,7 @@ namespace LocalDBWebAPI.Controllers
 
             if (string.IsNullOrEmpty(pUser.password))
             {
+                DBManager.AddLogEntry("getaccount failed, password is required");
                 return BadRequest("Password is required.");
             }
 
@@ -23,14 +24,18 @@ namespace LocalDBWebAPI.Controllers
 
             if (userProfile == null)
             {
+                DBManager.AddLogEntry("getaccount failed, input do not match any email or username in database");
                 return NotFound("Parameter does not match any emails or usernames in the database.");
             }
             else if (userProfile.password != pUser.password)
             {
+                DBManager.AddLogEntry("getaccount failed, password do not match");
+
                 return NotFound("Password does not match.");
             }
             else
             {
+                DBManager.AddLogEntry("getAccount successful, returning user");
                 Debug.WriteLine($"Retrieved user. IsAdmin: {userProfile.isAdmin}, Phone: {userProfile.phoneNum}");
                 return Ok(userProfile);
             }
@@ -44,18 +49,26 @@ namespace LocalDBWebAPI.Controllers
 
             if (userProfile == null)
             {
+                DBManager.AddLogEntry("createAccount failed, user profile is required");
+
                 return BadRequest("User profile is required.");
             }
 
             if (string.IsNullOrEmpty(userProfile.email) || string.IsNullOrEmpty(userProfile.username) || string.IsNullOrEmpty(userProfile.password))
             {
+                DBManager.AddLogEntry("createAccount failed, email, username and/or password are required");
+
                 return BadRequest("Email, username, and password are required.");
             }
 
             if (DBManager.InsertUserProfile(userProfile))
             {
+                DBManager.AddLogEntry("createAccount successful");
+
                 return Ok("User profile added.");
             }
+            DBManager.AddLogEntry("createAccount failed, user with same username and email already exist");
+
             return BadRequest("User profile with the same email or username already exists.");
         }
 
@@ -65,8 +78,12 @@ namespace LocalDBWebAPI.Controllers
         {
             if (DBManager.DeleteUserProfile(checkString))
             {
+                DBManager.AddLogEntry("deleteProfile successful");
+
                 return Ok("User profile deleted.");
             }
+            DBManager.AddLogEntry("deleteProfile failed, user profile with email/username " + checkString + "do not exist in database");
+
             return NotFound("User profile not found.");
         }
 
@@ -75,13 +92,19 @@ namespace LocalDBWebAPI.Controllers
         {
             if (userProfile == null)
             {
+                DBManager.AddLogEntry("updateProfile failed, userProfile is required");
+
                 return BadRequest("User profile is required.");
             }
             Debug.WriteLine("UserProfilesController.Put: " + userProfile.username + " " + userProfile.email + " " + oldUsername + " " + oldEmail);
             if (DBManager.UpdateUserProfile(userProfile, oldUsername, oldEmail))
             {
+                DBManager.AddLogEntry("updateProfile successful");
+
                 return Ok("User profile updated.");
             }
+            DBManager.AddLogEntry("updateProfile failed");
+
             return BadRequest("Could not update UserProfile.");
         }
     }

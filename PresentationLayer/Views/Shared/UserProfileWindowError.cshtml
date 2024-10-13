@@ -1,0 +1,112 @@
+﻿@{
+    ViewData["Title"] = "UserProfileWindowError";
+    string message = ViewBag.message;
+    string error = ViewBag.Error;
+}
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    #CreateUserForm {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50vh; /* Adjust height to vertically center */
+    }
+
+    .horizontal-layout {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 100px; /* Add some space between form fields and image selection */
+    }
+
+    .form-section, .image-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 200px;
+    }
+
+    input {
+        margin-bottom: 10px;
+        width: 300px;
+        padding: 5px;
+    }
+</style>
+
+
+<input type="hidden" id="username" value="@Model.username" />
+<input type="hidden" id="password" value="@Model.password" />
+<button type="button" id="modifyUserButton" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, 0, 'modifyUser')">Modify User Profile</button>
+
+<div class="horizontal-layout">
+    @model API_Classes.UserDataIntermed // Adjust the namespace as necessary
+
+
+    @if (@Model.profilePicture != null && @Model.profilePicture.Length > 0)
+    {
+        var base64Image = Convert.ToBase64String(Model.profilePicture);
+        var imgSrc = $"data:image/png;base64,{base64Image}";
+
+        <img src="@imgSrc" alt="Profile Picture" style="max-width: 300px; width: auto; height: auto;" />
+    }
+
+    <div class="form-selection">
+        <p style="font-size: 50px;">Username: @Model.username</p>
+        <p style="font-size: 50px;">Email: @Model.email</p>
+        <p style="font-size: 50px;">Address: @Model.address</p>
+        <p style="font-size: 50px;">Phone Number: @Model.phoneNum</p>
+        <p style="font-size: 50px;">Password: @Model.password</p>
+        @if (Model.isAdmin == 0)
+        {
+            // Add hidden input fields for username and password
+            <p> @ViewBag.Error @ViewBag.message</p>
+            <button type="button" id="createAccountButton" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, 0, 'createAccount')">Create Account</button>
+            <br> <!-- Add a line break for better readability -->
+
+            <input type="text" id="AccNum" name="accNum" placeholder="Enter Account Number" />
+            <button type="button" id="getAccountButton" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, document.getElementById('AccNum').value, 'getAccount')">Retrieve Account</button>
+            <br>
+
+            <button type="button" id="getAllTransactions" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, 0, 'getAllTransactions')">Get Transaction History</button>
+            <br>
+
+            <input type="text" id="AccNo" name="accNo" placeholder="Enter Account Number" />
+            <button type="button" id="getTransaction" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, document.getElementById('AccNo').value, 'getAcctTransactions')">Get Transactions</button>
+
+            <ul>
+                <br />
+                @foreach (var account in ViewBag.BankAccounts)
+                {
+                    <li>
+                        -----------------------------------------------------------------------------<br />
+                        AcctNo: @account.accountNumber<br />
+                        PIN: @account.pin<br />
+                        Balance: @account.balance<br />
+                        Description: @account.description<br />
+                        -----------------------------------------------------------------------------<br />
+
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>HELLO ADMIN</p>
+            <form action="/Home/Admin/getallAudit" method="Get">
+                <input type="hidden" name="Username" value="@Model.username" />
+                <input type="hidden" name="Password" value="@Model.password" />
+                <input type="hidden" name="mode" value="0" />
+                <input type="hidden" name="Admin" value="1" />
+                <input type="submit" value="View Audit Logs" />
+            </form>
+                // Also need to get Logs and System changes
+            <button type="button" id="manageUsers" onclick="loadView('manageUsers')">Manage User Accounts</button>
+        }
+
+
+    </div>
+</div>
+
