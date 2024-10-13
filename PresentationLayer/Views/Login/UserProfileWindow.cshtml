@@ -97,6 +97,11 @@
         else
         {
             <p>HELLO ADMIN</p>
+            <button type="button" id="AllAuditButton" onclick="performAuthParameters(document.getElementById('username').value,
+            document.getElementById('password').value, 0, 'AdminAllTransaction')">get all audit</button>
+            <br> <!-- Add a line break for better readability -->
+
+
             <form action="/Home/Admin/getallAudit" method="Get">
                 <input type="hidden" name="Username" value="@Model.username" />
                 <input type="hidden" name="Password" value="@Model.password" />
