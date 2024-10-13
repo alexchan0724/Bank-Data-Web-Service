@@ -30,6 +30,28 @@ namespace LocalBusinessWebAPI.Controllers
             }
         }
 
+        [HttpGet("auditLogs")]
+        public IActionResult Logs()
+        {
+            Debug.WriteLine("Entered B_AdminController to load logs");
+            var request = new RestRequest("admin/Admin/auditLogs", Method.Get);
+            var response = restClient.Execute(request);
+
+            if (response.IsSuccessful)
+            {
+                var transactions = JsonConvert.DeserializeObject<List<TransactionDataIntermed>>(response.Content);
+                return Ok(transactions);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return NotFound("No transactions have been found in the database.");
+            }
+            else
+            {
+                return BadRequest("Failed to load audit logs.");
+            }
+        }
+
         [HttpGet("B_AdminByUsername/{username}")]
         public IActionResult AdminByUsername(string username)
         {
@@ -73,5 +95,7 @@ namespace LocalBusinessWebAPI.Controllers
                 return BadRequest("Failed to load audit logs.");
             }
         }
+
+
     }
 }

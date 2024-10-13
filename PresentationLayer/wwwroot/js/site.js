@@ -35,6 +35,8 @@ function loadView(status, userData = null, actionMethod = 'GET', accNum = null)
         apiUrl = "admin/AdminFunctions/displayUsers";
     } else if (status === "deleteUser") {
         apiUrl = "admin/AdminFunctions/deleteUsers";
+    } else if (status === "loadAuditLog") {
+        apiUrl = "admin/AdminFunctions/logs";
     }
 
     console.log('User data: ', userData);

@@ -100,7 +100,9 @@
                 <input type="hidden" name="Admin" value="1" />
                 <input type="submit" value="View Audit Logs" />
             </form>
-            // Also need to get Logs and System changes
+            <button type="button" id="auditUsers" onclick="loadView('loadAuditLog')">Load Audits</button>
+            <br>
+
             <button type="button" id="manageUsers" onclick="loadView('manageUsers')">Manage User Accounts</button>
 
         }
