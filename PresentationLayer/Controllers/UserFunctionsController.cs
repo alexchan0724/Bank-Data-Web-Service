@@ -228,17 +228,24 @@ namespace PresentationLayer.Controllers
             if (response.IsSuccessful)
             {
                 ViewBag.message = "User modification successful";
-               
-                    ViewBag.message = "new account added successfully";
 
-                    RestRequest bankRequest = new RestRequest("api/B_BankAccounts", Method.Get);
-                    bankRequest.AddQueryParameter("username", userRequest.User.username);
-                    var bankResponse = restClient.Execute(bankRequest);
+                ViewBag.message = "new account added successfully";
+
+                RestRequest bankRequest = new RestRequest("api/B_BankAccounts", Method.Get);
+                bankRequest.AddQueryParameter("username", userRequest.User.username);
+                var bankResponse = restClient.Execute(bankRequest);
+                if (bankResponse.IsSuccessful)
+                {
                     var bankAccounts = JsonConvert.DeserializeObject<List<BankDataIntermed>>(bankResponse.Content);
                     ViewBag.BankAccounts = bankAccounts;
-
-
-                    return PartialView("UserProfileWindowError", userRequest.User);
+                    return PartialView("UserProfileWindow", userRequest.User);
+                }
+                else
+                {
+                    Debug.WriteLine("User has no existing bank accounts.");
+                    ViewBag.BankAccounts = new List<BankDataIntermed>(); // Initialises an empty list which UserProfileWindow expects
+                    return PartialView("UserProfileWindow", userRequest.User);
+                }
             }
             return null;
         }
@@ -287,14 +294,22 @@ namespace PresentationLayer.Controllers
 
             var userResponse = restClient.Execute(userRequest);
             var result = JsonConvert.DeserializeObject<UserDataIntermed>(userResponse.Content);
-
+            Debug.WriteLine(userResponse.Content);
             RestRequest bankRequest = new RestRequest("api/B_BankAccounts", Method.Get);
             bankRequest.AddQueryParameter("username", user.username);
             var bankResponse = restClient.Execute(bankRequest);
-            var bankAccounts = JsonConvert.DeserializeObject<List<BankDataIntermed>>(bankResponse.Content);
-            ViewBag.BankAccounts = bankAccounts;
-            return PartialView("UserProfileWindowError", result);
+            if (bankResponse.IsSuccessful)
+            {
+                var bankAccounts = JsonConvert.DeserializeObject<List<BankDataIntermed>>(bankResponse.Content);
+                ViewBag.BankAccounts = bankAccounts;
+                return PartialView("UserProfileWindow", result);
+            }
+            else
+            {
+                Debug.WriteLine("User has no existing bank accounts.");
+                ViewBag.BankAccounts = new List<BankDataIntermed>(); // Initialises an empty list which UserProfileWindow expects
+                return PartialView("UserProfileWindow", result);
+            }
         }
-
     }
 }

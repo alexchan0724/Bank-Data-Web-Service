@@ -833,7 +833,14 @@ namespace LocalDBWebAPI.Data
                             userProfile.username = reader["Username"]?.ToString() ?? string.Empty;
                             userProfile.address = reader["Address"]?.ToString() ?? string.Empty;
                             userProfile.email = reader["Email"]?.ToString() ?? string.Empty;
-                            userProfile.profilePicture = (byte[])reader["profilePicture"]; // Read byte array
+                            if (reader["profilePicture"] != DBNull.Value)
+                            {
+                                userProfile.profilePicture = (byte[])reader["profilePicture"]; // Read byte array
+                            }
+                            else
+                            {
+                                userProfile.profilePicture = null; // or use a default value if needed
+                            }
                             userProfile.phoneNum = reader["Phone"]?.ToString() ?? string.Empty;
                             userProfile.isAdmin = Convert.ToInt32(reader["isAdmin"]); // Convert isAdmin of UserProfile to boolean                        }
                         }

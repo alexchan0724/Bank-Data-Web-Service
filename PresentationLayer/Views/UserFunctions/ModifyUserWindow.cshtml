@@ -51,6 +51,7 @@
 </style>
 
 <div class="text-center">
+    <button type="button" id="returnButton" onclick="performAuthParameters(document.getElementById('OldUsername').value, document.getElementById('PasswordHidden').value, 0, 'userProfileWindow')">Return</button>
     <h1 class="display-4">Modify User</h1>
 </div>
 <div id="CreateUserForm">
@@ -65,9 +66,10 @@
             <input type="text" id="Address" name="address" placeholder="Address" />
             <input type="text" id="PhoneNo" name="phoneNo" placeholder="Phone Number" />
             <input type="password" id="Password" name="userPassword" placeholder="Password" />
+            <input type="hidden" id="PasswordHidden" name="userPasswordHidden" value="@Model.password" />
             <input type="file" id="fileInput" name="userImage" accept="image/*" />
             <input type="hidden" id="isAdmin" name="isAdmin" value="@Model.isAdmin"/>
-            <button type="button" id="createUser" onclick="modifyUser()">Modify Account</button>
+            <button type="button" id="modifyUser" onclick="modifyUser()">Modify Account</button>
 
             <input type="hidden" id="OldUsername" name="oldUsername" value="@Model.username" />
             <input type="hidden" id="OldEmail" name="oldEmail" value="@Model.email" />
