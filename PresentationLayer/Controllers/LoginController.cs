@@ -30,6 +30,7 @@ namespace PresentationLayer.Controllers
             if (response.IsSuccessful)
             {
                 var result = JsonConvert.DeserializeObject<UserDataIntermed>(response.Content);
+                Debug.WriteLine($"Raw JSON response: {response.Content}");
                 returnObject = new 
                 { 
                     login = true,

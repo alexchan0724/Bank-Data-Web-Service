@@ -66,6 +66,7 @@
             <input type="text" id="PhoneNo" name="phoneNo" placeholder="Phone Number" />
             <input type="password" id="Password" name="userPassword" placeholder="Password" />
             <input type="file" id="fileInput" name="userImage" accept="image/*" />
+            <input type="hidden" id="isAdmin" name="isAdmin" value="@Model.isAdmin"/>
             <button type="button" id="createUser" onclick="modifyUser()">Modify Account</button>
 
             <input type="hidden" id="OldUsername" name="oldUsername" value="@Model.username" />

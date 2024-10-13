@@ -31,10 +31,10 @@
                 username: username,
                 email: email,
                 address: address,
-                phoneNum: phoneNo,
+                phoneNum: phoneNo.toString(),
                 password: password,
                 profilePicture: null,
-                isAdmin: 0
+                isAdmin: parseInt(0)
             };
 
             if (profilePicture) {
@@ -59,6 +59,8 @@
             const password = document.getElementById('Password').value;
             const fileInput = document.getElementById('fileInput');
             const profilePicture = fileInput.files[0];
+            const isAdmin = document.getElementById('isAdmin').value;
+
 
             const oldUsername = document.getElementById('OldUsername').value;
             const oldEmail = document.getElementById('OldEmail').value;
@@ -70,10 +72,10 @@
                     username: username,
                     email: email,
                     address: address,
-                    phoneNum: phoneNo,
+                    phoneNum: phoneNo.toString(),
                     password: password,
                     profilePicture: null,
-                    isAdmin: 0
+                    isAdmin: parseInt(isAdmin)
                 },
                 OldEmail: oldEmail,
                 OldUsername: oldUsername

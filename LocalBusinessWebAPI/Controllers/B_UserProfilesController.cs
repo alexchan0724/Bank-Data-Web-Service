@@ -24,7 +24,7 @@ namespace LocalBusinessWebAPI.Controllers
             if (response.IsSuccessful)
             {
                 var result = JsonConvert.DeserializeObject<UserDataIntermed>(response.Content);
-
+                Debug.WriteLine($"Raw JSON response: {response.Content}");
                 return Ok(result);
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
@@ -66,7 +66,7 @@ namespace LocalBusinessWebAPI.Controllers
             Debug.WriteLine(" Old username in ModifyAccount B_UserProfiles " +  oldUsername + " " + oldEmail);
             Debug.WriteLine("DDDDDDDDDDDD " + userProfile.username + userProfile.phoneNum + userProfile.address + userProfile.email + userProfile.password + " @@@ " + userProfile.isAdmin);
 
-            var request = new RestRequest("user/userprofiles", Method.Put); // GET: user/UserProfiles/{checkString}?password={password}
+            var request = new RestRequest("user/userprofiles", Method.Put);
             request.AddJsonBody(userProfile);
             request.AddQueryParameter("oldUsername", oldUsername);
             request.AddQueryParameter("oldEmail", oldEmail);
@@ -79,7 +79,6 @@ namespace LocalBusinessWebAPI.Controllers
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
-                Debug.WriteLine("BadRequest in B_UserProfiles " + response.Content);
                 return BadRequest(response.Content);
             }
             else

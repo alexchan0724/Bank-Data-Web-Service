@@ -13,8 +13,6 @@ namespace LocalDBWebAPI.Controllers
         [HttpPost("{checkString}")] // checkString passed as parameter can be either email or username
         public IActionResult Get(string checkString, [FromBody] UserDataIntermed pUser) 
         {
-            Debug.WriteLine("FFFFF " + pUser.username + pUser.password);
-
 
             if (string.IsNullOrEmpty(pUser.password))
             {
@@ -33,15 +31,8 @@ namespace LocalDBWebAPI.Controllers
             }
             else
             {
-                UserDataIntermed returnUser = new UserDataIntermed();
-                returnUser.username = userProfile.username;
-                returnUser.email = userProfile.email;
-                returnUser.address = userProfile.address;
-                returnUser.phoneNum = userProfile.phoneNum;
-                returnUser.profilePicture = userProfile.profilePicture;
-                returnUser.password = userProfile.password;
-                returnUser.isAdmin = userProfile.isAdmin;
-                return Ok(returnUser);
+                Debug.WriteLine($"Retrieved user. IsAdmin: {userProfile.isAdmin}, Phone: {userProfile.phoneNum}");
+                return Ok(userProfile);
             }
         }
 

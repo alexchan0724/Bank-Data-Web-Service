@@ -159,36 +159,48 @@ namespace LocalDBWebAPI.Data
         // Method to update a user profile return false if there is existing user with the same username or email
         public static bool UpdateUserProfile(UserDataIntermed userProfile, string oldUsername, string oldEmail)
         {
-            Debug.WriteLine("Username in UpdateUserProfile: " + userProfile.username);
-            Debug.WriteLine("Email in UpdateUserProfile: " + userProfile.email);
-            Debug.WriteLine("Password in UpdateUserProfile: " + userProfile.password);
-            Debug.WriteLine("Phone number in UpdateUserProfile: " + userProfile.phoneNum);
-            Debug.WriteLine("Old Username in UpdateUserProfile: " + oldUsername);
-            Debug.WriteLine("Old Email in UpdateUserProfile: " + oldEmail);
+            Debug.WriteLine("Phone type: " + userProfile.phoneNum?.GetType());
+            Debug.WriteLine("isAdmin type: " + userProfile.isAdmin.GetType());
+
             try
             {
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
                     EnableForeignKeyConstraints(connection); // Enable foreign key constraints
+
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
-                        // Update UserProfile table using old username and email to find the correct record
-                        command.CommandText = @"
-                            UPDATE UserProfile
-                            SET password = @Password, username = @Username, address = @Address, email = @Email, profilePicture = @ProfilePicture, phone = @Phone, isAdmin = @IsAdmin
-                            WHERE username = @OldUsername OR email = @OldEmail";
+                        // If profile picture is not provided, do not update profile picture
+                        if (userProfile.profilePicture != null)
+                        {
+                            command.CommandText = @"
+                                UPDATE UserProfile
+                                SET password = @Password, username = @Username, address = @Address, email = @Email, profilePicture = @ProfilePicture, phone = @Phone, isAdmin = @IsAdmin
+                                WHERE username = @OldUsername OR email = @OldEmail";
+                            command.Parameters.Add("@ProfilePicture", System.Data.DbType.Binary).Value = userProfile.profilePicture; // Insert image as binary
+                        }
+                        else
+                        {
+                            command.CommandText = @"
+                                UPDATE UserProfile
+                                SET password = @Password, username = @Username, address = @Address, email = @Email, phone = @Phone, isAdmin = @IsAdmin
+                                WHERE username = @OldUsername OR email = @OldEmail";
+                        }
+
+                        // Add the common parameters
                         command.Parameters.AddWithValue("@Password", userProfile.password);
                         command.Parameters.AddWithValue("@Username", userProfile.username);
                         command.Parameters.AddWithValue("@Address", userProfile.address);
                         command.Parameters.AddWithValue("@Email", userProfile.email);
-                        command.Parameters.Add("@ProfilePicture", System.Data.DbType.Binary).Value = userProfile.profilePicture; // Insert image as binary
                         command.Parameters.AddWithValue("@Phone", userProfile.phoneNum);
                         command.Parameters.AddWithValue("@IsAdmin", userProfile.isAdmin);
                         command.Parameters.AddWithValue("@OldUsername", oldUsername);
                         command.Parameters.AddWithValue("@OldEmail", oldEmail);
+
                         int rowChanged = command.ExecuteNonQuery();
-                        Debug.WriteLine("Accounts Modified:" + rowChanged);
+                        Debug.WriteLine("Accounts Modified: " + rowChanged);
+
                         if (rowChanged == 0)
                         {
                             Debug.WriteLine("Method failed to update any rows.");
@@ -205,6 +217,7 @@ namespace LocalDBWebAPI.Data
             }
             return false;
         }
+
 
         public static UserDataIntermed GetUserProfile(string checkString, string password)
         {
@@ -236,6 +249,8 @@ namespace LocalDBWebAPI.Data
                                 userProfile.profilePicture = (byte[])reader["profilePicture"]; // Read byte array
                                 userProfile.phoneNum = reader["Phone"]?.ToString() ?? string.Empty;
                                 userProfile.isAdmin = Convert.ToInt32(reader["isAdmin"]);
+                                Debug.WriteLine("User phone number: " + userProfile.phoneNum);
+                                Debug.WriteLine("User isAdmin? " + userProfile.isAdmin);
                             }
                         }
                     }
