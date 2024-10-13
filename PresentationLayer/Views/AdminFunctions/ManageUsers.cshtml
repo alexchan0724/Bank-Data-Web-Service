@@ -1,4 +1,6 @@
-﻿<style>
+﻿@using API_Classes
+@model List<UserDataIntermed>
+<style>
     .userList ul {
         list-style-type: none;
         padding: 0;
@@ -28,7 +30,17 @@
             border-radius: 5px;
         }
 </style>
-
+<div class="search-section">
+    <input type="text" id="searchBox" name="searchString" placeholder="Search by name" />
+    <button type="button" id="searchAccountButton" onclick="searchUsers()">Search</button>
+</div>
+<div class="createUserSection">
+    <button type="button" id="createAccountButton" onclick=" loadView('createUser')">Create Account</button>
+</div>
+@if (!string.IsNullOrEmpty(ViewBag.Message)) // If user has been deleted 
+{
+    <div>@ViewBag.Message</div>
+}
 <div class="userList">
     @if (ViewBag.Users != null && ViewBag.Users.Count > 0)
     {
@@ -49,9 +61,5 @@
                 </li>
             }
         </ul>
-    }
-    else
-    {
-        <p>No users available.</p>
     }
 </div>

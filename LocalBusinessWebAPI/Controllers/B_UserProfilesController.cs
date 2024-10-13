@@ -88,7 +88,7 @@ namespace LocalBusinessWebAPI.Controllers
         }
 
         [HttpDelete]
-        [Route("{checkString}")] // checkString passed as parameter can be either email or username
+        [Route("{checkString}")]
         public IActionResult Delete(string checkString)
         {
             RestRequest request = new RestRequest($"user/userprofiles/{checkString}", Method.Delete);
