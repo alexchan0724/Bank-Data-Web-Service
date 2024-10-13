@@ -1,5 +1,4 @@
-﻿@model API_Classes.UserDataIntermed
-@{
+﻿@{
     ViewData["Title"] = "LogWindow";
     string message = ViewBag.message;
     string error = ViewBag.Error;
@@ -40,12 +39,14 @@
     <input type="text" id="usernameBox" name="usernameBox" placeholder="Enter Username" />
     <input type="text" id="minAmountBox" name="minAmountBox" placeholder="Enter Minimum Amount" />
     <input type="text" id="maxAmountBox" name="maxAmountBox" placeholder="Enter Maximum Amount" />
+    <input type="hidden" id="adminUsername" value="@Model.username"/>
+
     <select id="sortOrder">
         <option value="ascending">Ascending Order</option>
         <option value="descending">Descending Order</option>
     </select>
     <button type="button" id="filterButton" onclick="filterTransactions()">Filter</button>
-    <button type="button" id="auditUsers" onclick="loadView('loadAllTransactions')">Load All Transactions</button>
+    <button type="button" id="auditUsers" onclick="loadView('loadAllTransactions', document.getElementById('username').value, 'POST')">Load All Transactions</button>
 </div>
 
 <div class="text-center">
