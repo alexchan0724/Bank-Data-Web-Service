@@ -36,6 +36,7 @@
     }
 </style>
 <div class="Admin-Functions">
+
     <input type="text" id="usernameBox" name="usernameBox" placeholder="Enter Username" />
     <input type="text" id="minAmountBox" name="minAmountBox" placeholder="Enter Minimum Amount" />
     <input type="text" id="maxAmountBox" name="maxAmountBox" placeholder="Enter Maximum Amount" />
@@ -55,10 +56,6 @@
     @if (ViewBag.Transactions != null)
     {
         <h2>Transaction History</h2>
-        <input type="hidden" id="username" value="@ViewBag.Admin.username" />
-        <input type="hidden" id="password" value="@ViewBag.Admin.password" />
-
-        <button type="button" id="returnButton" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, 0, 'userProfileWindow')">Return</button>
 
         <ul>
             <br />

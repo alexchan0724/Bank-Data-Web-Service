@@ -94,29 +94,16 @@ namespace PresentationLayer.Controllers
         }
 
         [Route("allTransactions")]
-        [HttpPost]
-        public IActionResult GetAllTransactions([FromBody]string username)
+        [HttpGet]
+        public IActionResult GetAllTransactions()
         {
             var request = new RestRequest("api/B_Transactions", Method.Get);
             var response = restClient.Execute(request);
             if (response.IsSuccessful)
             {
                 var transactions = JsonConvert.DeserializeObject<List<TransactionDataIntermed>>(response.Content);
-                var getAdminRequest = new RestRequest($"api/B_Admin/B_AdminGetUserProfile/{username}", Method.Get);
-                var getAdminResponse = restClient.Execute(getAdminRequest);
-                if (getAdminResponse.IsSuccessful)
-                {
-                        var admin = JsonConvert.DeserializeObject<UserDataIntermed>(getAdminResponse.Content);
-                        ViewBag.Admin = admin;
-                        ViewBag.Transactions = transactions;
-
-                        return PartialView("AuditTransactions");
-
-                }
-                else
-                {
-                    return BadRequest("Failed to load audit logs.");
-                }
+                ViewBag.Transactions = transactions;
+                return PartialView("AuditTransactions");
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
@@ -138,19 +125,8 @@ namespace PresentationLayer.Controllers
             if (response.IsSuccessful)
             {
                 var transactions = JsonConvert.DeserializeObject<List<TransactionDataIntermed>>(response.Content);
-                var getAdminRequest = new RestRequest($"api/B_Admin/B_AdminGetUserProfile/{filter.username}", Method.Get);
-                var getAdminResponse = restClient.Execute(getAdminRequest);
-                if (getAdminResponse.IsSuccessful)
-                {
-                    var admin = JsonConvert.DeserializeObject<UserDataIntermed>(getAdminResponse.Content);
-                    ViewBag.Admin = admin;
-                    ViewBag.Transactions = transactions;
-                    return PartialView("AuditTransactions");
-                }
-                else
-                {
-                    return BadRequest("Failed to load filtered audit logs.");
-                }
+                ViewBag.Transactions = transactions;
+                return PartialView("AuditTransactions");
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {

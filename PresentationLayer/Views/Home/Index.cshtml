@@ -215,14 +215,12 @@
             const minAmount = document.getElementById('minAmountBox').value;
             const maxAmount = document.getElementById('maxAmountBox').value;
             const sortOrder = document.getElementById('sortOrder').value;
-            const adminUsername = document.getElementById('adminUsername').value;
 
             const filterData = {
                 username: username || "",
                 minAmount: minAmount? parseInt(minAmount) : null,
                 maxAmount: maxAmount? parseInt(maxAmount) : null,
-                sortOrder: sortOrder || null,
-                adminUsername: adminUsername
+                sortOrder: sortOrder || null
             };
             loadView('filterTransactions', filterData, 'POST');
         }
