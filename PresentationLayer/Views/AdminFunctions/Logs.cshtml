@@ -39,20 +39,18 @@
 
 <div class="text-center">
     <h1 class="display-4">Audit</h1>
-    @if (ViewBag.AuditLogs != null)
+    @if (ViewBag.LogEntries != null)
     {
         <h2>Transaction History</h2>
         <ul>
             <br />
-            @foreach (var log in ViewBag.AuditLogs)
+            @foreach (var log in ViewBag.LogEntries)
             {
                 <li>
                     -----------------------------------------------------------------------------<br />
-                    TransactionID: @log.transactionID<br />
-                    AcctNo: @log.acctNo<br />
-                    Transaction Description: @log.transactionDescription<br />
-                    Amount: @log.amount<br />
-                    TransactionDate: @log.transactionDate.ToString("g")<br />
+                    LogID: @log.logID<br />
+                    Log Description: @log.logDescription<br />
+                    Log Date: @log.logDate.ToString("g")<br />
                     -----------------------------------------------------------------------------<br />
 
                 </li>

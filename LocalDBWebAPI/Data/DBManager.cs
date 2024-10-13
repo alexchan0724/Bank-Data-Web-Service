@@ -982,7 +982,6 @@ namespace LocalDBWebAPI.Data
                                 LogDataIntermed log = new LogDataIntermed();
                                 log.logID = Convert.ToInt32(reader["logID"]);
                                 log.logDate = Convert.ToDateTime(reader["logDate"]);
-                                log.logUsername = reader["logUsername"]?.ToString() ?? string.Empty;
                                 log.logDescription = reader["logDescription"]?.ToString() ?? string.Empty;
                                 logs.Add(log);
                             }

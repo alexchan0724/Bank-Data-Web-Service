@@ -20,5 +20,17 @@ namespace LocalDBWebAPI.Controllers
             }
             return Ok(users);
         }
+
+        [HttpGet("auditLogs")]
+        public IActionResult GetLogs()
+        {
+            List<LogDataIntermed> logEntries = DBManager.GetAllLogs();
+            Debug.WriteLine("Entries found: " + logEntries.Count);
+            if (logEntries == null || !logEntries.Any())
+            {
+                return NotFound("No transactions have been found in the database.");
+            }
+            return Ok(logEntries);
+        }
     }
 }
