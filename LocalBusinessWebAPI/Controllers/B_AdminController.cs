@@ -12,6 +12,24 @@ namespace LocalBusinessWebAPI.Controllers
     {
         RestClient restClient = new RestClient("http://localhost:5012");
 
+        [HttpGet("searchUsers/{searchString}")]
+        public IActionResult SearchUsers(string searchString)
+        {
+            Debug.WriteLine("Entered AdminFunctionsController to search for users");
+            var request = new RestRequest($"admin/Admin/bySearch/{searchString}", Method.Get);
+            var response = restClient.Execute(request);
+
+            if (response.IsSuccessful)
+            {
+                var users = JsonConvert.DeserializeObject<List<UserDataIntermed>>(response.Content);
+                return Ok(users);
+            }
+            else
+            {
+                return BadRequest("Failed to retrieve users.");
+            }
+        }
+
         [HttpGet("B_AdminByUsername/{username}")]
         public IActionResult AdminByUsername(string username)
         {

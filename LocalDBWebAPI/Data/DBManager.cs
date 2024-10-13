@@ -830,7 +830,7 @@ namespace LocalDBWebAPI.Data
         }
 
         // Method to search for users by username returns a list of users that match the search string
-        private static List<UserDataIntermed> SearchUsersByName(string searchString)
+        public static List<UserDataIntermed> SearchUsersByName(string searchString)
         {
             List<UserDataIntermed> users = new List<UserDataIntermed>();
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))

@@ -141,7 +141,7 @@
                             acctNo: parseInt(senderAcctNo),
                             transactionDescription: description,
                             amount: -parseInt(amount), // Negative amount for sender
-                            transactionDate: new Date().toISOString()
+                            transactionDate: new Date().toISOString() // Convert date to ISO string
                         },
                         receiverTransaction: {
                             acctNo: parseInt(receiverAcctNo),
@@ -173,6 +173,37 @@
                         throw new Error('Failed to retrieve account');
                     }
                     return response.json();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    return null;
+                });
+        }
+
+        // Function called when user clicks search button
+        function searchUsers() {
+            const searchString = document.getElementById('searchBox').value;
+            if (!searchString) {
+                alert('Please enter a search term');
+                return;
+            }
+            const apiUrl = `admin/AdminFunctions/searchUsers/${searchString}`;
+
+            return fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to retrieve account');
+                    }
+                    return response.json();
+                })
+                .then(users => {
+                    console.log('Users found: ', users);
+                    loadView('displayUsers', users, 'POST');
                 })
                 .catch(error => {
                     console.error('Error:', error);

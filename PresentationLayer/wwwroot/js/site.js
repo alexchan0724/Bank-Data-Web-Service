@@ -29,6 +29,10 @@ function loadView(status, userData = null, actionMethod = 'GET', accNum = null)
         apiUrl = "user/UserFunctions/addNewAccount";
     } else if (status === "transfer") {
         apiUrl = "user/UserFunctions/Transfer";
+    } else if (status === "manageUsers") {
+        apiUrl = "admin/AdminFunctions/manageUsers";
+    } else if (status === "displayUsers") {
+        apiUrl = "admin/AdminFunctions/displayUsers";
     }
 
     console.log('User data: ', userData);

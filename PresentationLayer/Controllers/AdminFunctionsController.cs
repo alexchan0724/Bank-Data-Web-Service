@@ -6,11 +6,50 @@ using System.Diagnostics;
 
 namespace PresentationLayer.Controllers
 {
-    public class AdminAuditController : Controller
+    [Route("admin/[controller]")]
+
+    public class AdminFunctionsController : Controller
     {
         RestClient restClient = new RestClient("http://localhost:5290");
 
-        public IActionResult Index()
+        [HttpGet("manageUsers")]
+        public IActionResult ManageUsers()
+        {
+            Debug.WriteLine("Entered AdminFunctionsController to load ManageUsers");
+            ViewBag.Users = new List<UserDataIntermed>(); // Initially leave users List empty
+
+            return PartialView("ManageUsers");
+        }
+
+        [HttpGet("searchUsers/{searchString}")] // After admin has tried to search for a user
+        public IActionResult SearchUsers(string searchString)
+        {
+            Debug.WriteLine("Entered AdminFunctionsController to search for users");
+            var request = new RestRequest($"api/B_Admin/searchUsers/{searchString}", Method.Get);
+
+            var response = restClient.Execute(request);
+
+            if (response.IsSuccessful)
+            {
+                var users = JsonConvert.DeserializeObject<List<UserDataIntermed>>(response.Content);
+                return Json(users); // Return the list of users as JSON
+            }
+            else
+            {
+                return BadRequest("Failed to retrieve users."); // Return a BadRequest with an error message
+            }
+        }
+
+        [Route("displayUsers")] // After admin has selected a name
+        [HttpPost]
+        public IActionResult ManageUsersWithAccounts([FromBody] List<UserDataIntermed>users)
+        {
+            Debug.WriteLine("Entered AdminFunctionsController to load ManageUsers");
+            ViewBag.Users = users; // Initially leave users List empty
+
+            return PartialView("ManageUsers");
+        }
+        /* public IActionResult Index()
         {
             return View();
         }
@@ -74,6 +113,6 @@ namespace PresentationLayer.Controllers
             ViewBag.AuditLogs = transactionData;
 
             return View("~/Views/Home/AuditWindow.cshtml");
-        }
+        } */
     }
 }
