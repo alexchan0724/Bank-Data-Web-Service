@@ -96,6 +96,24 @@ namespace LocalBusinessWebAPI.Controllers
             }
         }
 
+        [Route("filterTransactions")]
+        [HttpPost]
+        public IActionResult FilterTransactions([FromBody] FilterTransactionsIntermed filter)
+        {
+            Debug.WriteLine("Entered AdminFunctionsController to filter transactions");
+            var request = new RestRequest("admin/Admin/filterTransactions", Method.Post);
+            request.AddJsonBody(filter);
+            var response = restClient.Execute(request);
 
+            if (response.IsSuccessful)
+            {
+                var transactions = JsonConvert.DeserializeObject<List<TransactionDataIntermed>>(response.Content);
+                return Ok(transactions);
+            }
+            else
+            {
+                return BadRequest("Failed to filter transactions.");
+            }
+        }
     }
 }

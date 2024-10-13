@@ -39,6 +39,8 @@ function loadView(status, userData = null, actionMethod = 'GET', accNum = null)
         apiUrl = "admin/AdminFunctions/logs";
     } else if (status === "loadAllTransactions") {
         apiUrl = "admin/AdminFunctions/allTransactions";
+    } else if (status === "filterTransactions") {
+        apiUrl = "admin/AdminFunctions/filterTransactions";
     }
 
     console.log('User data: ', userData);

@@ -878,7 +878,8 @@ namespace LocalDBWebAPI.Data
         }
 
         // Method to search for transactions using filters
-        public static List<TransactionDataIntermed> getTransactionsUsingFilter(string username, DateTime startingDate, DateTime endingDate, int minAmount, bool ascending)
+        // Method to search for transactions using filters
+        public static List<TransactionDataIntermed> getTransactionsUsingFilter(string username, int? minAmount, int? maxAmount, bool ascending)
         {
             List<TransactionDataIntermed> transactions = new List<TransactionDataIntermed>();
             try
@@ -889,24 +890,45 @@ namespace LocalDBWebAPI.Data
                     EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
+                        // Base query
                         command.CommandText = @"
                             SELECT T.* FROM Transactions T 
                             JOIN BankAccounts B ON T.acctNo = B.acctNo
-                            JOIN UserProfile U ON B.username = U.username AND B.email = U.email
-                            WHERE U.username = @Username 
-                            AND (transactionDate BETWEEN @StartingDate AND @EndingDate) 
-                            AND amount > @MinAmount" ;
-                        command.Parameters.AddWithValue("@Username", username + "%"); // Uses wildcard to search for usernames starting with the search string
-                        command.Parameters.AddWithValue("@StartingDate", startingDate);
-                        command.Parameters.AddWithValue("@EndingDate", endingDate);
-                        command.Parameters.AddWithValue("@MinAmount", minAmount);
-                        if (ascending) // Order by transaction date ascending or descending
+                            JOIN UserProfile U ON B.username = U.username 
+                            AND B.email = U.email
+                            WHERE 1 = 1"; // WHERE 1=1 Is true allows for appending other statements
+
+                        // Set default values for minAmount and maxAmount if they are not provided
+                        if (minAmount == null)
                         {
-                            command.CommandText += " ORDER BY transactionDate ASC";
+                            minAmount = -1000000; // Set to -1000000 if not provided
                         }
-                        else // If ascending is false, order by transaction date descending
+
+                        if (maxAmount == null)
                         {
-                            command.CommandText += " ORDER BY transactionDate DESC";
+                            maxAmount = 1000000; // Set to 1000000 if not provided
+                        }
+
+                        // Filter by amount passed in
+                        command.CommandText += " AND T.amount BETWEEN @MinAmount AND @MaxAmount";
+                        command.Parameters.AddWithValue("@MinAmount", minAmount);
+                        command.Parameters.AddWithValue("@MaxAmount", maxAmount);
+
+                        // Filter by username condition if provided
+                        if (!string.IsNullOrEmpty(username))
+                        {
+                            command.CommandText += " AND U.username LIKE @Username";
+                            command.Parameters.AddWithValue("@Username", username + "%"); // Uses wildcard to search for usernames starting with the search string
+                        }
+
+                        // Append ordering clause based on ascending flag
+                        if (ascending)
+                        {
+                            command.CommandText += " ORDER BY T.transactionDate DESC";
+                        }
+                        else
+                        {
+                            command.CommandText += " ORDER BY T.transactionDate ASC";
                         }
 
                         using (SQLiteDataReader reader = command.ExecuteReader())
@@ -932,6 +954,7 @@ namespace LocalDBWebAPI.Data
             }
             return transactions;
         }
+
 
         // Method to add a log entry
         public static bool AddLogEntry(string description)

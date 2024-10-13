@@ -113,5 +113,29 @@ namespace PresentationLayer.Controllers
                 return BadRequest("Failed to load audit logs.");
             }
         }
+
+        [Route("filterTransactions")]
+        [HttpPost]
+        public IActionResult FilterTransactions([FromBody] FilterTransactionsIntermed filter)
+        {
+            var request = new RestRequest("api/B_Admin/filterTransactions", Method.Post);
+            request.AddJsonBody(filter);
+            var response = restClient.Execute(request);
+            if (response.IsSuccessful)
+            {
+                var transactions = JsonConvert.DeserializeObject<List<TransactionDataIntermed>>(response.Content);
+                ViewBag.Transactions = transactions;
+                return PartialView("AuditTransactions");
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return NotFound("No transactions have been found in the database.");
+            }
+            else
+            {
+                return BadRequest("Failed to load audit logs.");
+            }
+        }
+        
     }
 }
