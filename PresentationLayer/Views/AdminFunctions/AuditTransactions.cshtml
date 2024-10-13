@@ -53,6 +53,11 @@
     @if (ViewBag.Transactions != null)
     {
         <h2>Transaction History</h2>
+        <input type="hidden" id="username" value="@Model.username" />
+        <input type="hidden" id="password" value="@Model.password" />
+        <input type="hidden" id="AccNo" value="@ViewBag.AccountNumber" /> <!-- Added Account Number -->
+        <button type="button" id="returnButton" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, document.getElementById('AccNo').value, 'userProfileWindow')">Return</button>
+
         <ul>
             <br />
             @foreach (var log in ViewBag.Transactions)
