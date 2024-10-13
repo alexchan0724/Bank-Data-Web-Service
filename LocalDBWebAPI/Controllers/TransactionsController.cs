@@ -13,8 +13,6 @@ namespace LocalDBWebAPI.Controllers
         [HttpGet]
         public IActionResult GetTransactions()
         {
-            DBManager.AddLogEntry("getTransactions commenced");
-
             List<TransactionDataIntermed> transactions = DBManager.GetAllTransactions();
             Debug.WriteLine("Transactions found: " + transactions.Count);
             if (transactions == null || !transactions.Any())
@@ -30,8 +28,6 @@ namespace LocalDBWebAPI.Controllers
         [HttpGet("ByUsername/{username}")]
         public IActionResult GetTransactionByName(string username)
         {
-            DBManager.AddLogEntry("getTransactionsByName commenced");
-
             List<TransactionDataIntermed> transactions = DBManager.GetTransactionsByUser(username);
 
             foreach(TransactionDataIntermed transaction in transactions)
@@ -51,8 +47,6 @@ namespace LocalDBWebAPI.Controllers
         [HttpGet("byAccountNumber/{accountNumber}")]
         public IActionResult GetTransactionByAccount(int accountNumber)
         {
-            DBManager.AddLogEntry("getTransactionsByAccount commenced");
-
             List<TransactionDataIntermed> transactions = DBManager.GetTransactionByBankAccount(accountNumber);
             if (transactions == null || !transactions.Any())
             {
@@ -68,8 +62,6 @@ namespace LocalDBWebAPI.Controllers
         [HttpGet("byAccountNumberOrdered/{accountNumber}")]
         public IActionResult GetTransactionByAccountOrdered(int accountNumber)
         {
-            DBManager.AddLogEntry("getTransactionsByAccountOrdered commenced");
-
             List<TransactionDataIntermed> transactions = DBManager.GetTransactionOrderedByBankAccount(accountNumber);
             if (transactions == null || !transactions.Any())
             {
@@ -87,7 +79,6 @@ namespace LocalDBWebAPI.Controllers
         [HttpPost("Deposit")]
         public IActionResult Deposit([FromBody] TransactionDataIntermed transaction)
         {
-            DBManager.AddLogEntry("Deposit commenced");
             if (transaction == null)
             {
                 DBManager.AddLogEntry("Deposit failed, Deposit is null");
@@ -130,8 +121,6 @@ namespace LocalDBWebAPI.Controllers
         [HttpPost("Transfer")]
         public IActionResult Transfer([FromBody] TransferDataIntermed transfer)
         {
-            DBManager.AddLogEntry("transfer commenced");
-
             if (transfer == null || transfer.senderTransaction == null || transfer.receiverTransaction == null)
             {
                 DBManager.AddLogEntry("transfer failed, invalid transfer data");

@@ -93,6 +93,7 @@ namespace PresentationLayer.Controllers
             var response = restClient.Execute(request);
             if (response.IsSuccessful)
             {
+                ViewBag.message = "Account creation successful";
                 return PartialView("UserSuccess");
             }
             return null;
@@ -186,6 +187,8 @@ namespace PresentationLayer.Controllers
             var response = restClient.Execute(request);
             if (response.IsSuccessful)
             {
+                ViewBag.message = "User creation successful";
+
                 return PartialView("UserSuccess");
             }
             return null;
@@ -203,6 +206,8 @@ namespace PresentationLayer.Controllers
             var response = restClient.Execute(request);
             if (response.IsSuccessful)
             {
+                ViewBag.message = "User modification successful";
+                ViewBag.user = userRequest.User;
                 return PartialView("UserSuccess");
             }
             return null;
@@ -222,6 +227,7 @@ namespace PresentationLayer.Controllers
             var response = restClient.Execute(request);
             if (response.IsSuccessful)
             {
+                ViewBag.message = "Money transfer successful";
                 return PartialView("UserSuccess");
             }
             return null;

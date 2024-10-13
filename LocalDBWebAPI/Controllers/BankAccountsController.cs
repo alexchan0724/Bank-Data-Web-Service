@@ -15,11 +15,10 @@ namespace LocalDBWebAPI.Controllers
         public IActionResult Get(int accountNumber)
         {
             var account = DBManager.GetBankAccount(accountNumber);
-            DBManager.AddLogEntry("Bank Account" + account.username + "has requested to grab bank account " + account.accountNumber);
             if (account == null)
             {
 
-                DBManager.AddLogEntry("Bank Account" + account.username + "'s request for bank account " + accountNumber + " has failed");
+                DBManager.AddLogEntry("request to get Bank Account has failed");
                 return NotFound("Account number does not exist.");
 
             }
@@ -42,7 +41,6 @@ namespace LocalDBWebAPI.Controllers
         [HttpGet]
         public IActionResult Get([FromQuery] string username)
         {
-            DBManager.AddLogEntry("bank account search under the name " + username + "commence");
             var accounts = DBManager.GetUserBankAccounts(username);
 
             if (accounts == null || accounts.Count == 0)
@@ -60,8 +58,6 @@ namespace LocalDBWebAPI.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] BankDataIntermed account)
         {
-            DBManager.AddLogEntry("bank account creation commenced");
-
             if (account == null)
             {
                 DBManager.AddLogEntry("bank account creation has failed due to not having any details");
@@ -89,8 +85,6 @@ namespace LocalDBWebAPI.Controllers
         [HttpPut]
         public IActionResult Put([FromBody] BankDataIntermed account, [FromQuery]int accountNumber)
         {
-            DBManager.AddLogEntry("bank account update commenced");
-
             if (account == null)
             {
                 DBManager.AddLogEntry("bank account update has failed due to not having bank account");
@@ -118,8 +112,6 @@ namespace LocalDBWebAPI.Controllers
         [Route("{accountNumber}")]
         public IActionResult Delete(int accountNumber)
         {
-            DBManager.AddLogEntry("bank account deletion commenced");
-
             if (DBManager.DeleteBankAccount(accountNumber))
             {
                 DBManager.AddLogEntry("bank account deleted successfully");
