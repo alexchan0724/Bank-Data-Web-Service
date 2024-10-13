@@ -1,4 +1,5 @@
 ﻿using API_Classes;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
 using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
@@ -935,6 +936,7 @@ namespace LocalDBWebAPI.Data
         // Method to add a log entry
         public static bool AddLogEntry(string description)
         {
+            Debug.WriteLine("Log description: " + description);
             try
             {
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
@@ -983,6 +985,7 @@ namespace LocalDBWebAPI.Data
                                 log.logID = Convert.ToInt32(reader["logID"]);
                                 log.logDate = Convert.ToDateTime(reader["logDate"]);
                                 log.logDescription = reader["logDescription"]?.ToString() ?? string.Empty;
+                                Debug.WriteLine($"LogID: {log.logID}, Description: {log.logDescription}, Date: {log.logDate}");
                                 logs.Add(log);
                             }
                         }

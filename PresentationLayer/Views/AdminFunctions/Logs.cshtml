@@ -1,4 +1,5 @@
-﻿@model API_Classes.UserDataIntermed
+﻿@using API_Classes
+@model List<LogDataIntermed>
 @{
     ViewData["Title"] = "LogWindow";
     string message = ViewBag.message;
@@ -38,10 +39,9 @@
 </style>
 
 <div class="text-center">
-    <h1 class="display-4">Audit</h1>
+    <h1 class="display-4">Audit Page</h1>
     @if (ViewBag.LogEntries != null)
     {
-        <h2>Transaction History</h2>
         <ul>
             <br />
             @foreach (var log in ViewBag.LogEntries)
@@ -59,7 +59,7 @@
     }
     else
     {
-        <p>No transactions available.</p>
+        <p>No log entries exist.</p>
     }
 </div>
 

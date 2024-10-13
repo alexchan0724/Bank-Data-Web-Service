@@ -39,7 +39,7 @@ namespace LocalBusinessWebAPI.Controllers
 
             if (response.IsSuccessful)
             {
-                var transactions = JsonConvert.DeserializeObject<List<TransactionDataIntermed>>(response.Content);
+                var transactions = JsonConvert.DeserializeObject<List<LogDataIntermed>>(response.Content);
                 return Ok(transactions);
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
