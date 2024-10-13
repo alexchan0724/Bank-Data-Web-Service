@@ -31,15 +31,39 @@ namespace LocalDBWebAPI.Controllers
             Debug.WriteLine("Entries found: " + logEntries.Count);
             if (logEntries == null || !logEntries.Any())
             {
+                DBManager.AddLogEntry("Admin failed to get all logs");
                 return NotFound("No transactions have been found in the database.");
             }
+            DBManager.AddLogEntry("Admin succeeded to get all logs");
             return Ok(logEntries);
         }
 
-        [HttpGet("AdminByUsername/{username}")]
-        public IActionResult AdminByUsername(string username)
+        [Route("filterTransactions")]
+        [HttpPost]
+        public IActionResult FilterTransactions([FromBody] FilterTransactionsIntermed filter)
         {
-            return Ok(DBManager.AdminGetUserProfile(username));
+            string username = filter.username;
+            int? minAmount = filter.minAmount;
+            int? maxAmount = filter.maxAmount;
+            bool ascending;
+            if (filter.orderType == "ascending")
+            {
+                ascending = true;
+            }
+            else
+            {
+                ascending = false;
+            }
+            List<TransactionDataIntermed> transactions = DBManager.getTransactionsUsingFilter(username, minAmount, maxAmount, ascending);
+            Debug.WriteLine("Transactions found: " + transactions.Count);
+            if (transactions == null || !transactions.Any())
+            {
+                DBManager.AddLogEntry("Filter transactions failed with parameters. username: " + username + "minAmount: " + minAmount + "maxAmount: " + "orderType: " + filter.orderType);
+                return NotFound("No transactions have been found in the database.");
+            }
+            DBManager.AddLogEntry("Filter transactions successful with parameters. username: " + username + "minAmount: " + minAmount + "maxAmount: " + "orderType: " + filter.orderType);
+            return Ok(transactions);
         }
+
     }
 }

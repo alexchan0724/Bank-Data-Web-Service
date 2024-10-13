@@ -114,18 +114,28 @@ namespace PresentationLayer.Controllers
             }
         }
 
-        [Route("AdminGetProfile")]
-        [HttpGet]
-        public IActionResult AdminGetUserProfile(string username)
+        [Route("filterTransactions")]
+        [HttpPost]
+        public IActionResult FilterTransactions([FromBody] FilterTransactionsIntermed filter)
         {
-            var request = new RestRequest($"api/B_AdminGetUserProfile/AdminGetUserProfile/{username}", Method.Get);
+            var request = new RestRequest("api/B_Admin/filterTransactions", Method.Post);
+            request.AddJsonBody(filter);
             var response = restClient.Execute(request);
             if (response.IsSuccessful)
             {
-                var result = JsonConvert.DeserializeObject<UserDataIntermed>(response.Content);
-                return Ok(result);
+                var transactions = JsonConvert.DeserializeObject<List<TransactionDataIntermed>>(response.Content);
+                ViewBag.Transactions = transactions;
+                return PartialView("AuditTransactions");
             }
-            return BadRequest();
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return NotFound("No transactions have been found in the database.");
+            }
+            else
+            {
+                return BadRequest("Failed to load audit logs.");
+            }
         }
+        
     }
 }

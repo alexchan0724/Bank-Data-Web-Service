@@ -111,5 +111,15 @@ namespace LocalBusinessWebAPI.Controllers
         }
 
 
+            if (response.IsSuccessful)
+            {
+                var transactions = JsonConvert.DeserializeObject<List<TransactionDataIntermed>>(response.Content);
+                return Ok(transactions);
+            }
+            else
+            {
+                return BadRequest("Failed to filter transactions.");
+            }
+        }
     }
 }
