@@ -10,5 +10,6 @@ namespace API_Classes
     {
         public TransactionDataIntermed senderTransaction { get; set; }
         public TransactionDataIntermed receiverTransaction { get; set; }
+        public string senderUsername { get; set; }
     }
 }

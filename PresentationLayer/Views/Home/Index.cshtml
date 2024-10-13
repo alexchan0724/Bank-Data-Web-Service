@@ -124,11 +124,6 @@
             const amount = document.getElementById('amount').value;
             const description = document.getElementById('description').value;
             const username = document.querySelector('[name="username"]').value;
-            console.log("Sender Account Number:", senderAcctNo);
-            console.log("Receiver Account Number:", receiverAcctNo);
-            console.log("Amount:", amount);
-            console.log("Description:", description);
-            console.log("Username:", username);
             
             // First, get the receiver's account details
             getAccount(receiverAcctNo)
@@ -150,7 +145,8 @@
                             transactionDescription: description,
                             amount: parseInt(amount), // Positive amount for receiver
                             transactionDate: new Date().toISOString()
-                        }
+                        },
+                        senderUsername: username
                     };
 
                     // Call loadView with the transfer data
