@@ -66,7 +66,6 @@ namespace LocalDBWebAPI.Data
                         CREATE TABLE Logs(
                             logID INTEGER PRIMARY KEY AUTOINCREMENT,
                             logDate DATETIME NOT NULL,
-                            logUsername TEXT NOT NULL,
                             logDescription TEXT NOT NULL
                         )";
                         command.ExecuteNonQuery();
@@ -934,7 +933,7 @@ namespace LocalDBWebAPI.Data
         }
 
         // Method to add a log entry
-        public static bool AddLogEntry(string username, string description)
+        public static bool AddLogEntry(string description)
         {
             try
             {
@@ -945,10 +944,9 @@ namespace LocalDBWebAPI.Data
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
                         command.CommandText = @"
-                            INSERT INTO Logs (logDate, logUsername, logDescription)
-                            VALUES (@LogDate, @LogUsername, @LogDescription)";
+                            INSERT INTO Logs (logDate, logDescription)
+                            VALUES (@LogDate, @LogDescription)";
                         command.Parameters.AddWithValue("@LogDate", DateTime.Now);
-                        command.Parameters.AddWithValue("@LogUsername", username);
                         command.Parameters.AddWithValue("@LogDescription", description);
                         command.ExecuteNonQuery();
                     }
