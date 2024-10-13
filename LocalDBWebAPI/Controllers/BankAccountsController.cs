@@ -28,6 +28,9 @@ namespace LocalDBWebAPI.Controllers
                 returnBankAccount.pin = account.pin;
                 returnBankAccount.description = account.description;
                 returnBankAccount.email = account.email;
+
+                DBManager.AddLogEntry()
+
                 return Ok(returnBankAccount);
             }
         }

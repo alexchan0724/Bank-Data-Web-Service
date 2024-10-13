@@ -63,15 +63,23 @@ namespace PresentationLayer.Controllers
             if (accountResponse.IsSuccessful)
             {
                 Debug.WriteLine("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+                BankDataIntermed account = JsonConvert.DeserializeObject<BankDataIntermed>(accountResponse.Content);
+
+                ViewBag.user = userRequest.User;
+                ViewBag.account = account;
+
+                Debug.WriteLine("SSSSSSSSSSSS " + account.accountNumber + "kms" + account.email + "kms" + account.description);
+
+                return PartialView("BankAccountWindow");
             }
-            BankDataIntermed account = JsonConvert.DeserializeObject<BankDataIntermed>(accountResponse.Content);
-
-            ViewBag.user = userRequest.User;
-            ViewBag.account = account;
-
-            Debug.WriteLine("SSSSSSSSSSSS " + account.accountNumber + "kms" + account.email + "kms" + account.description);
-
-            return PartialView("BankAccountWindow");
+            ViewBag.Error = "Error";
+            ViewBag.message = "Retrieve Account failed, please try again";
+            RestRequest bankRequest = new RestRequest("api/B_BankAccounts", Method.Get);
+            bankRequest.AddQueryParameter("username", userRequest.User.username);
+            var bankResponse = restClient.Execute(bankRequest);
+            var bankAccounts = JsonConvert.DeserializeObject<List<BankDataIntermed>>(bankResponse.Content);
+            ViewBag.BankAccounts = bankAccounts;
+            return PartialView("UserProfileWindowError", userRequest.User);
         }
 
         [Route("addNewAccount")]
@@ -123,7 +131,14 @@ namespace PresentationLayer.Controllers
                 ViewBag.AuditLogs = result;
                 return PartialView("AuditWindow", userRequest.User);
             }
-            return null;
+            ViewBag.Error = "Error";
+            ViewBag.message = "Transaction Account failed, please try again";
+            RestRequest bankRequest = new RestRequest("api/B_BankAccounts", Method.Get);
+            bankRequest.AddQueryParameter("username", userRequest.User.username);
+            var bankResponse = restClient.Execute(bankRequest);
+            var bankAccounts = JsonConvert.DeserializeObject<List<BankDataIntermed>>(bankResponse.Content);
+            ViewBag.BankAccounts = bankAccounts;
+            return PartialView("UserProfileWindowError", userRequest.User);
         }
 
         [Route("auditAccountOrdered")]
