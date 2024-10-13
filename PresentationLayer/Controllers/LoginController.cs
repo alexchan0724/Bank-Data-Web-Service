@@ -70,8 +70,9 @@ namespace PresentationLayer.Controllers
                 }
                 else
                 {
-                    Debug.WriteLine("Failed to retrieve bank accounts.");
-                    return PartialView("LoginErrorView");
+                    Debug.WriteLine("User has no existing bank accounts.");
+                    ViewBag.BankAccounts = new List<BankDataIntermed>(); // Initialises an empty list which UserProfileWindow expects
+                    return PartialView("UserProfileWindow", userProfile);
                 }
             }
             else
