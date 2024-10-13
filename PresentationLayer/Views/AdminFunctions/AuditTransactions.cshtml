@@ -1,4 +1,4 @@
-﻿@model API_Classes.UserDataIntermed
+﻿@model API_Classes.FilterTransactionsIntermed
 @{
     ViewData["Title"] = "LogWindow";
     string message = ViewBag.message;
@@ -40,6 +40,8 @@
     <input type="text" id="usernameBox" name="usernameBox" placeholder="Enter Username" />
     <input type="text" id="minAmountBox" name="minAmountBox" placeholder="Enter Minimum Amount" />
     <input type="text" id="maxAmountBox" name="maxAmountBox" placeholder="Enter Maximum Amount" />
+    <input type="hidden" id="adminUsername" value="@Model.adminUsername"/>
+
     <select id="sortOrder">
         <option value="ascending">Ascending Order</option>
         <option value="descending">Descending Order</option>
