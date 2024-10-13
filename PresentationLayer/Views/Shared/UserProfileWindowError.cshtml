@@ -36,9 +36,6 @@
     }
 </style>
 
-<div class="text-center">
-    <h1 class="display-4">Create User</h1>
-</div>
 
 <input type="hidden" id="username" value="@Model.username" />
 <input type="hidden" id="password" value="@Model.password" />
@@ -98,30 +95,15 @@
         else
         {
             <p>HELLO ADMIN</p>
-            <button type="button" id="AllAuditButton" onclick="performAuthParameters(document.getElementById('username').value,
-            document.getElementById('password').value, 0, 'AdminAllTransaction')">
-                get all audit
-            </button>
-            <br> <!-- Add a line break for better readability -->
-
-
             <form action="/Home/Admin/getallAudit" method="Get">
                 <input type="hidden" name="Username" value="@Model.username" />
                 <input type="hidden" name="Password" value="@Model.password" />
                 <input type="hidden" name="mode" value="0" />
                 <input type="hidden" name="Admin" value="1" />
-                <input type="submit" value="View All Audit Log" />
+                <input type="submit" value="View Audit Logs" />
             </form>
-
-            <form action="/Home/Admin/getAuditbyName/" method="Get">
-                <input type="text" id="Username" name="username" placeholder="Enter Username" />
-                <input type="submit" value="View Audit Log via Username" />
-            </form>
-
-            <form action="/Home/Admin/getAuditbyAccno/" method="Get">
-                <input type="text" id="Accno" name="Accno" placeholder="Enter Accno" />
-                <input type="submit" value="View Audit Log via Account number" />
-            </form>
+                // Also need to get Logs and System changes
+            <button type="button" id="manageUsers" onclick="loadView('manageUsers')">Manage User Accounts</button>
         }
 
 

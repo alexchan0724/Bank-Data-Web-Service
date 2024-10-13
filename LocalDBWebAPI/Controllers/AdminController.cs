@@ -16,8 +16,11 @@ namespace LocalDBWebAPI.Controllers
             Debug.WriteLine("Users found: " + users.Count);
             if (users == null || !users.Any())
             {
+                DBManager.AddLogEntry("transaction search failed due to not finding any transaction under user " + searchString);
                 return NotFound("No transactions have been found in the database.");
             }
+            DBManager.AddLogEntry("transaction search successful, returning list of transaction under " + searchString);
+
             return Ok(users);
         }
     }
