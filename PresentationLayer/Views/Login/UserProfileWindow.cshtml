@@ -26,7 +26,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 200px;
+        padding: 20px;
     }
 
     input {
@@ -43,15 +43,15 @@
 <div class="horizontal-layout">
     @model API_Classes.UserDataIntermed // Adjust the namespace as necessary
 
+    <div class="image-section">
+        @if (@Model.profilePicture != null && @Model.profilePicture.Length > 0)
+        {
+            var base64Image = Convert.ToBase64String(Model.profilePicture);
+            var imgSrc = $"data:image/png;base64,{base64Image}";
 
-    @if (@Model.profilePicture != null && @Model.profilePicture.Length > 0)
-    {
-        var base64Image = Convert.ToBase64String(Model.profilePicture);
-        var imgSrc = $"data:image/png;base64,{base64Image}";
-
-        <img src="@imgSrc" alt="Profile Picture" style="max-width: 300px; width: auto; height: auto;" />
-    }
-
+            <img src="@imgSrc" alt="Profile Picture" style="max-width: 300px; width: auto; height: auto; width: 200px; height: 200px; object-fit: cover;" />
+        }
+    </div>
     <div class="form-selection">
         <p style="font-size: 50px;">Username: @Model.username</p>
         <p style="font-size: 50px;">Email: @Model.email</p>

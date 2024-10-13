@@ -113,5 +113,19 @@ namespace PresentationLayer.Controllers
                 return BadRequest("Failed to load audit logs.");
             }
         }
+
+        [Route("AdminGetProfile")]
+        [HttpGet]
+        public IActionResult AdminGetUserProfile(string username)
+        {
+            var request = new RestRequest($"api/B_AdminGetUserProfile/AdminGetUserProfile/{username}", Method.Get);
+            var response = restClient.Execute(request);
+            if (response.IsSuccessful)
+            {
+                var result = JsonConvert.DeserializeObject<UserDataIntermed>(response.Content);
+                return Ok(result);
+            }
+            return BadRequest();
+        }
     }
 }

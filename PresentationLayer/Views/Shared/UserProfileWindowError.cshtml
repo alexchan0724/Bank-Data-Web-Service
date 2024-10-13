@@ -50,7 +50,8 @@
         var base64Image = Convert.ToBase64String(Model.profilePicture);
         var imgSrc = $"data:image/png;base64,{base64Image}";
 
-        <img src="@imgSrc" alt="Profile Picture" style="max-width: 300px; width: auto; height: auto;" />
+        <img src="@imgSrc" alt="Profile Picture" style="max-width: 300px; width: auto; height: auto; width: 200px; height: 200px; object-fit: cover;" />
+
     }
 
     <div class="form-selection">
@@ -62,19 +63,18 @@
         @if (Model.isAdmin == 0)
         {
             // Add hidden input fields for username and password
-            <p> @ViewBag.Error @ViewBag.message</p>
-            <button type="button" id="createAccountButton" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, 0, 'createAccount')">Create Account</button>
-            <br> <!-- Add a line break for better readability -->
+                <button type="button" id="createAccountButton" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, 0, 'createAccount')">Create Account</button>
+                <br> <!-- Add a line break for better readability -->
 
-            <input type="text" id="AccNum" name="accNum" placeholder="Enter Account Number" />
-            <button type="button" id="getAccountButton" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, document.getElementById('AccNum').value, 'getAccount')">Retrieve Account</button>
-            <br>
+                <input type="text" id="AccNum" name="accNum" placeholder="Enter Account Number" />
+                <button type="button" id="getAccountButton" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, document.getElementById('AccNum').value, 'getAccount')">Retrieve Account</button>
+                <br>
 
-            <button type="button" id="getAllTransactions" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, 0, 'getAllTransactions')">Get Transaction History</button>
-            <br>
+                <button type="button" id="getAllTransactions" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, 0, 'getAllTransactions')">Get Transaction History</button>
+                <br>
 
-            <input type="text" id="AccNo" name="accNo" placeholder="Enter Account Number" />
-            <button type="button" id="getTransaction" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, document.getElementById('AccNo').value, 'getAcctTransactions')">Get Transactions</button>
+                <input type="text" id="AccNo" name="accNo" placeholder="Enter Account Number" />
+                <button type="button" id="getTransaction" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, document.getElementById('AccNo').value, 'getAcctTransactions')">Get Transactions</button>
 
             <ul>
                 <br />

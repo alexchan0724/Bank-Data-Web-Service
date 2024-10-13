@@ -96,6 +96,20 @@ namespace LocalBusinessWebAPI.Controllers
             }
         }
 
+        [HttpGet("B_AdminGetUserProfile/{username}")]
+        public IActionResult AdminGetUserProfile(string username)
+        {
+            Debug.WriteLine("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB " + username);
+            var request = new RestRequest($"admin/Admin/AdminByUsername/{username}", Method.Get);
+            var response = restClient.Execute(request);
+            if (response.IsSuccessful)
+            {
+                var result = JsonConvert.DeserializeObject<UserDataIntermed>(response.Content);
+                return Ok(result);
+            }
+            return BadRequest();
+        }
+
 
     }
 }

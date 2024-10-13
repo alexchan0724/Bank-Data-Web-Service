@@ -4,6 +4,7 @@ using System.Net;
 using Newtonsoft.Json;
 using RestSharp;
 using System.Diagnostics;
+using System.Security.Principal;
 namespace PresentationLayer.Controllers
 {
     [Route("user/[controller]")]
@@ -94,7 +95,25 @@ namespace PresentationLayer.Controllers
             if (response.IsSuccessful)
             {
                 ViewBag.message = "Account creation successful";
-                return PartialView("UserSuccess");
+                Debug.WriteLine("AAAAAAAAAAAAAAAAA " + account.username);
+                var userRequest = new RestRequest($"api/B_Admin/B_AdminGetUserProfile/{account.username}", Method.Get);
+
+                var userResponse = restClient.Execute(userRequest);
+                if (userResponse.IsSuccessful)
+                {
+                    ViewBag.message = "new account added successfully";
+                    var result = JsonConvert.DeserializeObject<UserDataIntermed>(userResponse.Content);
+
+                    RestRequest bankRequest = new RestRequest("api/B_BankAccounts", Method.Get);
+                    bankRequest.AddQueryParameter("username", account.username);
+                    var bankResponse = restClient.Execute(bankRequest);
+                    var bankAccounts = JsonConvert.DeserializeObject<List<BankDataIntermed>>(bankResponse.Content);
+                    ViewBag.BankAccounts = bankAccounts;
+
+
+
+                    return PartialView("UserProfileWindowError", result);
+                }
             }
             return null;
         }
@@ -189,6 +208,7 @@ namespace PresentationLayer.Controllers
             {
                 ViewBag.message = "User creation successful";
 
+
                 return PartialView("UserSuccess");
             }
             return null;
@@ -207,8 +227,17 @@ namespace PresentationLayer.Controllers
             if (response.IsSuccessful)
             {
                 ViewBag.message = "User modification successful";
-                ViewBag.user = userRequest.User;
-                return PartialView("UserSuccess");
+               
+                    ViewBag.message = "new account added successfully";
+
+                    RestRequest bankRequest = new RestRequest("api/B_BankAccounts", Method.Get);
+                    bankRequest.AddQueryParameter("username", userRequest.User.username);
+                    var bankResponse = restClient.Execute(bankRequest);
+                    var bankAccounts = JsonConvert.DeserializeObject<List<BankDataIntermed>>(bankResponse.Content);
+                    ViewBag.BankAccounts = bankAccounts;
+
+
+                    return PartialView("UserProfileWindowError", userRequest.User);
             }
             return null;
         }
@@ -228,7 +257,24 @@ namespace PresentationLayer.Controllers
             if (response.IsSuccessful)
             {
                 ViewBag.message = "Money transfer successful";
-                return PartialView("UserSuccess");
+                                Debug.WriteLine("AAAAAAAAAAAAAAAAA " + transfer.senderUsername);
+                var userRequest = new RestRequest($"api/B_Admin/B_AdminGetUserProfile/{transfer.senderUsername}", Method.Get);
+
+                var userResponse = restClient.Execute(userRequest);
+                if (userResponse.IsSuccessful)
+                {
+                    ViewBag.message = "new account added successfully";
+                    var result = JsonConvert.DeserializeObject<UserDataIntermed>(userResponse.Content);
+
+                    RestRequest bankRequest = new RestRequest("api/B_BankAccounts", Method.Get);
+                    bankRequest.AddQueryParameter("username", transfer.senderUsername);
+                    var bankResponse = restClient.Execute(bankRequest);
+                    var bankAccounts = JsonConvert.DeserializeObject<List<BankDataIntermed>>(bankResponse.Content);
+                    ViewBag.BankAccounts = bankAccounts;
+                    return PartialView("UserProfileWindowError", result);
+                }
+
+
             }
             return null;
         }

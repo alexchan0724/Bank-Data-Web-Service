@@ -811,7 +811,7 @@ namespace LocalDBWebAPI.Data
         }
 
         // Method to get a user profile (Same as above except does not require password)
-        private static UserDataIntermed AdminGetUserProfile(string username)
+        public static UserDataIntermed AdminGetUserProfile(string username)
         {
             UserDataIntermed userProfile = null;
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
