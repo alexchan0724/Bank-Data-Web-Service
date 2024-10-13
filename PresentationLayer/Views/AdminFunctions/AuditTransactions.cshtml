@@ -1,0 +1,68 @@
+﻿@model API_Classes.UserDataIntermed
+@{
+    ViewData["Title"] = "LogWindow";
+    string message = ViewBag.message;
+    string error = ViewBag.Error;
+}
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    #CreateUserForm {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50vh; /* Adjust height to vertically center */
+    }
+
+    .horizontal-layout {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 100px; /* Add some space between form fields and image selection */
+    }
+
+    .form-section, .image-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 200px;
+    }
+
+    input {
+        margin-bottom: 10px;
+        width: 300px;
+        padding: 5px;
+    }
+</style>
+
+<div class="text-center">
+    <h1 class="display-4">Audit</h1>
+    @if (ViewBag.Transactions != null)
+    {
+        <h2>Transaction History</h2>
+        <ul>
+            <br />
+            @foreach (var log in ViewBag.Transactions)
+            {
+                <li>
+                    -----------------------------------------------------------------------------<br />
+                    TransactionID: @log.transactionID<br />
+                    AcctNo: @log.acctNo<br />
+                    Transaction Description: @log.transactionDescription<br />
+                    Amount: @log.amount<br />
+                    TransactionDate: @log.transactionDate.ToString("g")<br />
+                    -----------------------------------------------------------------------------<br />
+
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No transactions available.</p>
+    }
+</div>
+
+<div class="horizontal-layout">

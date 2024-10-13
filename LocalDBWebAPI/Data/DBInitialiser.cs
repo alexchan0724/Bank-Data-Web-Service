@@ -207,11 +207,11 @@ namespace LocalDBWebAPI.Data
         public static void InsertTransactions()
         {
             // Initialise transactions for testing
-            TransactionDataIntermed jinSpend = new TransactionDataIntermed(100001, "Bought a new phone", -1000, new DateTime(2004, 9,20));
-            TransactionDataIntermed jinSpend2 = new TransactionDataIntermed(100000, "Bought new car", -10000, new DateTime(2012, 10, 14));
-            TransactionDataIntermed jinDeposit = new TransactionDataIntermed(100000, "Salary for the month", 6000, new DateTime(2006, 5, 16));
-            TransactionDataIntermed alexSpend = new TransactionDataIntermed(100002, "Bought a new laptop", -2000, new DateTime(1989, 12, 13));
-            TransactionDataIntermed alexDeposit = new TransactionDataIntermed(100002, "Received money from parents", 5000, new DateTime(2001, 9, 11));
+            TransactionDataIntermed jinSpend = new TransactionDataIntermed(100001, "Bought a new phone", -1000, RandomDay());
+            TransactionDataIntermed jinSpend2 = new TransactionDataIntermed(100000, "Bought new car", -10000, RandomDay());
+            TransactionDataIntermed jinDeposit = new TransactionDataIntermed(100000, "Salary for the month", 6000, RandomDay());
+            TransactionDataIntermed alexSpend = new TransactionDataIntermed(100002, "Bought a new laptop", -2000, RandomDay());
+            TransactionDataIntermed alexDeposit = new TransactionDataIntermed(100002, "Received money from parents", 5000, RandomDay());
 
             // Insert transactions into database
             DBManager.WithdrawTransaction(jinSpend);
@@ -249,7 +249,15 @@ namespace LocalDBWebAPI.Data
         {
             DateTime start = new DateTime(1995, 1, 1);
             int range = (DateTime.Today - start).Days;
-            return start.AddDays(rand.Next(range));
+            DateTime randomDate = start.AddDays(rand.Next(range));
+            
+            int hours = rand.Next(0, 24);
+            int minutes = rand.Next(0, 60);
+            int seconds = rand.Next(0, 60);
+
+            // Add the random time components to the random date
+            randomDate = randomDate.AddHours(hours).AddMinutes(minutes).AddSeconds(seconds);
+            return randomDate;
         }
 
         private static int GetExistingAccNo()
