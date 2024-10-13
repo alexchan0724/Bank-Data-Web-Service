@@ -102,14 +102,16 @@ namespace PresentationLayer.Controllers
             if (response.IsSuccessful)
             {
                 var transactions = JsonConvert.DeserializeObject<List<TransactionDataIntermed>>(response.Content);
-                var getAdminRequest = new RestRequest($"api/B_AdminGetUserProfile/AdminGetUserProfile/{username}", Method.Get);
+                var getAdminRequest = new RestRequest($"api/B_Admin/B_AdminGetUserProfile/{username}", Method.Get);
                 var getAdminResponse = restClient.Execute(getAdminRequest);
                 if (getAdminResponse.IsSuccessful)
                 {
-                    var admin = JsonConvert.DeserializeObject<UserDataIntermed>(getAdminResponse.Content);
-                    ViewBag.Admin = admin;
-                    ViewBag.Transactions = transactions;
-                    return PartialView("AuditTransactions");
+                        var admin = JsonConvert.DeserializeObject<UserDataIntermed>(getAdminResponse.Content);
+                        ViewBag.Admin = admin;
+                        ViewBag.Transactions = transactions;
+
+                        return PartialView("AuditTransactions");
+
                 }
                 else
                 {
@@ -136,7 +138,7 @@ namespace PresentationLayer.Controllers
             if (response.IsSuccessful)
             {
                 var transactions = JsonConvert.DeserializeObject<List<TransactionDataIntermed>>(response.Content);
-                var getAdminRequest = new RestRequest($"api/B_AdminGetUserProfile/AdminGetUserProfile/{filter.adminUsername}", Method.Get);
+                var getAdminRequest = new RestRequest($"api/B_Admin/B_AdminGetUserProfile/{filter.username}", Method.Get);
                 var getAdminResponse = restClient.Execute(getAdminRequest);
                 if (getAdminResponse.IsSuccessful)
                 {

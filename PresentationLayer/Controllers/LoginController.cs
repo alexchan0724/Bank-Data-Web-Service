@@ -24,18 +24,22 @@ namespace PresentationLayer.Controllers
             Debug.WriteLine("Entered LoginController to return response");
             var returnObject = new { login = false, user = (UserDataIntermed)null };
             RestRequest request = new RestRequest("api/B_UserProfiles/{checkString}", Method.Post);
-            request.AddUrlSegment("checkString", user.username);
-            request.AddJsonBody(user);
-            var response = restClient.Execute(request);
-            if (response.IsSuccessful)
+            if (user.username != "")
             {
-                var result = JsonConvert.DeserializeObject<UserDataIntermed>(response.Content);
-                returnObject = new 
-                { 
-                    login = true,
-                    user = result
-                };
+                request.AddUrlSegment("checkString", user.username);
+                request.AddJsonBody(user);
+                var response = restClient.Execute(request);
+                if (response.IsSuccessful)
+                {
+                    var result = JsonConvert.DeserializeObject<UserDataIntermed>(response.Content);
+                    returnObject = new
+                    {
+                        login = true,
+                        user = result
+                    };
+                }
             }
+
             return Json(returnObject);
         }
 

@@ -1,4 +1,38 @@
-﻿<div id="LoginForm">
+﻿<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    #CreateUserForm {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50vh; /* Adjust height to vertically center */
+    }
+
+    .horizontal-layout {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 100px; /* Add some space between form fields and image selection */
+    }
+
+    .form-section, .image-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 200px;
+    }
+
+    input {
+        margin-bottom: 10px;
+        width: 300px;
+        padding: 5px;
+    }
+</style>
+
+<div id="LoginForm" class ="form-section">
+    <h1 > DC ASSIGNMENT 2</h1 >
     <p> User or Password Does not Match try again </p>
     <input type="text" id="SName" name="SUname" placeholder="User Name" />
     <input type="password" id="SPass" name="SPassword" placeholder="Password" />

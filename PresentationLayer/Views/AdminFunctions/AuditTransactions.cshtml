@@ -39,7 +39,7 @@
     <input type="text" id="usernameBox" name="usernameBox" placeholder="Enter Username" />
     <input type="text" id="minAmountBox" name="minAmountBox" placeholder="Enter Minimum Amount" />
     <input type="text" id="maxAmountBox" name="maxAmountBox" placeholder="Enter Maximum Amount" />
-    <input type="hidden" id="adminUsername" value="@Model.username"/>
+
 
     <select id="sortOrder">
         <option value="ascending">Ascending Order</option>
@@ -49,11 +49,17 @@
     <button type="button" id="auditUsers" onclick="loadView('loadAllTransactions', document.getElementById('username').value, 'POST')">Load All Transactions</button>
 </div>
 
+
 <div class="text-center">
     <h1 class="display-4">Audit</h1>
     @if (ViewBag.Transactions != null)
     {
         <h2>Transaction History</h2>
+        <input type="hidden" id="username" value="@ViewBag.Admin.username" />
+        <input type="hidden" id="password" value="@ViewBag.Admin.password" />
+
+        <button type="button" id="returnButton" onclick="performAuthParameters(document.getElementById('username').value, document.getElementById('password').value, 0, 'userProfileWindow')">Return</button>
+
         <ul>
             <br />
             @foreach (var log in ViewBag.Transactions)

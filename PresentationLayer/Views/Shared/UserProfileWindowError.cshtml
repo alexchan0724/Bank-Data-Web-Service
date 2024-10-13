@@ -97,15 +97,16 @@
         else
         {
             <p>HELLO ADMIN</p>
-            <form action="/Home/Admin/getallAudit" method="Get">
-                <input type="hidden" name="Username" value="@Model.username" />
-                <input type="hidden" name="Password" value="@Model.password" />
-                <input type="hidden" name="mode" value="0" />
-                <input type="hidden" name="Admin" value="1" />
-                <input type="submit" value="View Audit Logs" />
-            </form>
-                // Also need to get Logs and System changes
+            <input type="hidden" name="mode" value="0" />
+            <input type="hidden" name="Admin" value="1" />
+            <button type="button" id="auditUsers" onclick="loadView('loadAllTransactions', document.getElementById('username').value, 'POST')">Load All Transactions</button>
+            <br>
+
+            <button type="button" id="auditUsers" onclick="loadView('loadAuditLog')">Load Logs</button>
+            <br>
+
             <button type="button" id="manageUsers" onclick="loadView('manageUsers')">Manage User Accounts</button>
+
         }
 
 

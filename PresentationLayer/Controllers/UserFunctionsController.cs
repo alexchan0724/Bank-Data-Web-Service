@@ -88,8 +88,6 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         public IActionResult AddNewAccount([FromBody] BankDataIntermed account)
         {
-            Debug.WriteLine("Entered AddNewUser in UserFunctionsController");
-            Debug.WriteLine("Account details:" + account.balance + " " + account.description + " " + account.email + " " + account.pin + " " + account.username + " " + account.accountNumber);
             RestRequest request = new RestRequest("api/B_BankAccounts", Method.Post);
             request.AddJsonBody(account);
             var response = restClient.Execute(request);
