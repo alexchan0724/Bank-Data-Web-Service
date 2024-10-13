@@ -49,6 +49,26 @@ namespace PresentationLayer.Controllers
 
             return PartialView("ManageUsers");
         }
+
+        [Route("deleteUsers")]
+        [HttpPost]
+        public IActionResult DeleteUsers([FromBody] string usernameToDelete)
+        {
+            Debug.WriteLine("Entered AdminFunctionsController to delete users");
+            var request = new RestRequest($"api/B_UserProfiles/{usernameToDelete}", Method.Delete);
+
+            var response = restClient.Execute(request);
+
+            if (response.IsSuccessful)
+            {
+                ViewBag.Message = "User has been deleted successfully.";
+                return PartialView("ManageUsers");
+            }
+            else
+            {
+                return BadRequest(response.Content);
+            }
+        }
         /* public IActionResult Index()
         {
             return View();

@@ -34,7 +34,7 @@ function loadView(status, userData = null, actionMethod = 'GET', accNum = null)
     } else if (status === "displayUsers") {
         apiUrl = "admin/AdminFunctions/displayUsers";
     } else if (status === "deleteUser") {
-
+        apiUrl = "admin/AdminFunctions/deleteUsers";
     }
 
     console.log('User data: ', userData);
