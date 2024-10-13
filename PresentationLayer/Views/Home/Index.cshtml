@@ -160,7 +160,7 @@
         }
         // Separate method that doesn't return a view
         function getAccount(accountNumber) {
-            const apiUrl = `api/B_BankAccounts/${accountNumber}`;
+            const apiUrl = `account/BankAccount/receiverAcct/${accountNumber}`;
 
             return fetch(apiUrl, {
                 method: 'GET',

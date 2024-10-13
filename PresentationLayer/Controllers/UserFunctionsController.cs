@@ -197,6 +197,10 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         public IActionResult Transfer([FromBody] TransferDataIntermed transfer)
         {
+            if (transfer == null)
+            {
+                Debug.WriteLine("Transfer object is null");
+            }
             Debug.WriteLine("Entered Transfer in UserFunctionsController");
             RestRequest request = new RestRequest("api/B_Transactions/Transfer", Method.Post);
             request.AddJsonBody(transfer);

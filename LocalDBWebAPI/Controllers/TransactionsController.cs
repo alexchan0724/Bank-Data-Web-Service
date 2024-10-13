@@ -98,18 +98,24 @@ namespace LocalDBWebAPI.Controllers
         [HttpPost("Transfer")]
         public IActionResult Transfer([FromBody] TransferDataIntermed transfer)
         {
-            TransactionDataIntermed senderTransaction = transfer.senderTransaction;
-            TransactionDataIntermed receiverTransaction = transfer.receiverTransaction;
-            if (senderTransaction == null || receiverTransaction == null)
+            if (transfer == null || transfer.senderTransaction == null || transfer.receiverTransaction == null)
             {
-                return BadRequest("Transaction is null.");
+                return BadRequest("Invalid transfer data.");
             }
 
-            if (DBManager.TransferMoney(senderTransaction, receiverTransaction))
+            TransactionDataIntermed senderTransaction = transfer.senderTransaction;
+            TransactionDataIntermed receiverTransaction = transfer.receiverTransaction;
+
+            bool transferResult = DBManager.TransferMoney(senderTransaction, receiverTransaction);
+
+            if (transferResult)
             {
                 return Ok("Transfer successful.");
             }
-            return BadRequest("Transfer failed.");
+            else
+            {
+                return BadRequest("Transfer failed.");
+            }
         }
     }
 }

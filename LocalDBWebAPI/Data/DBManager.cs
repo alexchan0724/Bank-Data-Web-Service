@@ -461,8 +461,8 @@ namespace LocalDBWebAPI.Data
             {
                 using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
-                    EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     connection.Open();
+                    EnableForeignKeyConstraints(connection); // Enable foreign key constraints
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
                         // Withdraw from the sending account
@@ -474,6 +474,7 @@ namespace LocalDBWebAPI.Data
                         command.Parameters.AddWithValue("@Amount", sendAccount.amount); // Amount will already be negative
                         command.Parameters.AddWithValue("@TransactionDate", sendAccount.transactionDate);
                         command.ExecuteNonQuery();
+                        Console.WriteLine("Withdraw transaction completed for account: " + sendAccount.acctNo);
 
                         // Update balance in BankAccounts table
                         command.CommandText = @"
@@ -481,8 +482,9 @@ namespace LocalDBWebAPI.Data
                         command.Parameters.Clear(); // Clear previous parameters
                         command.Parameters.AddWithValue("@Amount", sendAccount.amount);
                         command.Parameters.AddWithValue("@AcctNo", sendAccount.acctNo);
-                        command.ExecuteNonQuery();
-                        
+                        int rowsAffected = command.ExecuteNonQuery();
+                        Console.WriteLine("Updated balance for sender account: " + sendAccount.acctNo + ". Rows affected: " + rowsAffected);
+
                         // Deposit into the receiving account note that transactionDate remains the same
                         command.CommandText = @"
                             INSERT INTO Transactions (acctNo, transactionDescription, amount, transactionDate)
@@ -493,13 +495,15 @@ namespace LocalDBWebAPI.Data
                         command.Parameters.AddWithValue("@Amount", receiveAccount.amount);
                         command.Parameters.AddWithValue("@TransactionDate", receiveAccount.transactionDate);
                         command.ExecuteNonQuery();
+                        Console.WriteLine("Deposit transaction completed for account: " + receiveAccount.acctNo);
 
                         command.CommandText = @"
                             UPDATE BankAccounts SET balance = balance + @Amount WHERE acctNo = @AcctNo";
                         command.Parameters.Clear(); // Clear previous parameters
                         command.Parameters.AddWithValue("@Amount", receiveAccount.amount);
                         command.Parameters.AddWithValue("@AcctNo", receiveAccount.acctNo);
-                        command.ExecuteNonQuery();
+                        rowsAffected = command.ExecuteNonQuery();
+                        Console.WriteLine("Updated balance for receiver account: " + receiveAccount.acctNo + ". Rows affected: " + rowsAffected);
                     }
                     connection.Close();
                 }
